@@ -6,7 +6,7 @@ export default function Home() {
   const [active, setActive] = useState("Dashboard");
 
   const [open, setOpen] = useState({
-    "Layer 1": true,
+    "Layer 1": false,
     "Layer 2": false,
     B2C: false,
     Other: false,
@@ -35,32 +35,30 @@ export default function Home() {
       icon: "◌",
       items: ["B2C Aggregator", "B2C Non Aggregator"],
     },
-    {
-      name: "Other",
-      icon: "•••",
-      items: ["Other 1", "Other 2", "Other 3"],
-    },
   ];
 
-  const directMenus = [
+  const operationalMenus = [
     ["Interpack", "▣"],
     ["Claim", "◇"],
     ["Return", "↩"],
     ["Inbound", "↓"],
     ["KPI", "◆"],
-    ["Forecast", "▤"],
+    ["Porcase", "▤"],
   ];
 
   return (
     <div className="app">
-      {/* =====================================================
+
+      {/* ==================================================
           SIDEBAR
-      ===================================================== */}
+      ================================================== */}
 
       <aside className="sidebar">
-        {/* LOGO + BRAND */}
+
+        {/* BRAND */}
 
         <div className="brand">
+
           <div className="logoBox">
             <img
               src="https://www.marketeers.com/_next/image/?url=https%3A%2F%2Fimagedelivery.net%2F2MtOYVTKaiU0CCt-BLmtWw%2Fbb2fcb96-610f-45d1-74ed-285bbfdb6f00%2Fw%3D900&w=1920&q=75"
@@ -70,34 +68,34 @@ export default function Home() {
           </div>
 
           <div className="brandText">
-            <div className="brandName">Lion Parcel</div>
 
-            <div className="brandSub">
+            <div className="brandName">
+              Lion Parcel
+            </div>
+
+            <div className="brandDepartment">
               CUSTOMER EXPERIENCE
             </div>
+
+            <div className="brandPlatform">
+              Command Center
+            </div>
+
           </div>
+
         </div>
 
         <div className="divider" />
 
-        {/* DEPARTMENT */}
-
-        <div className="department">
-          <div className="departmentLabel">
-            CUSTOMER EXPERIENCE
-          </div>
-
-          <div className="departmentName">
-            Internal Command Center
-          </div>
-        </div>
-
-        {/* MENU */}
+        {/* NAVIGATION */}
 
         <div className="menuArea">
+
           <div className="sectionLabel">
             WORKSPACE
           </div>
+
+          {/* DASHBOARD */}
 
           <MenuButton
             active={active === "Dashboard"}
@@ -106,14 +104,22 @@ export default function Home() {
             onClick={() => setActive("Dashboard")}
           />
 
+          {/* GROUP MENUS */}
+
           {menuGroups.map((group) => (
             <div key={group.name}>
+
               <button
                 className={`groupButton ${
-                  open[group.name] ? "groupOpen" : ""
+                  open[group.name]
+                    ? "groupOpen"
+                    : ""
                 }`}
-                onClick={() => toggle(group.name)}
+                onClick={() =>
+                  toggle(group.name)
+                }
               >
+
                 <span className="menuIcon">
                   {group.icon}
                 </span>
@@ -124,15 +130,19 @@ export default function Home() {
 
                 <span
                   className={`arrow ${
-                    open[group.name] ? "arrowOpen" : ""
+                    open[group.name]
+                      ? "arrowOpen"
+                      : ""
                   }`}
                 >
                   ›
                 </span>
+
               </button>
 
               {open[group.name] && (
                 <div className="submenu">
+
                   {group.items.map((item) => (
                     <button
                       key={item}
@@ -141,80 +151,187 @@ export default function Home() {
                           ? "submenuActive"
                           : ""
                       }`}
-                      onClick={() => setActive(item)}
+                      onClick={() =>
+                        setActive(item)
+                      }
                     >
+
                       <span className="submenuDot" />
+
                       {item}
+
                     </button>
                   ))}
+
                 </div>
               )}
+
             </div>
           ))}
+
+          {/* OPERATIONAL */}
 
           <div className="sectionLabel operational">
             OPERATIONAL
           </div>
 
-          {directMenus.map(([name, icon]) => (
-            <MenuButton
-              key={name}
-              active={active === name}
-              icon={icon}
-              label={name}
-              onClick={() => setActive(name)}
-            />
-          ))}
+          {operationalMenus.map(
+            ([name, icon]) => (
+              <MenuButton
+                key={name}
+                active={active === name}
+                icon={icon}
+                label={name}
+                onClick={() =>
+                  setActive(name)
+                }
+              />
+            )
+          )}
+
+          {/* ============================================
+              OTHER - PALING BAWAH
+          ============================================ */}
+
+          <div className="sectionLabel otherSection">
+            OTHER
+          </div>
+
+          <div>
+
+            <button
+              className={`groupButton ${
+                open.Other
+                  ? "groupOpen"
+                  : ""
+              }`}
+              onClick={() =>
+                toggle("Other")
+              }
+            >
+
+              <span className="menuIcon">
+                •••
+              </span>
+
+              <span className="menuLabel">
+                Other
+              </span>
+
+              <span
+                className={`arrow ${
+                  open.Other
+                    ? "arrowOpen"
+                    : ""
+                }`}
+              >
+                ›
+              </span>
+
+            </button>
+
+            {open.Other && (
+              <div className="submenu">
+
+                {[
+                  "Other 1",
+                  "Other 2",
+                  "Other 3",
+                ].map((item) => (
+                  <button
+                    key={item}
+                    className={`submenuButton ${
+                      active === item
+                        ? "submenuActive"
+                        : ""
+                    }`}
+                    onClick={() =>
+                      setActive(item)
+                    }
+                  >
+
+                    <span className="submenuDot" />
+
+                    {item}
+
+                  </button>
+                ))}
+
+              </div>
+            )}
+
+          </div>
+
         </div>
 
-        {/* STATUS */}
+        {/* SYSTEM STATUS */}
 
         <div className="statusWrapper">
+
           <div className="statusCard">
+
             <div className="statusTop">
-              <span>System Status</span>
+
+              <span>
+                System Status
+              </span>
 
               <span className="online">
                 ● Online
               </span>
+
             </div>
 
             <div className="statusTrack">
               <div className="statusProgress" />
             </div>
+
           </div>
+
         </div>
+
       </aside>
 
-      {/* =====================================================
+      {/* ==================================================
           MAIN
-      ===================================================== */}
+      ================================================== */}
 
       <main className="main">
+
         {/* HEADER */}
 
         <header className="header">
+
           <div>
+
             <div className="breadcrumb">
-              INTERNAL WORKSPACE
+              CUSTOMER EXPERIENCE
               <span>/</span>
               DIRECTORAT PERFORMANCE
             </div>
 
             <div className="pageTitle">
-              CX Internal Command Center
+              Performance Dashboard
             </div>
+
           </div>
 
           <div className="headerRight">
+
             <div className="search">
-              <span>⌕</span>
+
+              <span>
+                ⌕
+              </span>
 
               <input
                 placeholder="Search..."
               />
 
-              <small>/</small>
+              <small>
+                /
+              </small>
+
             </div>
 
             <button className="headerButton">
@@ -227,11 +344,13 @@ export default function Home() {
             </button>
 
             <div className="user">
+
               <div className="avatar">
                 CX
               </div>
 
               <div>
+
                 <strong>
                   CX Admin
                 </strong>
@@ -239,18 +358,25 @@ export default function Home() {
                 <small>
                   Internal User
                 </small>
+
               </div>
+
             </div>
+
           </div>
+
         </header>
 
         {/* CONTENT */}
 
         <div className="content">
+
           {/* HERO */}
 
           <section className="hero">
+
             <div className="heroContent">
+
               <div className="heroLabel">
                 INTERNAL CX PLATFORM
               </div>
@@ -264,9 +390,11 @@ export default function Home() {
                 workspace for Lion Parcel Customer
                 Experience.
               </p>
+
             </div>
 
             <div className="heroActions">
+
               <button className="dateButton">
                 ◷ &nbsp; 01 Aug — 20 Aug
               </button>
@@ -274,14 +402,17 @@ export default function Home() {
               <button className="exportButton">
                 ↓ &nbsp; Export
               </button>
+
             </div>
 
             <div className="heroCircle" />
+
           </section>
 
           {/* KPI */}
 
           <section className="kpiGrid">
+
             <KpiCard
               icon="♥"
               title="Customer Satisfaction"
@@ -309,12 +440,15 @@ export default function Home() {
               value="4,821"
               change="+8.4%"
             />
+
           </section>
 
           {/* PERFORMANCE */}
 
           <section className="twoColumns">
+
             <div className="card">
+
               <SmallLabel>
                 DIRECTORAT PERFORMANCE
               </SmallLabel>
@@ -324,7 +458,9 @@ export default function Home() {
               </h2>
 
               <div className="chartHeader">
+
                 <div>
+
                   <strong className="bigNumber">
                     94.8%
                   </strong>
@@ -332,9 +468,11 @@ export default function Home() {
                   <div className="muted">
                     Overall achievement
                   </div>
+
                 </div>
 
                 <div className="legend">
+
                   <span>
                     <i className="redDot" />
                     Actual
@@ -344,10 +482,13 @@ export default function Home() {
                     <i className="grayDot" />
                     Target
                   </span>
+
                 </div>
+
               </div>
 
               <div className="chart">
+
                 {[
                   55,
                   63,
@@ -361,36 +502,65 @@ export default function Home() {
                   89,
                   85,
                   95,
-                ].map((value, index) => (
-                  <div
-                    className="barWrapper"
-                    key={index}
-                  >
+                ].map(
+                  (value, index) => (
                     <div
-                      className="bar"
-                      style={{
-                        height: `${value}%`,
-                      }}
-                    />
-                  </div>
-                ))}
+                      className="barWrapper"
+                      key={index}
+                    >
+
+                      <div
+                        className="bar"
+                        style={{
+                          height:
+                            `${value}%`,
+                        }}
+                      />
+
+                    </div>
+                  )
+                )}
+
               </div>
 
               <div className="weeks">
-                <span>W1</span>
-                <span>W2</span>
-                <span>W3</span>
-                <span>W4</span>
-                <span>W5</span>
-                <span>W6</span>
+
+                <span>
+                  W1
+                </span>
+
+                <span>
+                  W2
+                </span>
+
+                <span>
+                  W3
+                </span>
+
+                <span>
+                  W4
+                </span>
+
+                <span>
+                  W5
+                </span>
+
+                <span>
+                  W6
+                </span>
+
               </div>
+
             </div>
 
             {/* ALERT */}
 
             <div className="card">
+
               <div className="alertHeader">
+
                 <div>
+
                   <SmallLabel>
                     REQUIRES ATTENTION
                   </SmallLabel>
@@ -398,11 +568,13 @@ export default function Home() {
                   <h2>
                     Priority Alerts
                   </h2>
+
                 </div>
 
                 <span className="activeBadge">
                   3 ACTIVE
                 </span>
+
               </div>
 
               <Alert
@@ -424,15 +596,19 @@ export default function Home() {
               <button className="viewAll">
                 View all alerts →
               </button>
+
             </div>
+
           </section>
 
-          {/* LOWER SECTION */}
+          {/* LOWER */}
 
           <section className="threeColumns">
+
             {/* CHANNEL */}
 
             <div className="card">
+
               <SmallLabel>
                 CHANNEL PERFORMANCE
               </SmallLabel>
@@ -460,11 +636,13 @@ export default function Home() {
                 name="Email"
                 value="86%"
               />
+
             </div>
 
             {/* LAYER */}
 
             <div className="card">
+
               <SmallLabel>
                 OPERATIONAL LAYER
               </SmallLabel>
@@ -497,11 +675,13 @@ export default function Home() {
                 name="B2C Non Aggregator"
                 value="89%"
               />
+
             </div>
 
             {/* QUICK ACCESS */}
 
             <div className="card">
+
               <SmallLabel>
                 QUICK ACCESS
               </SmallLabel>
@@ -511,52 +691,65 @@ export default function Home() {
               </h2>
 
               <div className="moduleGrid">
+
                 {[
                   ["◆", "KPI"],
                   ["◇", "Claim"],
                   ["↩", "Return"],
                   ["↓", "Inbound"],
-                ].map(([icon, name]) => (
-                  <button
-                    key={name}
-                    className="module"
-                    onClick={() =>
-                      setActive(name)
-                    }
-                  >
-                    <span>
-                      {icon}
-                    </span>
+                ].map(
+                  ([icon, name]) => (
+                    <button
+                      key={name}
+                      className="module"
+                      onClick={() =>
+                        setActive(name)
+                      }
+                    >
 
-                    <strong>
-                      {name}
-                    </strong>
-                  </button>
-                ))}
+                      <span>
+                        {icon}
+                      </span>
+
+                      <strong>
+                        {name}
+                      </strong>
+
+                    </button>
+                  )
+                )}
+
               </div>
+
             </div>
+
           </section>
 
           {/* FOOTER */}
 
           <footer>
+
             <span>
               © 2026 Lion Parcel
             </span>
 
             <span>
-              Customer Experience •
-              Internal Use Only
+              Customer Experience
+              • Internal Use Only
             </span>
+
           </footer>
+
         </div>
+
       </main>
 
-      {/* =====================================================
-          CSS
-      ===================================================== */}
+      {/* ==================================================
+          GLOBAL CSS
+      ================================================== */}
 
       <style jsx global>{`
+
         * {
           box-sizing: border-box;
         }
@@ -568,7 +761,7 @@ export default function Home() {
         }
 
         body {
-          background: #f5f6f7;
+          background: #f4f5f6;
         }
 
         button,
@@ -580,17 +773,25 @@ export default function Home() {
           outline: none;
         }
 
+        /* ================================================
+           APP
+        ================================================ */
+
         .app {
           min-height: 100vh;
+
           display: flex;
+
           color: #24262a;
+
           background:
             linear-gradient(
               135deg,
-              #f3f4f6 0%,
+              #f1f2f4 0%,
               #ffffff 48%,
-              #f1f2f4 100%
+              #f2f3f5 100%
             );
+
           font-family:
             Inter,
             ui-sans-serif,
@@ -601,141 +802,202 @@ export default function Home() {
             sans-serif;
         }
 
-        /* SIDEBAR */
+        /* ================================================
+           SIDEBAR
+        ================================================ */
 
         .sidebar {
-          width: 270px;
+          width: 268px;
+
           min-height: 100vh;
+
           position: fixed;
+
           left: 0;
           top: 0;
           bottom: 0;
+
           z-index: 20;
+
           display: flex;
+
           flex-direction: column;
+
           background:
             linear-gradient(
               180deg,
               #ffffff 0%,
-              #fafafa 65%,
+              #fbfbfc 58%,
               #f1f2f4 100%
             );
+
           border-right:
-            1px solid #e6e7e9;
+            1px solid #e5e6e8;
         }
 
+        /* BRAND */
+
         .brand {
-          padding: 24px 22px 20px;
+          padding:
+            22px 20px;
+
           display: flex;
+
           align-items: center;
-          gap: 11px;
+
+          gap: 12px;
         }
 
         .logoBox {
-          width: 46px;
-          height: 46px;
-          border-radius: 13px;
+          width: 42px;
+          height: 42px;
+
+          border-radius: 11px;
+
           background: #e21b23;
+
           display: flex;
+
           align-items: center;
           justify-content: center;
+
           overflow: hidden;
+
           box-shadow:
-            0 8px 20px
-            rgba(226, 27, 35, 0.18);
+            0 6px 16px
+            rgba(226, 27, 35, .16);
+
           flex-shrink: 0;
         }
 
         .logo {
           width: 100%;
           height: 100%;
+
           object-fit: contain;
+
           padding: 4px;
         }
 
         .brandName {
-          font-size: 18px;
-          line-height: 1;
-          font-weight: 900;
-          letter-spacing: -0.7px;
           color: #202226;
+
+          font-size: 17px;
+
+          font-weight: 900;
+
+          letter-spacing: -.65px;
+
+          line-height: 1;
         }
 
-        .brandSub {
-          color: #e21b23;
-          font-size: 8px;
-          font-weight: 900;
-          letter-spacing: 1.3px;
+        .brandDepartment {
           margin-top: 6px;
+
+          color: #e21b23;
+
+          font-size: 7.5px;
+
+          font-weight: 900;
+
+          letter-spacing: 1.25px;
+        }
+
+        .brandPlatform {
+          margin-top: 3px;
+
+          color: #8b8f95;
+
+          font-size: 8.5px;
+
+          font-weight: 600;
         }
 
         .divider {
           height: 1px;
+
           background: #e8e9eb;
-          margin: 0 20px;
+
+          margin:
+            0 20px;
         }
 
-        .department {
-          padding:
-            22px 22px 14px;
-        }
-
-        .departmentLabel {
-          color: #e21b23;
-          font-size: 8px;
-          font-weight: 900;
-          letter-spacing: 1.4px;
-          margin-bottom: 7px;
-        }
-
-        .departmentName {
-          font-size: 13px;
-          font-weight: 800;
-          color: #25272b;
-        }
+        /* ================================================
+           MENU
+        ================================================ */
 
         .menuArea {
           flex: 1;
+
           overflow-y: auto;
-          padding: 2px 13px;
+
+          padding:
+            10px 13px;
         }
 
         .sectionLabel {
           font-size: 8px;
+
           font-weight: 900;
+
           color: #a3a6ab;
-          letter-spacing: 1.3px;
+
+          letter-spacing: 1.35px;
+
           padding:
             10px 10px 8px;
         }
 
         .operational {
+          margin-top: 12px;
+        }
+
+        .otherSection {
+          margin-top: 20px;
+
           padding-top: 18px;
+
+          border-top:
+            1px solid #e7e8ea;
         }
 
         .groupButton,
         .menuButton {
           width: 100%;
-          height: 42px;
+
+          height: 41px;
+
           border: 0;
-          border-radius: 10px;
+
+          border-radius: 9px;
+
           background: transparent;
+
           display: flex;
+
           align-items: center;
-          padding: 0 11px;
-          color: #676b72;
+
+          padding:
+            0 11px;
+
+          color: #686c73;
+
           cursor: pointer;
-          transition: all 0.18s ease;
+
+          transition:
+            all .18s ease;
         }
 
         .groupButton:hover,
         .menuButton:hover {
           background: #f7f7f8;
+
           color: #e21b23;
         }
 
         .groupOpen {
           background: #f7f7f8;
+
           color: #e21b23;
         }
 
@@ -745,118 +1007,167 @@ export default function Home() {
 
         .menuActive {
           background:
-            rgba(226, 27, 35, 0.075);
+            rgba(226, 27, 35, .07);
+
           color: #e21b23;
         }
 
         .menuActive::before {
           content: "";
+
           position: absolute;
+
           left: -13px;
+
           top: 8px;
+
           bottom: 8px;
+
           width: 3px;
+
           border-radius:
             0 4px 4px 0;
+
           background: #e21b23;
         }
 
         .menuIcon {
           width: 27px;
+
           text-align: center;
-          font-size: 13px;
+
+          font-size: 12px;
+
           color: #999da3;
         }
 
-        .menuActive .menuIcon {
+        .menuActive .menuIcon,
+        .groupOpen .menuIcon {
           color: #e21b23;
         }
 
         .menuLabel {
-          font-size: 11.5px;
-          font-weight: 600;
+          font-size: 11px;
+
+          font-weight: 650;
         }
 
         .arrow {
           margin-left: auto;
+
           font-size: 19px;
+
           color: #a7aab0;
+
           transition:
-            transform 0.2s ease;
+            transform .2s ease;
         }
 
         .arrowOpen {
           transform:
             rotate(90deg);
+
           color: #e21b23;
         }
 
         .submenu {
           margin-left: 24px;
+
           padding-left: 7px;
+
           border-left:
             1px solid #e1e2e5;
         }
 
         .submenuButton {
           width: 100%;
+
           height: 35px;
+
           border: 0;
+
           border-radius: 8px;
+
           background: transparent;
+
           display: flex;
+
           align-items: center;
+
           padding-left: 10px;
+
           color: #777b82;
-          font-size: 10.5px;
+
+          font-size: 10px;
+
           font-weight: 500;
+
           cursor: pointer;
+
           text-align: left;
         }
 
         .submenuButton:hover {
           color: #e21b23;
+
           background: #fafafa;
         }
 
         .submenuActive {
           background:
-            rgba(226, 27, 35, 0.07);
+            rgba(226, 27, 35, .065);
+
           color: #e21b23;
+
           font-weight: 700;
         }
 
         .submenuDot {
-          width: 6px;
-          height: 6px;
+          width: 5px;
+
+          height: 5px;
+
           border-radius: 50%;
+
           background: #c7c9cd;
+
           margin-right: 9px;
         }
 
-        .submenuActive
-          .submenuDot {
+        .submenuActive .submenuDot {
           background: #e21b23;
         }
 
+        /* ================================================
+           STATUS
+        ================================================ */
+
         .statusWrapper {
           padding: 13px;
+
           border-top:
             1px solid #e8e9eb;
         }
 
         .statusCard {
-          padding: 12px;
-          border-radius: 11px;
+          padding: 11px;
+
+          border-radius: 10px;
+
           background: #f7f7f8;
+
           border:
-            1px solid #e9eaec;
+            1px solid #e8e9eb;
         }
 
         .statusTop {
           display: flex;
-          justify-content: space-between;
-          font-size: 9px;
+
+          justify-content:
+            space-between;
+
+          font-size: 8px;
+
           font-weight: 700;
         }
 
@@ -866,110 +1177,165 @@ export default function Home() {
 
         .statusTrack {
           height: 4px;
+
           margin-top: 9px;
-          border-radius: 10px;
-          background: #e3e4e7;
+
+          border-radius: 20px;
+
+          background: #e2e3e6;
+
           overflow: hidden;
         }
 
         .statusProgress {
           width: 96%;
+
           height: 100%;
+
           background: #e21b23;
         }
 
-        /* MAIN */
+        /* ================================================
+           MAIN
+        ================================================ */
 
         .main {
-          margin-left: 270px;
+          margin-left: 268px;
+
           width:
-            calc(100% - 270px);
+            calc(100% - 268px);
+
           min-height: 100vh;
         }
 
+        /* HEADER */
+
         .header {
           height: 76px;
+
           padding:
             0 31px;
+
           display: flex;
+
           align-items: center;
-          justify-content: space-between;
+
+          justify-content:
+            space-between;
+
           background:
-            rgba(255, 255, 255, 0.88);
+            rgba(255,255,255,.9);
+
           backdrop-filter:
             blur(18px);
+
           border-bottom:
-            1px solid #e8e9eb;
+            1px solid #e7e8ea;
+
           position: sticky;
+
           top: 0;
+
           z-index: 10;
         }
 
         .breadcrumb {
           color: #a1a4a9;
+
           font-size: 8px;
+
           font-weight: 800;
-          letter-spacing: 0.5px;
+
+          letter-spacing: .6px;
         }
 
         .breadcrumb span {
-          margin: 0 8px;
-          color: #d1d3d6;
+          margin:
+            0 8px;
+
+          color: #d0d2d5;
         }
 
         .pageTitle {
           font-size: 17px;
+
           font-weight: 850;
+
           margin-top: 5px;
-          letter-spacing: -0.4px;
+
+          letter-spacing: -.45px;
         }
 
         .headerRight {
           display: flex;
+
           align-items: center;
+
           gap: 9px;
         }
 
         .search {
-          width: 220px;
-          height: 37px;
+          width: 215px;
+
+          height: 36px;
+
           border:
-            1px solid #e2e3e6;
+            1px solid #e1e2e5;
+
           border-radius: 9px;
+
           display: flex;
+
           align-items: center;
+
           gap: 8px;
-          padding: 0 11px;
+
+          padding:
+            0 11px;
+
           background: #fff;
         }
 
         .search span {
           color: #999ca2;
+
           font-size: 15px;
         }
 
         .search input {
           flex: 1;
+
           border: 0;
+
           outline: 0;
-          background: transparent;
+
+          background:
+            transparent;
+
           font-size: 10px;
+
           color: #333;
         }
 
         .search small {
           color: #b4b6bb;
+
           font-size: 9px;
         }
 
         .headerButton {
-          width: 37px;
-          height: 37px;
+          width: 36px;
+          height: 36px;
+
           border:
-            1px solid #e2e3e6;
+            1px solid #e1e2e5;
+
           border-radius: 9px;
+
           background: #fff;
+
           color: #777b82;
+
           cursor: pointer;
         }
 
@@ -979,263 +1345,381 @@ export default function Home() {
 
         .notification span {
           position: absolute;
+
           right: 7px;
           top: 7px;
+
           width: 5px;
           height: 5px;
+
           border-radius: 50%;
+
           background: #e21b23;
         }
 
         .user {
           display: flex;
+
           align-items: center;
+
           gap: 9px;
+
           margin-left: 3px;
         }
 
         .avatar {
           width: 35px;
           height: 35px;
+
           border-radius: 10px;
+
           background: #e21b23;
-          color: white;
+
+          color: #fff;
+
           display: flex;
+
           align-items: center;
           justify-content: center;
-          font-size: 10px;
+
+          font-size: 9px;
+
           font-weight: 900;
         }
 
         .user strong {
           display: block;
-          font-size: 9.5px;
+
+          font-size: 9px;
         }
 
         .user small {
           display: block;
+
           color: #9da0a5;
+
           font-size: 8px;
+
           margin-top: 2px;
         }
 
-        /* CONTENT */
+        /* ================================================
+           CONTENT
+        ================================================ */
 
         .content {
           padding:
             28px 31px 30px;
         }
 
+        /* HERO */
+
         .hero {
-          min-height: 151px;
+          min-height: 150px;
+
           padding:
             26px 28px;
-          border-radius: 17px;
+
+          border-radius: 16px;
+
           background:
             linear-gradient(
               110deg,
               #ffffff 0%,
-              #ffffff 65%,
-              #fff6f6 100%
+              #ffffff 68%,
+              #fff5f5 100%
             );
+
           border:
-            1px solid #e5e6e9;
+            1px solid #e3e4e7;
+
           position: relative;
+
           overflow: hidden;
+
           display: flex;
+
           align-items: center;
-          justify-content: space-between;
+
+          justify-content:
+            space-between;
         }
 
         .heroContent {
           position: relative;
+
           z-index: 2;
         }
 
         .heroLabel {
           color: #e21b23;
+
           font-size: 8px;
+
           font-weight: 900;
+
           letter-spacing: 1.5px;
         }
 
         .hero h1 {
           font-size: 25px;
+
           margin:
             9px 0 7px;
-          letter-spacing: -0.8px;
+
+          letter-spacing: -.8px;
         }
 
         .hero p {
           color: #858990;
+
           font-size: 10.5px;
+
           margin: 0;
+
           max-width: 590px;
+
           line-height: 1.7;
         }
 
         .heroActions {
           position: relative;
+
           z-index: 2;
+
           display: flex;
+
           gap: 8px;
         }
 
         .dateButton,
         .exportButton {
           height: 38px;
+
           border-radius: 8px;
+
           font-size: 9px;
+
           cursor: pointer;
         }
 
         .dateButton {
-          padding: 0 13px;
+          padding:
+            0 13px;
+
           border:
-            1px solid #e1e2e5;
+            1px solid #e0e1e4;
+
           background: #fff;
+
           color: #666a71;
         }
 
         .exportButton {
-          padding: 0 15px;
+          padding:
+            0 15px;
+
           border: 0;
+
           background: #e21b23;
+
           color: #fff;
+
           font-weight: 700;
+
           box-shadow:
-            0 8px 18px
-            rgba(226, 27, 35, 0.18);
+            0 7px 16px
+            rgba(226,27,35,.17);
         }
 
         .heroCircle {
           position: absolute;
+
           right: -80px;
+
           top: -100px;
+
           width: 300px;
+
           height: 300px;
+
           border-radius: 50%;
+
           border:
             55px solid
-            rgba(226, 27, 35, 0.035);
+            rgba(226,27,35,.035);
         }
 
-        /* KPI */
+        /* ================================================
+           KPI
+        ================================================ */
 
         .kpiGrid {
           display: grid;
+
           grid-template-columns:
-            repeat(4, 1fr);
+            repeat(4,1fr);
+
           gap: 12px;
+
           margin-top: 14px;
         }
 
         .kpiCard {
           background: #fff;
+
           border:
-            1px solid #e5e6e9;
+            1px solid #e4e5e8;
+
           border-radius: 13px;
+
           padding: 17px;
-          min-height: 142px;
+
+          min-height: 138px;
+
           box-shadow:
             0 4px 18px
-            rgba(25, 30, 35, 0.025);
+            rgba(25,30,35,.025);
         }
 
         .kpiTop {
           display: flex;
-          justify-content: space-between;
+
+          justify-content:
+            space-between;
         }
 
         .kpiIcon {
           width: 31px;
           height: 31px;
+
           border-radius: 8px;
+
           background: #fff1f2;
+
           color: #e21b23;
+
           display: flex;
+
           align-items: center;
           justify-content: center;
+
           font-size: 12px;
         }
 
         .change {
-          padding: 4px 7px;
+          padding:
+            4px 7px;
+
           border-radius: 5px;
+
           background: #edf8f1;
+
           color: #17884a;
+
           font-size: 8px;
+
           font-weight: 800;
         }
 
         .kpiTitle {
           margin-top: 14px;
+
           color: #888c92;
+
           font-size: 9px;
         }
 
         .kpiValue {
           display: block;
+
           font-size: 24px;
-          letter-spacing: -0.8px;
+
+          letter-spacing: -.8px;
+
           margin-top: 4px;
         }
 
         .kpiMuted {
           color: #b0b2b7;
+
           font-size: 8px;
+
           margin-top: 3px;
         }
 
-        /* CARDS */
+        /* ================================================
+           CARDS
+        ================================================ */
 
         .twoColumns {
           display: grid;
+
           grid-template-columns:
             1.55fr 1fr;
+
           gap: 14px;
+
           margin-top: 14px;
         }
 
         .threeColumns {
           display: grid;
+
           grid-template-columns:
-            1fr 1fr 0.85fr;
+            1fr 1fr .85fr;
+
           gap: 14px;
+
           margin-top: 14px;
         }
 
         .card {
           background: #fff;
+
           border:
-            1px solid #e5e6e9;
+            1px solid #e4e5e8;
+
           border-radius: 14px;
+
           padding: 20px;
+
           box-shadow:
             0 4px 18px
-            rgba(25, 30, 35, 0.025);
+            rgba(25,30,35,.025);
         }
 
         .card h2 {
           margin:
             5px 0 0;
+
           font-size: 15px;
-          letter-spacing: -0.2px;
+
+          letter-spacing: -.2px;
         }
 
         .smallLabel {
           color: #e21b23;
+
           font-size: 8px;
+
           font-weight: 900;
+
           letter-spacing: 1.2px;
         }
 
-        /* CHART */
+        /* ================================================
+           CHART
+        ================================================ */
 
         .chartHeader {
           display: flex;
+
           align-items: flex-end;
-          justify-content: space-between;
+
+          justify-content:
+            space-between;
+
           margin-top: 19px;
         }
 
@@ -1245,19 +1729,25 @@ export default function Home() {
 
         .muted {
           color: #9da0a5;
+
           font-size: 9px;
+
           margin-top: 3px;
         }
 
         .legend {
           display: flex;
+
           gap: 13px;
+
           color: #96999f;
+
           font-size: 8px;
         }
 
         .legend span {
           display: flex;
+
           align-items: center;
         }
 
@@ -1265,8 +1755,11 @@ export default function Home() {
         .grayDot {
           width: 7px;
           height: 7px;
+
           border-radius: 50%;
+
           display: inline-block;
+
           margin-right: 5px;
         }
 
@@ -1280,26 +1773,38 @@ export default function Home() {
 
         .chart {
           height: 185px;
+
           margin-top: 16px;
+
           display: flex;
+
           align-items: flex-end;
+
           gap: 11px;
+
           border-bottom:
             1px solid #ececef;
-          padding: 0 10px;
+
+          padding:
+            0 10px;
         }
 
         .barWrapper {
           height: 100%;
+
           flex: 1;
+
           display: flex;
+
           align-items: flex-end;
         }
 
         .bar {
           width: 100%;
+
           border-radius:
             6px 6px 2px 2px;
+
           background:
             linear-gradient(
               180deg,
@@ -1310,35 +1815,57 @@ export default function Home() {
 
         .weeks {
           display: flex;
-          justify-content: space-around;
+
+          justify-content:
+            space-around;
+
           margin-top: 7px;
+
           color: #aaaeb3;
+
           font-size: 8px;
         }
 
-        /* ALERT */
+        /* ================================================
+           ALERT
+        ================================================ */
 
         .alertHeader {
           display: flex;
-          justify-content: space-between;
+
+          justify-content:
+            space-between;
         }
 
         .activeBadge {
           height: 22px;
-          padding: 0 7px;
+
+          padding:
+            0 7px;
+
           display: flex;
+
           align-items: center;
+
           background: #fff0f0;
+
           color: #e21b23;
+
           border-radius: 6px;
+
           font-size: 8px;
+
           font-weight: 800;
         }
 
         .alert {
           display: flex;
+
           gap: 9px;
-          padding: 14px 0;
+
+          padding:
+            14px 0;
+
           border-bottom:
             1px solid #f0f1f2;
         }
@@ -1346,47 +1873,71 @@ export default function Home() {
         .alertIcon {
           width: 27px;
           height: 27px;
+
           border-radius: 8px;
+
           display: flex;
+
           align-items: center;
           justify-content: center;
+
           background: #fff8e9;
+
           color: #c48700;
+
           font-size: 10px;
+
           font-weight: 800;
+
           flex-shrink: 0;
         }
 
         .alertDanger {
           background: #fff0f0;
+
           color: #e21b23;
         }
 
         .alert strong {
           display: block;
+
           font-size: 9.5px;
         }
 
         .alert p {
-          margin: 4px 0 0;
+          margin:
+            4px 0 0;
+
           color: #999ca2;
+
           font-size: 8.5px;
+
           line-height: 1.5;
         }
 
         .viewAll {
           width: 100%;
+
           margin-top: 8px;
+
           border: 0;
+
           background: transparent;
+
           color: #e21b23;
+
           text-align: left;
+
           font-size: 9px;
+
           font-weight: 700;
+
           cursor: pointer;
         }
 
-        /* PROGRESS */
+        /* ================================================
+           PROGRESS
+        ================================================ */
 
         .progress {
           margin-top: 17px;
@@ -1394,7 +1945,10 @@ export default function Home() {
 
         .progressHeader {
           display: flex;
-          justify-content: space-between;
+
+          justify-content:
+            space-between;
+
           font-size: 9px;
         }
 
@@ -1404,120 +1958,170 @@ export default function Home() {
 
         .progressTrack {
           height: 5px;
+
           background: #f0f1f3;
+
           border-radius: 20px;
+
           margin-top: 7px;
+
           overflow: hidden;
         }
 
         .progressFill {
           height: 100%;
+
           background:
             linear-gradient(
               90deg,
               #e21b23,
               #f05a5f
             );
+
           border-radius: 20px;
         }
 
-        /* LAYER */
+        /* ================================================
+           LAYER
+        ================================================ */
 
         .layer {
           height: 34px;
+
           border-bottom:
             1px solid #f0f1f2;
+
           display: flex;
+
           align-items: center;
-          justify-content: space-between;
+
+          justify-content:
+            space-between;
+
           font-size: 9px;
         }
 
         .layerName {
           color: #777b82;
+
           display: flex;
+
           align-items: center;
+
           gap: 7px;
         }
 
         .layerDot {
           width: 5px;
           height: 5px;
+
           border-radius: 50%;
+
           background: #e21b23;
         }
 
-        /* MODULE */
+        /* ================================================
+           MODULE
+        ================================================ */
 
         .moduleGrid {
           display: grid;
+
           grid-template-columns:
             1fr 1fr;
+
           gap: 8px;
+
           margin-top: 16px;
         }
 
         .module {
           height: 68px;
+
           border:
             1px solid #e7e8eb;
+
           border-radius: 9px;
+
           background: #fafafa;
+
           text-align: left;
+
           padding: 10px;
+
           cursor: pointer;
+
           transition:
-            all 0.18s ease;
+            all .18s ease;
         }
 
         .module:hover {
           background: #fff;
+
           border-color: #efb3b6;
+
           transform:
             translateY(-1px);
         }
 
         .module span {
           color: #e21b23;
+
           font-size: 13px;
         }
 
         .module strong {
           display: block;
+
           font-size: 9px;
+
           margin-top: 7px;
         }
 
-        /* FOOTER */
+        /* ================================================
+           FOOTER
+        ================================================ */
 
         footer {
           display: flex;
-          justify-content: space-between;
+
+          justify-content:
+            space-between;
+
           margin-top: 22px;
+
           color: #a3a6ab;
+
           font-size: 8px;
         }
 
-        /* RESPONSIVE */
+        /* ================================================
+           RESPONSIVE
+        ================================================ */
 
         @media (max-width: 1100px) {
+
           .kpiGrid {
             grid-template-columns:
-              repeat(2, 1fr);
+              repeat(2,1fr);
           }
 
           .threeColumns {
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns:
+              1fr 1fr;
           }
+
         }
 
         @media (max-width: 850px) {
+
           .sidebar {
             width: 220px;
           }
 
           .main {
             margin-left: 220px;
+
             width:
               calc(100% - 220px);
           }
@@ -1528,22 +2132,27 @@ export default function Home() {
 
           .twoColumns,
           .threeColumns {
-            grid-template-columns: 1fr;
+            grid-template-columns:
+              1fr;
           }
+
         }
 
         @media (max-width: 650px) {
+
           .sidebar {
             display: none;
           }
 
           .main {
             margin-left: 0;
+
             width: 100%;
           }
 
           .header {
-            padding: 0 18px;
+            padding:
+              0 18px;
           }
 
           .content {
@@ -1552,26 +2161,34 @@ export default function Home() {
 
           .hero {
             flex-direction: column;
-            align-items: flex-start;
+
+            align-items:
+              flex-start;
+
             gap: 18px;
           }
 
           .kpiGrid {
-            grid-template-columns: 1fr;
+            grid-template-columns:
+              1fr;
           }
 
           .user > div:last-child {
             display: none;
           }
+
         }
+
       `}</style>
+
     </div>
   );
 }
 
-/* ==========================================================
+
+/* ========================================================
    MENU BUTTON
-========================================================== */
+======================================================== */
 
 function MenuButton({
   active,
@@ -1586,6 +2203,7 @@ function MenuButton({
       }`}
       onClick={onClick}
     >
+
       <span className="menuIcon">
         {icon}
       </span>
@@ -1593,13 +2211,15 @@ function MenuButton({
       <span className="menuLabel">
         {label}
       </span>
+
     </button>
   );
 }
 
-/* ==========================================================
-   KPI
-========================================================== */
+
+/* ========================================================
+   KPI CARD
+======================================================== */
 
 function KpiCard({
   icon,
@@ -1609,7 +2229,9 @@ function KpiCard({
 }) {
   return (
     <div className="kpiCard">
+
       <div className="kpiTop">
+
         <div className="kpiIcon">
           {icon}
         </div>
@@ -1617,6 +2239,7 @@ function KpiCard({
         <span className="change">
           {change}
         </span>
+
       </div>
 
       <div className="kpiTitle">
@@ -1630,13 +2253,15 @@ function KpiCard({
       <div className="kpiMuted">
         vs previous period
       </div>
+
     </div>
   );
 }
 
-/* ==========================================================
+
+/* ========================================================
    SMALL LABEL
-========================================================== */
+======================================================== */
 
 function SmallLabel({
   children,
@@ -1648,9 +2273,10 @@ function SmallLabel({
   );
 }
 
-/* ==========================================================
+
+/* ========================================================
    ALERT
-========================================================== */
+======================================================== */
 
 function Alert({
   title,
@@ -1659,15 +2285,19 @@ function Alert({
 }) {
   return (
     <div className="alert">
+
       <div
         className={`alertIcon ${
-          danger ? "alertDanger" : ""
+          danger
+            ? "alertDanger"
+            : ""
         }`}
       >
         !
       </div>
 
       <div>
+
         <strong>
           {title}
         </strong>
@@ -1675,14 +2305,17 @@ function Alert({
         <p>
           {text}
         </p>
+
       </div>
+
     </div>
   );
 }
 
-/* ==========================================================
+
+/* ========================================================
    PROGRESS
-========================================================== */
+======================================================== */
 
 function Progress({
   name,
@@ -1690,7 +2323,9 @@ function Progress({
 }) {
   return (
     <div className="progress">
+
       <div className="progressHeader">
+
         <span className="progressName">
           {name}
         </span>
@@ -1698,23 +2333,28 @@ function Progress({
         <strong>
           {value}
         </strong>
+
       </div>
 
       <div className="progressTrack">
+
         <div
           className="progressFill"
           style={{
             width: value,
           }}
         />
+
       </div>
+
     </div>
   );
 }
 
-/* ==========================================================
+
+/* ========================================================
    LAYER
-========================================================== */
+======================================================== */
 
 function Layer({
   name,
@@ -1722,14 +2362,19 @@ function Layer({
 }) {
   return (
     <div className="layer">
+
       <span className="layerName">
+
         <i className="layerDot" />
+
         {name}
+
       </span>
 
       <strong>
         {value}
       </strong>
+
     </div>
   );
 }
