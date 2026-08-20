@@ -6,23 +6,92 @@ const logo =
   "https://www.marketeers.com/_next/image/?url=https%3A%2F%2Fimagedelivery.net%2F2MtOYVTKaiU0CCt-BLmtWw%2Fbb2fcb96-610f-45d1-74ed-285bbfdb6f00%2Fw%3D900&w=1920&q=75";
 
 const menu = [
-  ["⌂", "Overview"],
-  ["◈", "CX Performance"],
-  ["!", "Complaints"],
-  ["◉", "Customer Voice"],
-  ["◷", "SLA Monitoring"],
-  ["▤", "Reports"],
+  {
+    label: "Layer 1",
+    icon: "◈",
+    children: [
+      ["Chat", "◉"],
+      ["Call", "◉"],
+      ["Sosmed", "◉"],
+      ["Email", "◉"],
+    ],
+  },
+  {
+    label: "Layer 2",
+    icon: "◈",
+    children: [
+      ["Layer 2 Area", "◉"],
+      ["Layer 2 Dedicate", "◉"],
+    ],
+  },
+  {
+    label: "B2C",
+    icon: "◈",
+    children: [
+      ["B2C Aggregator", "◉"],
+      ["B2C Non Aggregator", "◉"],
+    ],
+  },
+  {
+    label: "Interpack",
+    icon: "▣",
+  },
+  {
+    label: "Claim",
+    icon: "!",
+  },
+  {
+    label: "Return",
+    icon: "↩",
+  },
+  {
+    label: "Inbound",
+    icon: "⇩",
+  },
+  {
+    label: "KPI",
+    icon: "◆",
+  },
+  {
+    label: "Porcase",
+    icon: "▤",
+  },
+  {
+    label: "Other",
+    icon: "•••",
+    children: [
+      ["Other 1", "◉"],
+      ["Other 2", "◉"],
+      ["Other 3", "◉"],
+    ],
+  },
 ];
 
 export default function Home() {
-  const [active, setActive] = useState("Overview");
+  const [active, setActive] = useState("Dashboard");
+
+  const [open, setOpen] = useState({
+    "Layer 1": true,
+    "Layer 2": true,
+    B2C: true,
+    Other: true,
+  });
+
+  function toggleMenu(label) {
+    setOpen((prev) => ({
+      ...prev,
+      [label]: !prev[label],
+    }));
+  }
 
   return (
     <main className="app">
 
-      {/* SIDEBAR */}
+      {/* ================= SIDEBAR ================= */}
 
       <aside className="sidebar">
+
+        {/* LOGO */}
 
         <div className="brand">
           <img
@@ -31,29 +100,143 @@ export default function Home() {
           />
         </div>
 
+        {/* TITLE */}
+
         <div className="workspace">
-          <span>WORKSPACE</span>
+          <span>DIRECTORAT PERFORMANCE</span>
         </div>
+
+        {/* NAVIGATION */}
 
         <nav className="navigation">
 
-          {menu.map(([icon, label]) => (
-            <button
-              key={label}
-              className={`nav-item ${
-                active === label ? "active" : ""
-              }`}
-              onClick={() => setActive(label)}
-            >
-              <span className="nav-icon">
-                {icon}
-              </span>
+          {/* DASHBOARD */}
 
-              <span>{label}</span>
-            </button>
-          ))}
+          <button
+            className={`nav-item ${
+              active === "Dashboard" ? "active" : ""
+            }`}
+            onClick={() => setActive("Dashboard")}
+          >
+            <span className="nav-icon">
+              ⌂
+            </span>
+
+            <span>
+              Dashboard
+            </span>
+          </button>
+
+
+          {/* MENU */}
+
+          {menu.map((item) => {
+
+            const hasChildren =
+              item.children &&
+              item.children.length > 0;
+
+            if (!hasChildren) {
+              return (
+                <button
+                  key={item.label}
+                  className={`nav-item ${
+                    active === item.label
+                      ? "active"
+                      : ""
+                  }`}
+                  onClick={() =>
+                    setActive(item.label)
+                  }
+                >
+                  <span className="nav-icon">
+                    {item.icon}
+                  </span>
+
+                  <span>
+                    {item.label}
+                  </span>
+                </button>
+              );
+            }
+
+            return (
+              <div key={item.label}>
+
+                {/* PARENT */}
+
+                <button
+                  className={`nav-item parent ${
+                    active === item.label
+                      ? "active"
+                      : ""
+                  }`}
+                  onClick={() =>
+                    toggleMenu(item.label)
+                  }
+                >
+
+                  <span className="nav-icon">
+                    {item.icon}
+                  </span>
+
+                  <span>
+                    {item.label}
+                  </span>
+
+                  <span className="arrow">
+                    {open[item.label]
+                      ? "⌄"
+                      : "›"}
+                  </span>
+
+                </button>
+
+
+                {/* CHILDREN */}
+
+                {open[item.label] && (
+                  <div className="submenu">
+
+                    {item.children.map(
+                      ([child, icon]) => (
+                        <button
+                          key={child}
+                          className={`sub-item ${
+                            active === child
+                              ? "active"
+                              : ""
+                          }`}
+                          onClick={() =>
+                            setActive(child)
+                          }
+                        >
+
+                          <span className="sub-line" />
+
+                          <span className="sub-icon">
+                            {icon}
+                          </span>
+
+                          <span>
+                            {child}
+                          </span>
+
+                        </button>
+                      )
+                    )}
+
+                  </div>
+                )}
+
+              </div>
+            );
+          })}
 
         </nav>
+
+
+        {/* SIDEBAR BOTTOM */}
 
         <div className="sidebar-bottom">
 
@@ -81,10 +264,11 @@ export default function Home() {
 
           </div>
 
+
           <div className="user-mini">
 
             <div className="avatar">
-              IB
+              CX
             </div>
 
             <div>
@@ -106,9 +290,11 @@ export default function Home() {
       </aside>
 
 
-      {/* MAIN */}
+      {/* ================= MAIN ================= */}
 
       <section className="main">
+
+        {/* HEADER */}
 
         <header className="header">
 
@@ -119,16 +305,17 @@ export default function Home() {
             </div>
 
             <h1>
-              Command Center
+              Directorat Performance
             </h1>
 
           </div>
+
 
           <div className="header-right">
 
             <div className="search">
               <span>⌕</span>
-              Search dashboard...
+              Search...
             </div>
 
             <button className="notification">
@@ -137,13 +324,15 @@ export default function Home() {
             </button>
 
             <div className="header-avatar">
-              IB
+              CX
             </div>
 
           </div>
 
         </header>
 
+
+        {/* CONTENT */}
 
         <div className="content">
 
@@ -158,15 +347,18 @@ export default function Home() {
               </div>
 
               <h2>
-                Good morning, CX Team.
+                Customer Experience Command Center
               </h2>
 
               <p>
-                Monitor customer experience performance,
-                complaints and service quality from one place.
+                Monitor performance seluruh channel,
+                operational layer, complaint,
+                return, inbound dan KPI dalam satu
+                dashboard.
               </p>
 
             </div>
+
 
             <div className="actions">
 
@@ -229,15 +421,15 @@ export default function Home() {
             <div className="card performance">
 
               <CardHeading
-                eyebrow="PERFORMANCE"
-                title="Customer Experience Trend"
+                eyebrow="DIRECTORAT PERFORMANCE"
+                title="Performance Overview"
               />
 
               <div className="legend">
 
                 <span>
                   <i className="red-dot" />
-                  CX Score
+                  Actual
                 </span>
 
                 <span>
@@ -246,6 +438,7 @@ export default function Home() {
                 </span>
 
               </div>
+
 
               <div className="chart">
 
@@ -261,6 +454,7 @@ export default function Home() {
                   )
                 )}
 
+
                 <div className="bars">
 
                   {[58, 64, 61, 69, 66, 74, 72, 81, 79, 87, 85, 94].map(
@@ -269,12 +463,14 @@ export default function Home() {
                         className="bar-wrap"
                         key={index}
                       >
+
                         <div
                           className="bar"
                           style={{
                             height: `${height}%`,
                           }}
                         />
+
                       </div>
                     )
                   )}
@@ -282,6 +478,7 @@ export default function Home() {
                 </div>
 
               </div>
+
 
               <div className="chart-labels">
                 <span>W1</span>
@@ -312,6 +509,7 @@ export default function Home() {
 
               </div>
 
+
               <Alert
                 level="HIGH"
                 title="Complaint spike detected"
@@ -330,6 +528,7 @@ export default function Home() {
                 description="Customer Voice sentiment +6%"
               />
 
+
               <button className="view-alerts">
                 View All Alerts →
               </button>
@@ -346,98 +545,39 @@ export default function Home() {
             <div className="card lower-card">
 
               <CardHeading
-                eyebrow="COMPLAINTS"
-                title="Complaint Overview"
-              />
-
-              <div className="complaint">
-
-                <div className="donut">
-
-                  <div className="donut-center">
-
-                    <strong>
-                      128
-                    </strong>
-
-                    <span>
-                      OPEN
-                    </span>
-
-                  </div>
-
-                </div>
-
-                <div className="complaint-list">
-
-                  <Legend
-                    label="Delivery"
-                    value="48"
-                  />
-
-                  <Legend
-                    label="Service"
-                    value="37"
-                  />
-
-                  <Legend
-                    label="System"
-                    value="25"
-                  />
-
-                  <Legend
-                    label="Other"
-                    value="18"
-                  />
-
-                </div>
-
-              </div>
-
-            </div>
-
-
-            <div className="card lower-card">
-
-              <CardHeading
-                eyebrow="CUSTOMER VOICE"
-                title="Sentiment Analysis"
+                eyebrow="CHANNEL PERFORMANCE"
+                title="Customer Channels"
               />
 
               <div className="sentiments">
 
                 <Sentiment
-                  label="Positive"
-                  value="72%"
-                  width="72%"
+                  label="Chat"
+                  value="94%"
+                  width="94%"
                   color="green"
                 />
 
                 <Sentiment
-                  label="Neutral"
-                  value="19%"
-                  width="19%"
+                  label="Call"
+                  value="91%"
+                  width="91%"
+                  color="green"
+                />
+
+                <Sentiment
+                  label="Sosmed"
+                  value="88%"
+                  width="88%"
                   color="gray"
                 />
 
                 <Sentiment
-                  label="Negative"
-                  value="9%"
-                  width="9%"
+                  label="Email"
+                  value="86%"
+                  width="86%"
                   color="red"
                 />
-
-              </div>
-
-              <div className="response">
-
-                <span>
-                  Total responses
-                </span>
-
-                <strong>
-                  4,821
-                </strong>
 
               </div>
 
@@ -447,30 +587,69 @@ export default function Home() {
             <div className="card lower-card">
 
               <CardHeading
-                eyebrow="WORKSPACE"
-                title="Quick Actions"
+                eyebrow="OPERATIONAL LAYER"
+                title="Layer Performance"
+              />
+
+              <div className="complaint-list">
+
+                <Legend
+                  label="Layer 1"
+                  value="96%"
+                />
+
+                <Legend
+                  label="Layer 2 Area"
+                  value="93%"
+                />
+
+                <Legend
+                  label="Layer 2 Dedicate"
+                  value="95%"
+                />
+
+                <Legend
+                  label="B2C Aggregator"
+                  value="91%"
+                />
+
+                <Legend
+                  label="B2C Non Aggregator"
+                  value="89%"
+                />
+
+              </div>
+
+            </div>
+
+
+            <div className="card lower-card">
+
+              <CardHeading
+                eyebrow="QUICK ACCESS"
+                title="Performance Modules"
               />
 
               <div className="quick-grid">
 
                 <Quick
                   icon="◈"
-                  title="CX Performance"
+                  title="KPI"
                 />
 
                 <Quick
                   icon="!"
-                  title="Complaints"
+                  title="Claim"
                 />
 
                 <Quick
-                  icon="◉"
-                  title="Customer Voice"
+                  icon="↩"
+                  title="Return"
                 />
 
                 <Quick
-                  icon="▤"
-                  title="Reports"
+                  icon="⇩"
+                  title="Inbound"
                 />
 
               </div>
@@ -480,6 +659,8 @@ export default function Home() {
           </section>
 
 
+          {/* FOOTER */}
+
           <footer>
 
             <span>
@@ -487,7 +668,7 @@ export default function Home() {
             </span>
 
             <span>
-              CX Command Center • Internal Use Only
+              Directorat Performance • Internal Use Only
             </span>
 
           </footer>
