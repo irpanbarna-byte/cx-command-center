@@ -4,1183 +4,1099 @@ import { useState } from "react";
 
 const kpis = [
   {
-    title: "Total CX Cases",
-    value: "1,284",
-    change: "+12.8%",
-    note: "vs last period",
-    icon: "◉",
+    title: "CX Health Score",
+    value: "94.8%",
+    change: "+3.2%",
+    note: "vs last week",
+    icon: "✦",
+    primary: true,
   },
   {
-    title: "Open Cases",
-    value: "327",
-    change: "-8.4%",
-    note: "vs last period",
-    icon: "◌",
-  },
-  {
-    title: "Resolved Cases",
-    value: "957",
-    change: "+18.2%",
-    note: "vs last period",
-    icon: "✓",
+    title: "Customer Satisfaction",
+    value: "4.72",
+    suffix: "/5",
+    change: "+0.4",
+    note: "vs last week",
+    icon: "♥",
   },
   {
     title: "SLA Achievement",
-    value: "94.8%",
-    change: "+2.6%",
-    note: "vs last period",
+    value: "96.4%",
+    change: "+1.8%",
+    note: "vs last week",
+    icon: "◷",
+  },
+  {
+    title: "Open Cases",
+    value: "128",
+    change: "-12.5%",
+    note: "vs yesterday",
     icon: "◈",
   },
 ];
 
-const cases = [
+const issues = [
+  { name: "Delivery Delay", value: 38, count: 486 },
+  { name: "Shipment Tracking", value: 26, count: 332 },
+  { name: "Package Condition", value: 18, count: 229 },
+  { name: "Customer Service", value: 11, count: 141 },
+  { name: "Others", value: 7, count: 89 },
+];
+
+const hubs = [
+  { name: "Jakarta", code: "JKT", score: "97.2%", cases: 24 },
+  { name: "Bandung", code: "BDO", score: "95.8%", cases: 18 },
+  { name: "Surabaya", code: "SUB", score: "94.9%", cases: 21 },
+  { name: "Semarang", code: "SRG", score: "93.7%", cases: 15 },
+];
+
+const activities = [
   {
-    id: "CX-10284",
-    stt: "LPN-8829341",
-    customer: "PT Nusantara Jaya",
-    category: "Delivery Issue",
-    hub: "Jakarta",
-    priority: "High",
-    status: "Open",
-    aging: "2h 14m",
+    title: "SLA performance improved",
+    description: "Jakarta Hub reached 97.2% achievement",
+    time: "8 min ago",
+    type: "success",
   },
   {
-    id: "CX-10283",
-    stt: "LPN-8829277",
-    customer: "Andi Pratama",
-    category: "Tracking",
-    hub: "Bandung",
-    priority: "Medium",
-    status: "Processing",
-    aging: "1h 42m",
+    title: "New critical complaint",
+    description: "Delivery delay — STT #LPX28491",
+    time: "24 min ago",
+    type: "danger",
   },
   {
-    id: "CX-10282",
-    stt: "LPN-8829112",
-    customer: "Toko Makmur",
-    category: "Lost Package",
-    hub: "Surabaya",
-    priority: "Critical",
-    status: "Escalated",
-    aging: "8h 21m",
+    title: "CSAT target achieved",
+    description: "Today's score reached 4.72 / 5",
+    time: "42 min ago",
+    type: "success",
   },
   {
-    id: "CX-10281",
-    stt: "LPN-8829033",
-    customer: "Siti Rahma",
-    category: "Wrong Delivery",
-    hub: "Bekasi",
-    priority: "Low",
-    status: "Resolved",
-    aging: "45m",
-  },
-  {
-    id: "CX-10280",
-    stt: "LPN-8828998",
-    customer: "Budi Santoso",
-    category: "Delivery Delay",
-    hub: "Semarang",
-    priority: "High",
-    status: "Open",
-    aging: "3h 09m",
+    title: "Hub performance updated",
+    description: "12 hubs have submitted today's report",
+    time: "1 hr ago",
+    type: "info",
   },
 ];
 
-const reasons = [
-  { name: "Delivery Delay", value: 31, count: 398 },
-  { name: "Tracking Issue", value: 24, count: 308 },
-  { name: "Lost Package", value: 16, count: 205 },
-  { name: "Wrong Delivery", value: 12, count: 154 },
-  { name: "Others", value: 17, count: 219 },
-];
-
-const bars = [38, 45, 42, 55, 49, 67, 61, 74, 70, 82, 77, 91, 86, 96];
-
-function Status({ value }) {
-  const config = {
-    Open: ["#fff1f2", "#dc2626", "●"],
-    Processing: ["#fff7ed", "#ea580c", "●"],
-    Escalated: ["#fef2f2", "#b91c1c", "●"],
-    Resolved: ["#f0fdf4", "#16a34a", "●"],
-  };
-
-  const [background, color, icon] = config[value];
-
+function Logo() {
   return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 5,
-        padding: "6px 10px",
-        borderRadius: 999,
-        background,
-        color,
-        fontSize: 11,
-        fontWeight: 700,
-      }}
-    >
-      {icon} {value}
-    </span>
+    <div className="brand">
+      <div className="brandMark">
+        <span>L</span>
+      </div>
+      <div>
+        <div className="brandName">LION PARCEL</div>
+        <div className="brandSub">CUSTOMER EXPERIENCE</div>
+      </div>
+    </div>
   );
 }
 
-function Priority({ value }) {
-  const config = {
-    Critical: "#dc2626",
-    High: "#ea580c",
-    Medium: "#d97706",
-    Low: "#16a34a",
-  };
-
-  return (
-    <span
-      style={{
-        color: config[value],
-        fontSize: 11,
-        fontWeight: 700,
-      }}
-    >
-      {value}
-    </span>
-  );
+function Icon({ children }) {
+  return <span className="navIcon">{children}</span>;
 }
 
 export default function Home() {
   const [active, setActive] = useState("Overview");
+  const [period, setPeriod] = useState("Last 7 days");
 
-  const menuGroups = [
-    {
-      title: "CUSTOMER EXPERIENCE",
-      items: ["Cases", "Complaints", "Customer Voice", "Sentiment"],
-    },
-    {
-      title: "PERFORMANCE",
-      items: ["SLA Monitoring", "Resolution", "Escalation", "CSAT"],
-    },
-    {
-      title: "ANALYTICS",
-      items: ["Hub Performance", "Trend Analysis", "CX Insights"],
-    },
+  const menu = [
+    ["Overview", "⌂"],
+    ["CX Analytics", "◌"],
+    ["Complaints", "▣"],
+    ["SLA Monitor", "◷"],
+    ["Hub Performance", "⌁"],
+    ["Customer Voice", "♡"],
   ];
 
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        background: "#f6f7f9",
-        color: "#202124",
-        fontFamily:
-          "Inter, Arial, Helvetica, sans-serif",
-      }}
-    >
+    <main className="app">
+      <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        * {
+          box-sizing: border-box;
+        }
+
+        body {
+          margin: 0;
+          font-family: "Inter", Arial, sans-serif;
+          background: #f6f7f9;
+          color: #111827;
+        }
+
+        button,
+        select {
+          font-family: inherit;
+        }
+
+        .app {
+          min-height: 100vh;
+          display: flex;
+          background:
+            radial-gradient(circle at 85% 0%, rgba(227,27,35,.055), transparent 27%),
+            #f6f7f9;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+          width: 250px;
+          min-height: 100vh;
+          position: fixed;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          background: #111827;
+          color: white;
+          padding: 26px 18px;
+          display: flex;
+          flex-direction: column;
+          z-index: 10;
+          box-shadow: 8px 0 30px rgba(15,23,42,.08);
+        }
+
+        .brand {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 4px 8px 30px;
+        }
+
+        .brandMark {
+          width: 42px;
+          height: 42px;
+          border-radius: 12px;
+          background: linear-gradient(145deg, #f32b33, #c91018);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 800;
+          font-size: 22px;
+          box-shadow: 0 8px 20px rgba(227,27,35,.28);
+        }
+
+        .brandName {
+          font-size: 14px;
+          font-weight: 800;
+          letter-spacing: .7px;
+        }
+
+        .brandSub {
+          margin-top: 3px;
+          color: #9ca3af;
+          font-size: 8px;
+          font-weight: 700;
+          letter-spacing: 1.25px;
+        }
+
+        .menuLabel {
+          color: #6b7280;
+          font-size: 9px;
+          font-weight: 700;
+          letter-spacing: 1.5px;
+          padding: 0 12px 10px;
+          text-transform: uppercase;
+        }
+
+        .nav {
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+        }
+
+        .navButton {
+          width: 100%;
+          border: 0;
+          background: transparent;
+          color: #9ca3af;
+          padding: 12px 13px;
+          border-radius: 11px;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          cursor: pointer;
+          text-align: left;
+          font-size: 12px;
+          font-weight: 600;
+          transition: .2s ease;
+        }
+
+        .navButton:hover {
+          color: white;
+          background: rgba(255,255,255,.06);
+        }
+
+        .navButton.active {
+          color: white;
+          background: linear-gradient(90deg, #e31b23, #c9141b);
+          box-shadow: 0 8px 20px rgba(227,27,35,.2);
+        }
+
+        .navIcon {
+          width: 21px;
+          text-align: center;
+          font-size: 15px;
+        }
+
+        .sidebarBottom {
+          margin-top: auto;
+        }
+
+        .divider {
+          height: 1px;
+          background: rgba(255,255,255,.08);
+          margin: 18px 7px;
+        }
+
+        .user {
+          margin-top: 16px;
+          padding: 12px;
+          border-radius: 13px;
+          background: rgba(255,255,255,.055);
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .avatar {
+          width: 34px;
+          height: 34px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #e31b23, #ff6269);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 11px;
+          font-weight: 800;
+        }
+
+        .userName {
+          font-size: 11px;
+          font-weight: 700;
+        }
+
+        .userRole {
+          color: #9ca3af;
+          font-size: 9px;
+          margin-top: 3px;
+        }
+
+        /* MAIN */
+
+        .content {
+          width: calc(100% - 250px);
+          margin-left: 250px;
+          padding: 28px 34px 40px;
+        }
+
+        .topbar {
+          height: 48px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 25px;
+        }
+
+        .breadcrumb {
+          color: #9ca3af;
+          font-size: 11px;
+          font-weight: 500;
+        }
+
+        .breadcrumb strong {
+          color: #374151;
+        }
+
+        .topActions {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .search {
+          width: 205px;
+          height: 38px;
+          border: 1px solid #e5e7eb;
+          background: white;
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          padding: 0 12px;
+          gap: 8px;
+          color: #9ca3af;
+          font-size: 11px;
+        }
+
+        .search input {
+          border: 0;
+          outline: 0;
+          width: 100%;
+          font-size: 11px;
+        }
+
+        .iconButton {
+          width: 38px;
+          height: 38px;
+          border-radius: 10px;
+          background: white;
+          border: 1px solid #e5e7eb;
+          cursor: pointer;
+          position: relative;
+          color: #4b5563;
+        }
+
+        .notificationDot {
+          position: absolute;
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          background: #e31b23;
+          top: 8px;
+          right: 8px;
+          border: 2px solid white;
+        }
+
+        /* HERO */
+
+        .hero {
+          background: linear-gradient(120deg, #151b29 0%, #20283a 55%, #141a28 100%);
+          border-radius: 20px;
+          padding: 27px 30px;
+          color: white;
+          position: relative;
+          overflow: hidden;
+          margin-bottom: 22px;
+          box-shadow: 0 15px 40px rgba(17,24,39,.12);
+        }
+
+        .hero:after {
+          content: "";
+          position: absolute;
+          width: 300px;
+          height: 300px;
+          right: -80px;
+          top: -170px;
+          border-radius: 50%;
+          background: rgba(227,27,35,.18);
+        }
+
+        .heroContent {
+          position: relative;
+          z-index: 2;
+        }
+
+        .eyebrow {
+          color: #ff777d;
+          font-size: 9px;
+          font-weight: 800;
+          letter-spacing: 1.8px;
+          text-transform: uppercase;
+          margin-bottom: 8px;
+        }
+
+        .hero h1 {
+          margin: 0;
+          font-size: 25px;
+          letter-spacing: -.7px;
+          font-weight: 800;
+        }
+
+        .hero p {
+          margin: 8px 0 0;
+          color: #aeb6c5;
+          font-size: 11px;
+        }
+
+        .heroRight {
+          position: absolute;
+          right: 30px;
+          top: 22px;
+          z-index: 3;
+          display: flex;
+          align-items: center;
+          gap: 16px;
+        }
+
+        .scoreRing {
+          width: 88px;
+          height: 88px;
+          border-radius: 50%;
+          background: conic-gradient(#e31b23 0deg 341deg, #343c4c 341deg 360deg);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+        }
+
+        .scoreRing:after {
+          content: "";
+          position: absolute;
+          width: 68px;
+          height: 68px;
+          border-radius: 50%;
+          background: #192131;
+        }
+
+        .scoreText {
+          position: relative;
+          z-index: 2;
+          text-align: center;
+        }
+
+        .scoreText strong {
+          display: block;
+          font-size: 17px;
+        }
+
+        .scoreText span {
+          color: #9ca3af;
+          font-size: 7px;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+        }
+
+        /* KPI */
+
+        .kpiGrid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 14px;
+          margin-bottom: 20px;
+        }
+
+        .kpi {
+          background: white;
+          border: 1px solid #e9ebef;
+          border-radius: 16px;
+          padding: 18px;
+          position: relative;
+          overflow: hidden;
+          transition: .2s;
+        }
+
+        .kpi:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 12px 30px rgba(15,23,42,.07);
+        }
+
+        .kpiIcon {
+          width: 33px;
+          height: 33px;
+          border-radius: 10px;
+          background: #fff0f1;
+          color: #e31b23;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 800;
+          margin-bottom: 14px;
+        }
+
+        .kpiTitle {
+          color: #6b7280;
+          font-size: 10px;
+          font-weight: 600;
+        }
+
+        .kpiValue {
+          font-size: 25px;
+          font-weight: 800;
+          letter-spacing: -1px;
+          margin: 5px 0 5px;
+        }
+
+        .kpiValue span {
+          color: #9ca3af;
+          font-size: 13px;
+          font-weight: 600;
+        }
+
+        .change {
+          font-size: 9px;
+          font-weight: 700;
+        }
+
+        .positive {
+          color: #0f9d6e;
+        }
+
+        .negative {
+          color: #e31b23;
+        }
+
+        .note {
+          color: #9ca3af;
+          font-weight: 500;
+          margin-left: 4px;
+        }
+
+        /* GRID */
+
+        .dashboardGrid {
+          display: grid;
+          grid-template-columns: 1.45fr .9fr;
+          gap: 18px;
+        }
+
+        .card {
+          background: white;
+          border: 1px solid #e9ebef;
+          border-radius: 17px;
+          padding: 20px;
+        }
+
+        .cardHeader {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          margin-bottom: 18px;
+        }
+
+        .cardTitle {
+          font-size: 13px;
+          font-weight: 800;
+        }
+
+        .cardSubtitle {
+          color: #9ca3af;
+          font-size: 9px;
+          margin-top: 4px;
+        }
+
+        .select {
+          border: 1px solid #e5e7eb;
+          background: white;
+          border-radius: 8px;
+          padding: 7px 9px;
+          color: #4b5563;
+          font-size: 9px;
+          outline: none;
+        }
+
+        /* CHART */
+
+        .chart {
+          height: 205px;
+          position: relative;
+          padding: 10px 0 20px 32px;
+        }
+
+        .gridLine {
+          position: absolute;
+          left: 32px;
+          right: 0;
+          border-top: 1px dashed #edf0f3;
+        }
+
+        .grid1 { top: 18px; }
+        .grid2 { top: 63px; }
+        .grid3 { top: 108px; }
+        .grid4 { top: 153px; }
+
+        .chartLabels {
+          position: absolute;
+          left: 0;
+          top: 8px;
+          bottom: 20px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          color: #a1a8b3;
+          font-size: 8px;
+        }
+
+        .bars {
+          position: absolute;
+          left: 45px;
+          right: 5px;
+          bottom: 20px;
+          top: 15px;
+          display: flex;
+          align-items: flex-end;
+          justify-content: space-between;
+          gap: 12px;
+        }
+
+        .barGroup {
+          flex: 1;
+          height: 100%;
+          display: flex;
+          align-items: flex-end;
+          justify-content: center;
+          gap: 4px;
+        }
+
+        .bar {
+          width: 9px;
+          border-radius: 5px 5px 2px 2px;
+          background: #e31b23;
+          opacity: .85;
+        }
+
+        .bar.secondary {
+          background: #d8dde5;
+        }
+
+        .barLabel {
+          position: absolute;
+          bottom: 0;
+          color: #9ca3af;
+          font-size: 8px;
+          transform: translateX(-50%);
+        }
+
+        /* ISSUES */
+
+        .issue {
+          margin-bottom: 15px;
+        }
+
+        .issue:last-child {
+          margin-bottom: 0;
+        }
+
+        .issueTop {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 7px;
+          font-size: 9px;
+        }
+
+        .issueName {
+          color: #374151;
+          font-weight: 600;
+        }
+
+        .issueCount {
+          color: #6b7280;
+          font-weight: 700;
+        }
+
+        .progress {
+          height: 6px;
+          background: #f0f2f5;
+          border-radius: 10px;
+          overflow: hidden;
+        }
+
+        .progressFill {
+          height: 100%;
+          border-radius: 10px;
+          background: linear-gradient(90deg, #e31b23, #f04a51);
+        }
+
+        /* LOWER */
+
+        .lowerGrid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 18px;
+          margin-top: 18px;
+        }
+
+        .hubRow {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 11px 0;
+          border-bottom: 1px solid #f0f1f3;
+        }
+
+        .hubRow:last-child {
+          border-bottom: 0;
+        }
+
+        .hubBadge {
+          width: 35px;
+          height: 35px;
+          border-radius: 10px;
+          background: #fff1f2;
+          color: #d71920;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 9px;
+          font-weight: 800;
+        }
+
+        .hubInfo {
+          flex: 1;
+        }
+
+        .hubName {
+          font-size: 10px;
+          font-weight: 700;
+        }
+
+        .hubCases {
+          color: #9ca3af;
+          font-size: 8px;
+          margin-top: 3px;
+        }
+
+        .hubScore {
+          font-size: 11px;
+          font-weight: 800;
+          color: #0f9d6e;
+        }
+
+        /* ACTIVITY */
+
+        .activity {
+          display: flex;
+          gap: 11px;
+          padding: 10px 0;
+          border-bottom: 1px solid #f0f1f3;
+        }
+
+        .activity:last-child {
+          border-bottom: 0;
+        }
+
+        .activityDot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          margin-top: 5px;
+          flex-shrink: 0;
+        }
+
+        .activityDot.success {
+          background: #10b981;
+        }
+
+        .activityDot.danger {
+          background: #e31b23;
+        }
+
+        .activityDot.info {
+          background: #64748b;
+        }
+
+        .activityTitle {
+          font-size: 9px;
+          font-weight: 700;
+        }
+
+        .activityDesc {
+          color: #6b7280;
+          font-size: 8px;
+          margin-top: 3px;
+        }
+
+        .activityTime {
+          color: #a1a8b3;
+          font-size: 8px;
+          margin-left: auto;
+          white-space: nowrap;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 1100px) {
+          .sidebar {
+            width: 215px;
+          }
+
+          .content {
+            width: calc(100% - 215px);
+            margin-left: 215px;
+            padding: 22px;
+          }
+
+          .kpiGrid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+
+          .dashboardGrid {
+            grid-template-columns: 1fr;
+          }
+        }
+
+        @media (max-width: 760px) {
+          .sidebar {
+            display: none;
+          }
+
+          .content {
+            width: 100%;
+            margin-left: 0;
+            padding: 16px;
+          }
+
+          .topbar {
+            margin-bottom: 15px;
+          }
+
+          .search {
+            display: none;
+          }
+
+          .hero {
+            padding: 22px;
+          }
+
+          .heroRight {
+            display: none;
+          }
+
+          .kpiGrid,
+          .lowerGrid {
+            grid-template-columns: 1fr;
+          }
+        }
+      `}</style>
+
       {/* SIDEBAR */}
+      <aside className="sidebar">
+        <Logo />
 
-      <aside
-        style={{
-          position: "fixed",
-          left: 0,
-          top: 0,
-          bottom: 0,
-          width: 250,
-          background: "#ffffff",
-          borderRight: "1px solid #e7e7e7",
-          padding: "24px 16px",
-          boxSizing: "border-box",
-          zIndex: 10,
-        }}
-      >
-        {/* LOGO */}
+        <div className="menuLabel">Workspace</div>
 
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 11,
-            padding: "0 9px 28px",
-          }}
-        >
-          <div
-            style={{
-              width: 39,
-              height: 39,
-              borderRadius: 10,
-              background: "#e21b23",
-              color: "#fff",
-              display: "grid",
-              placeItems: "center",
-              fontSize: 13,
-              fontWeight: 900,
-            }}
-          >
-            LP
-          </div>
-
-          <div>
-            <div
-              style={{
-                fontSize: 15,
-                fontWeight: 800,
-                color: "#191919",
-              }}
+        <nav className="nav">
+          {menu.map(([name, icon]) => (
+            <button
+              key={name}
+              className={`navButton ${active === name ? "active" : ""}`}
+              onClick={() => setActive(name)}
             >
-              LION PARCEL
-            </div>
+              <Icon>{icon}</Icon>
+              {name}
+            </button>
+          ))}
+        </nav>
 
-            <div
-              style={{
-                fontSize: 10,
-                color: "#8a8a8a",
-                marginTop: 2,
-              }}
-            >
-              CUSTOMER EXPERIENCE
-            </div>
-          </div>
-        </div>
+        <div className="sidebarBottom">
+          <div className="divider" />
 
-        {/* OVERVIEW */}
+          <button className="navButton">
+            <Icon>⚙</Icon>
+            Settings
+          </button>
 
-        <div
-          onClick={() => setActive("Overview")}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 11,
-            padding: "11px 12px",
-            borderRadius: 8,
-            background:
-              active === "Overview" ? "#fff0f1" : "transparent",
-            color:
-              active === "Overview" ? "#d71920" : "#555",
-            fontSize: 13,
-            fontWeight: active === "Overview" ? 700 : 500,
-            cursor: "pointer",
-            marginBottom: 19,
-          }}
-        >
-          <span style={{ fontSize: 15 }}>◉</span>
-          Overview
-        </div>
+          <button className="navButton">
+            <Icon>?</Icon>
+            Help & Support
+          </button>
 
-        {/* MENU GROUPS */}
-
-        {menuGroups.map((group) => (
-          <div key={group.title} style={{ marginBottom: 21 }}>
-            <div
-              style={{
-                fontSize: 9,
-                letterSpacing: 1.2,
-                fontWeight: 800,
-                color: "#a0a0a0",
-                padding: "0 12px 8px",
-              }}
-            >
-              {group.title}
-            </div>
-
-            {group.items.map((item) => (
-              <div
-                key={item}
-                onClick={() => setActive(item)}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 11,
-                  padding: "9px 12px",
-                  borderRadius: 8,
-                  color: active === item ? "#d71920" : "#666",
-                  background:
-                    active === item ? "#fff0f1" : "transparent",
-                  fontSize: 12,
-                  fontWeight: active === item ? 700 : 500,
-                  cursor: "pointer",
-                  marginBottom: 2,
-                }}
-              >
-                <span
-                  style={{
-                    width: 15,
-                    color: active === item ? "#e21b23" : "#999",
-                  }}
-                >
-                  •
-                </span>
-
-                {item}
-              </div>
-            ))}
-          </div>
-        ))}
-
-        {/* BOTTOM MENU */}
-
-        <div
-          style={{
-            position: "absolute",
-            left: 16,
-            right: 16,
-            bottom: 18,
-            borderTop: "1px solid #eeeeee",
-            paddingTop: 14,
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 11,
-              padding: "9px 12px",
-              color: "#666",
-              fontSize: 12,
-            }}
-          >
-            ⚙ Settings
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 11,
-              padding: "9px 12px",
-              color: "#666",
-              fontSize: 12,
-            }}
-          >
-            ◇ Team Management
-          </div>
-
-          <div
-            style={{
-              marginTop: 9,
-              padding: "11px 12px",
-              background: "#fafafa",
-              borderRadius: 9,
-              border: "1px solid #eeeeee",
-            }}
-          >
-            <div
-              style={{
-                fontSize: 9,
-                color: "#999",
-                fontWeight: 700,
-              }}
-            >
-              SYSTEM STATUS
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 6,
-                marginTop: 6,
-                fontSize: 10,
-                color: "#555",
-              }}
-            >
-              <span
-                style={{
-                  width: 7,
-                  height: 7,
-                  background: "#16a34a",
-                  borderRadius: "50%",
-                }}
-              />
-              All systems operational
+          <div className="user">
+            <div className="avatar">IB</div>
+            <div>
+              <div className="userName">Irpan Barna</div>
+              <div className="userRole">CX Team</div>
             </div>
           </div>
         </div>
       </aside>
 
-      {/* MAIN */}
-
-      <section
-        style={{
-          marginLeft: 250,
-          padding: "27px 34px 40px",
-          boxSizing: "border-box",
-        }}
-      >
-        {/* HEADER */}
-
-        <header
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: 28,
-          }}
-        >
-          <div>
-            <div
-              style={{
-                fontSize: 10,
-                fontWeight: 700,
-                color: "#999",
-                letterSpacing: 0.6,
-                marginBottom: 7,
-              }}
-            >
-              CUSTOMER EXPERIENCE COMMAND CENTER
-            </div>
-
-            <h1
-              style={{
-                margin: 0,
-                fontSize: 26,
-                fontWeight: 800,
-                color: "#222",
-                letterSpacing: -0.5,
-              }}
-            >
-              Good morning, CX Team 👋
-            </h1>
-
-            <p
-              style={{
-                margin: "7px 0 0",
-                color: "#8a8a8a",
-                fontSize: 12,
-              }}
-            >
-              Monitor customer experience performance and service quality.
-            </p>
+      {/* CONTENT */}
+      <section className="content">
+        <header className="topbar">
+          <div className="breadcrumb">
+            Command Center <span>/</span> <strong>{active}</strong>
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-            }}
-          >
-            <button
-              style={{
-                border: "1px solid #dedede",
-                background: "#fff",
-                borderRadius: 8,
-                padding: "10px 13px",
-                color: "#555",
-                fontSize: 11,
-                fontWeight: 600,
-              }}
-            >
-              01 Aug - 20 Aug 2026 ▾
-            </button>
-
-            <div
-              style={{
-                width: 37,
-                height: 37,
-                borderRadius: 9,
-                background: "#e21b23",
-                color: "#fff",
-                display: "grid",
-                placeItems: "center",
-                fontSize: 11,
-                fontWeight: 800,
-              }}
-            >
-              IB
+          <div className="topActions">
+            <div className="search">
+              <span>⌕</span>
+              <input placeholder="Search anything..." />
             </div>
+
+            <button className="iconButton">
+              ♢
+              <span className="notificationDot" />
+            </button>
           </div>
         </header>
 
+        {/* HERO */}
+        <section className="hero">
+          <div className="heroContent">
+            <div className="eyebrow">Customer Experience Intelligence</div>
+
+            <h1>Good morning, CX Team 👋</h1>
+
+            <p>
+              Here's today's overview of customer experience performance.
+            </p>
+          </div>
+
+          <div className="heroRight">
+            <div>
+              <div className="eyebrow">Overall Performance</div>
+              <div style={{ fontSize: "11px", color: "#aeb6c5" }}>
+                Excellent performance
+              </div>
+            </div>
+
+            <div className="scoreRing">
+              <div className="scoreText">
+                <strong>94.8%</strong>
+                <span>CX Health</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* KPI */}
+        <section className="kpiGrid">
+          {kpis.map((item) => (
+            <div className="kpi" key={item.title}>
+              <div className="kpiIcon">{item.icon}</div>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: 14,
-            marginBottom: 16,
-          }}
-        >
-          {kpis.map((item, index) => (
-            <div
-              key={item.title}
-              style={{
-                background: "#fff",
-                border: "1px solid #e8e8e8",
-                borderRadius: 12,
-                padding: 18,
-                boxShadow: "0 2px 8px rgba(0,0,0,.025)",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <span
-                  style={{
-                    color: "#777",
-                    fontSize: 11,
-                    fontWeight: 600,
-                  }}
-                >
-                  {item.title}
-                </span>
+              <div className="kpiTitle">{item.title}</div>
 
-                <span
-                  style={{
-                    width: 28,
-                    height: 28,
-                    borderRadius: 8,
-                    background:
-                      index === 0
-                        ? "#fff0f1"
-                        : "#f5f5f5",
-                    color:
-                      index === 0
-                        ? "#e21b23"
-                        : "#777",
-                    display: "grid",
-                    placeItems: "center",
-                    fontSize: 13,
-                  }}
-                >
-                  {item.icon}
-                </span>
-              </div>
-
-              <div
-                style={{
-                  fontSize: 27,
-                  fontWeight: 800,
-                  marginTop: 15,
-                  color: "#242424",
-                }}
-              >
+              <div className="kpiValue">
                 {item.value}
+                {item.suffix && <span>{item.suffix}</span>}
               </div>
 
-              <div
-                style={{
-                  marginTop: 8,
-                  fontSize: 10,
-                  color:
-                    item.change.startsWith("-")
-                      ? "#16a34a"
-                      : "#16a34a",
-                  fontWeight: 700,
-                }}
-              >
-                {item.change}{" "}
-                <span
-                  style={{
-                    color: "#999",
-                    fontWeight: 400,
-                  }}
-                >
-                  {item.note}
-                </span>
+              <div className={`change ${item.change.startsWith("-") ? "negative" : "positive"}`}>
+                {item.change} <span className="note">{item.note}</span>
               </div>
             </div>
           ))}
-        </div>
+        </section>
 
-        {/* MAIN ANALYTICS */}
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "2fr 1fr",
-            gap: 16,
-            marginBottom: 16,
-          }}
-        >
-          {/* CASE TREND */}
-
-          <div
-            style={{
-              background: "#fff",
-              border: "1px solid #e8e8e8",
-              borderRadius: 12,
-              padding: 20,
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "start",
-              }}
-            >
+        {/* MAIN CHARTS */}
+        <section className="dashboardGrid">
+          <div className="card">
+            <div className="cardHeader">
               <div>
-                <div
-                  style={{
-                    fontSize: 14,
-                    fontWeight: 800,
-                  }}
-                >
-                  CX Case Trend
-                </div>
-
-                <div
-                  style={{
-                    color: "#999",
-                    fontSize: 10,
-                    marginTop: 4,
-                  }}
-                >
-                  Customer cases received over time
+                <div className="cardTitle">CX Performance Trend</div>
+                <div className="cardSubtitle">
+                  Customer experience score over time
                 </div>
               </div>
 
-              <div
-                style={{
-                  fontSize: 10,
-                  color: "#e21b23",
-                  fontWeight: 700,
-                }}
+              <select
+                className="select"
+                value={period}
+                onChange={(e) => setPeriod(e.target.value)}
               >
-                +14.6% vs previous period
+                <option>Last 7 days</option>
+                <option>Last 30 days</option>
+                <option>This year</option>
+              </select>
+            </div>
+
+            <div className="chart">
+              <div className="chartLabels">
+                <span>100</span>
+                <span>90</span>
+                <span>80</span>
+                <span>70</span>
               </div>
-            </div>
 
-            <div
-              style={{
-                height: 205,
-                marginTop: 23,
-                display: "flex",
-                alignItems: "end",
-                gap: 11,
-                borderBottom: "1px solid #eeeeee",
-                padding: "0 7px",
-              }}
-            >
-              {bars.map((height, i) => (
-                <div
-                  key={i}
-                  style={{
-                    flex: 1,
-                    height: `${height}%`,
-                    borderRadius: "5px 5px 0 0",
-                    background:
-                      i === bars.length - 1
-                        ? "#e21b23"
-                        : "#f3b7ba",
-                  }}
-                />
-              ))}
-            </div>
+              <div className="gridLine grid1" />
+              <div className="gridLine grid2" />
+              <div className="gridLine grid3" />
+              <div className="gridLine grid4" />
 
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                color: "#aaa",
-                fontSize: 9,
-                marginTop: 8,
-              }}
-            >
-              <span>07 Aug</span>
-              <span>10 Aug</span>
-              <span>13 Aug</span>
-              <span>16 Aug</span>
-              <span>20 Aug</span>
-            </div>
-          </div>
-
-          {/* SLA */}
-
-          <div
-            style={{
-              background: "#fff",
-              border: "1px solid #e8e8e8",
-              borderRadius: 12,
-              padding: 20,
-            }}
-          >
-            <div
-              style={{
-                fontSize: 14,
-                fontWeight: 800,
-              }}
-            >
-              SLA Achievement
-            </div>
-
-            <div
-              style={{
-                color: "#999",
-                fontSize: 10,
-                marginTop: 4,
-              }}
-            >
-              Customer case response & resolution
-            </div>
-
-            <div
-              style={{
-                display: "grid",
-                placeItems: "center",
-                marginTop: 22,
-              }}
-            >
-              <div
-                style={{
-                  width: 138,
-                  height: 138,
-                  borderRadius: "50%",
-                  background:
-                    "conic-gradient(#e21b23 0deg 341deg,#f1f1f1 341deg 360deg)",
-                  display: "grid",
-                  placeItems: "center",
-                }}
-              >
-                <div
-                  style={{
-                    width: 106,
-                    height: 106,
-                    borderRadius: "50%",
-                    background: "#fff",
-                    display: "grid",
-                    placeItems: "center",
-                    textAlign: "center",
-                  }}
-                >
-                  <div>
+              <div className="bars">
+                {[82, 86, 84, 91, 88, 94, 96].map((height, i) => (
+                  <div className="barGroup" key={i}>
                     <div
-                      style={{
-                        fontSize: 25,
-                        fontWeight: 800,
-                      }}
-                    >
-                      94.8%
-                    </div>
-
+                      className="bar secondary"
+                      style={{ height: `${height - 10}%` }}
+                    />
                     <div
-                      style={{
-                        fontSize: 9,
-                        color: "#999",
-                        marginTop: 2,
-                      }}
-                    >
-                      ACHIEVEMENT
-                    </div>
+                      className="bar"
+                      style={{ height: `${height}%` }}
+                    />
+                    <span className="barLabel">
+                      {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][i]}
+                    </span>
                   </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="cardHeader">
+              <div>
+                <div className="cardTitle">Top Customer Issues</div>
+                <div className="cardSubtitle">
+                  Distribution of reported cases
                 </div>
               </div>
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginTop: 20,
-                fontSize: 10,
-              }}
-            >
-              <span style={{ color: "#999" }}>
-                Target
-              </span>
-
-              <strong>95%</strong>
-            </div>
-
-            <div
-              style={{
-                height: 5,
-                background: "#eeeeee",
-                borderRadius: 999,
-                marginTop: 7,
-              }}
-            >
-              <div
-                style={{
-                  height: "100%",
-                  width: "94.8%",
-                  background: "#e21b23",
-                  borderRadius: 999,
-                }}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* LOWER ANALYTICS */}
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 16,
-            marginBottom: 16,
-          }}
-        >
-          {/* TOP CONTACT REASONS */}
-
-          <div
-            style={{
-              background: "#fff",
-              border: "1px solid #e8e8e8",
-              borderRadius: 12,
-              padding: 20,
-            }}
-          >
-            <div
-              style={{
-                fontSize: 14,
-                fontWeight: 800,
-              }}
-            >
-              Top Contact Reasons
-            </div>
-
-            <div
-              style={{
-                color: "#999",
-                fontSize: 10,
-                marginTop: 4,
-                marginBottom: 18,
-              }}
-            >
-              Main reasons customers contact CX
-            </div>
-
-            {reasons.map((reason) => (
-              <div key={reason.name} style={{ marginBottom: 13 }}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    fontSize: 10,
-                    marginBottom: 6,
-                  }}
-                >
-                  <span style={{ color: "#555" }}>
-                    {reason.name}
-                  </span>
-
-                  <span
-                    style={{
-                      color: "#777",
-                      fontWeight: 700,
-                    }}
-                  >
-                    {reason.count}
+            {issues.map((issue) => (
+              <div className="issue" key={issue.name}>
+                <div className="issueTop">
+                  <span className="issueName">{issue.name}</span>
+                  <span className="issueCount">
+                    {issue.count} · {issue.value}%
                   </span>
                 </div>
 
-                <div
-                  style={{
-                    height: 6,
-                    background: "#f1f1f1",
-                    borderRadius: 999,
-                  }}
-                >
+                <div className="progress">
                   <div
-                    style={{
-                      width: `${reason.value * 2.8}%`,
-                      maxWidth: "100%",
-                      height: "100%",
-                      background:
-                        reason.value === 31
-                          ? "#e21b23"
-                          : "#f0a3a7",
-                      borderRadius: 999,
-                    }}
+                    className="progressFill"
+                    style={{ width: `${issue.value * 2.5}%` }}
                   />
                 </div>
               </div>
             ))}
           </div>
+        </section>
 
-          {/* CX HEALTH */}
+        {/* LOWER */}
+        <section className="lowerGrid">
+          <div className="card">
+            <div className="cardHeader">
+              <div>
+                <div className="cardTitle">Hub Performance</div>
+                <div className="cardSubtitle">
+                  SLA achievement by location
+                </div>
+              </div>
 
-          <div
-            style={{
-              background: "#fff",
-              border: "1px solid #e8e8e8",
-              borderRadius: 12,
-              padding: 20,
-            }}
-          >
-            <div
-              style={{
-                fontSize: 14,
-                fontWeight: 800,
-              }}
-            >
-              CX Health
+              <span style={{ fontSize: "9px", color: "#e31b23", fontWeight: 700 }}>
+                View all →
+              </span>
             </div>
 
-            <div
-              style={{
-                color: "#999",
-                fontSize: 10,
-                marginTop: 4,
-                marginBottom: 19,
-              }}
-            >
-              Key customer experience indicators
-            </div>
+            {hubs.map((hub) => (
+              <div className="hubRow" key={hub.code}>
+                <div className="hubBadge">{hub.code}</div>
 
-            {[
-              ["CSAT", "92.4%", "+3.1%", "#16a34a"],
-              ["Resolution Rate", "88.7%", "+4.8%", "#16a34a"],
-              ["Escalation Rate", "6.2%", "-1.4%", "#16a34a"],
-              ["Avg. Response", "18m", "-5m", "#16a34a"],
-            ].map((row) => (
-              <div
-                key={row[0]}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  padding: "12px 0",
-                  borderBottom: "1px solid #f0f0f0",
-                }}
-              >
-                <div>
-                  <div
-                    style={{
-                      fontSize: 11,
-                      fontWeight: 600,
-                      color: "#555",
-                    }}
-                  >
-                    {row[0]}
-                  </div>
-
-                  <div
-                    style={{
-                      color: row[3],
-                      fontSize: 9,
-                      marginTop: 4,
-                      fontWeight: 700,
-                    }}
-                  >
-                    {row[2]} vs previous
-                  </div>
+                <div className="hubInfo">
+                  <div className="hubName">{hub.name}</div>
+                  <div className="hubCases">{hub.cases} active cases</div>
                 </div>
 
-                <div
-                  style={{
-                    fontSize: 20,
-                    fontWeight: 800,
-                    color: "#222",
-                  }}
-                >
-                  {row[1]}
-                </div>
+                <div className="hubScore">{hub.score}</div>
               </div>
             ))}
           </div>
-        </div>
 
-        {/* CASE TABLE */}
-
-        <div
-          style={{
-            background: "#fff",
-            border: "1px solid #e8e8e8",
-            borderRadius: 12,
-            overflow: "hidden",
-          }}
-        >
-          <div
-            style={{
-              padding: "18px 20px",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <div>
-              <div
-                style={{
-                  fontSize: 14,
-                  fontWeight: 800,
-                }}
-              >
-                Recent CX Cases
-              </div>
-
-              <div
-                style={{
-                  color: "#999",
-                  fontSize: 10,
-                  marginTop: 4,
-                }}
-              >
-                Latest customer experience activities
+          <div className="card">
+            <div className="cardHeader">
+              <div>
+                <div className="cardTitle">CX Activity</div>
+                <div className="cardSubtitle">
+                  Latest updates from your team
+                </div>
               </div>
             </div>
 
-            <button
-              style={{
-                background: "#e21b23",
-                color: "#fff",
-                border: 0,
-                borderRadius: 7,
-                padding: "9px 13px",
-                fontSize: 10,
-                fontWeight: 700,
-              }}
-            >
-              View All Cases →
-            </button>
+            {activities.map((item, index) => (
+              <div className="activity" key={index}>
+                <div className={`activityDot ${item.type}`} />
+
+                <div style={{ flex: 1 }}>
+                  <div className="activityTitle">{item.title}</div>
+                  <div className="activityDesc">{item.description}</div>
+                </div>
+
+                <div className="activityTime">{item.time}</div>
+              </div>
+            ))}
           </div>
-
-          <div style={{ overflowX: "auto" }}>
-            <table
-              style={{
-                width: "100%",
-                borderCollapse: "collapse",
-                fontSize: 10,
-              }}
-            >
-              <thead>
-                <tr
-                  style={{
-                    background: "#fafafa",
-                    color: "#999",
-                    fontSize: 9,
-                  }}
-                >
-                  <th style={{ textAlign: "left", padding: 12 }}>
-                    CASE ID
-                  </th>
-
-                  <th style={{ textAlign: "left", padding: 12 }}>
-                    STT
-                  </th>
-
-                  <th style={{ textAlign: "left", padding: 12 }}>
-                    CUSTOMER
-                  </th>
-
-                  <th style={{ textAlign: "left", padding: 12 }}>
-                    CATEGORY
-                  </th>
-
-                  <th style={{ textAlign: "left", padding: 12 }}>
-                    HUB
-                  </th>
-
-                  <th style={{ textAlign: "left", padding: 12 }}>
-                    PRIORITY
-                  </th>
-
-                  <th style={{ textAlign: "left", padding: 12 }}>
-                    AGING
-                  </th>
-
-                  <th style={{ textAlign: "left", padding: 12 }}>
-                    STATUS
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {cases.map((item) => (
-                  <tr
-                    key={item.id}
-                    style={{
-                      borderTop: "1px solid #eeeeee",
-                    }}
-                  >
-                    <td
-                      style={{
-                        padding: 13,
-                        fontWeight: 800,
-                        color: "#d71920",
-                      }}
-                    >
-                      {item.id}
-                    </td>
-
-                    <td
-                      style={{
-                        padding: 13,
-                        color: "#777",
-                      }}
-                    >
-                      {item.stt}
-                    </td>
-
-                    <td
-                      style={{
-                        padding: 13,
-                        fontWeight: 600,
-                      }}
-                    >
-                      {item.customer}
-                    </td>
-
-                    <td
-                      style={{
-                        padding: 13,
-                        color: "#666",
-                      }}
-                    >
-                      {item.category}
-                    </td>
-
-                    <td
-                      style={{
-                        padding: 13,
-                        color: "#666",
-                      }}
-                    >
-                      {item.hub}
-                    </td>
-
-                    <td style={{ padding: 13 }}>
-                      <Priority value={item.priority} />
-                    </td>
-
-                    <td
-                      style={{
-                        padding: 13,
-                        color:
-                          item.aging.startsWith("8")
-                            ? "#dc2626"
-                            : "#666",
-                        fontWeight:
-                          item.aging.startsWith("8")
-                            ? 700
-                            : 500,
-                      }}
-                    >
-                      {item.aging}
-                    </td>
-
-                    <td style={{ padding: 13 }}>
-                      <Status value={item.status} />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div
-            style={{
-              padding: "12px 20px",
-              borderTop: "1px solid #eeeeee",
-              color: "#999",
-              fontSize: 9,
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >
-            <span>
-              Showing 5 of 1,284 customer experience cases
-            </span>
-
-            <span style={{ color: "#d71920", fontWeight: 700 }}>
-              Updated just now
-            </span>
-          </div>
-        </div>
+        </section>
       </section>
     </main>
   );
