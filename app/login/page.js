@@ -21,29 +21,51 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [checking, setChecking] = useState(true);
+
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  // =========================================================
+  // CHECK EXISTING SESSION
+  // =========================================================
 
   useEffect(() => {
     let mounted = true;
 
     async function checkSession() {
       if (!supabase) {
-        if (mounted) setChecking(false);
+        if (mounted) {
+          setChecking(false);
+        }
         return;
       }
 
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      try {
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession();
 
-      if (session) {
-        router.replace("/");
-        return;
-      }
+        if (!mounted) return;
 
-      if (mounted) {
+        if (error) {
+          console.error("Session check error:", error);
+          setChecking(false);
+          return;
+        }
+
+        if (session) {
+          router.replace("/");
+          return;
+        }
+
         setChecking(false);
+      } catch (err) {
+        console.error("Session check failed:", err);
+
+        if (mounted) {
+          setChecking(false);
+        }
       }
     }
 
@@ -53,6 +75,10 @@ export default function LoginPage() {
       mounted = false;
     };
   }, [router]);
+
+  // =========================================================
+  // LOGIN
+  // =========================================================
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -75,16 +101,16 @@ export default function LoginPage() {
     try {
       setLoading(true);
 
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password,
       });
 
       if (error) {
+        console.error("Login error:", error);
+
         if (
-          error.message
-            ?.toLowerCase()
-            .includes("invalid login credentials")
+          error.message?.toLowerCase().includes("invalid login credentials")
         ) {
           setError("Email atau password salah.");
         } else {
@@ -94,17 +120,26 @@ export default function LoginPage() {
         return;
       }
 
+      if (!data?.session) {
+        setError("Login gagal. Session tidak berhasil dibuat.");
+        return;
+      }
+
       setSuccess("Login berhasil. Membuka Command Center...");
 
-      setTimeout(() => {
-        router.replace("/");
-      }, 500);
+      // Langsung masuk ke dashboard
+      router.replace("/");
     } catch (err) {
+      console.error("Login exception:", err);
       setError("Terjadi kesalahan saat login. Silakan coba lagi.");
     } finally {
       setLoading(false);
     }
   }
+
+  // =========================================================
+  // FORGOT PASSWORD
+  // =========================================================
 
   async function handleForgotPassword() {
     setError("");
@@ -137,30 +172,28 @@ export default function LoginPage() {
         return;
       }
 
-      setSuccess(
-        "Link reset password sudah dikirim ke email kamu."
-      );
+      setSuccess("Link reset password sudah dikirim ke email kamu.");
     } catch (err) {
-      setError(
-        "Gagal mengirim link reset password. Silakan coba lagi."
-      );
+      console.error("Reset password error:", err);
+
+      setError("Gagal mengirim link reset password. Silakan coba lagi.");
     } finally {
       setLoading(false);
     }
   }
 
+  // =========================================================
+  // INITIAL LOADING
+  // =========================================================
+
   if (checking) {
     return (
       <div className="loadingScreen">
-        <div className="loadingLogo">
-          CX
-        </div>
+        <div className="loadingLogo">CX</div>
 
         <div className="loadingSpinner" />
 
-        <p>
-          Preparing Command Center...
-        </p>
+        <p>Preparing Command Center...</p>
 
         <style jsx global>{`
           * {
@@ -225,8 +258,7 @@ export default function LoginPage() {
             font-weight: 800;
 
             box-shadow:
-              0 12px 35px
-              rgba(226, 27, 35, 0.12);
+              0 12px 35px rgba(226, 27, 35, 0.12);
           }
 
           .loadingSpinner {
@@ -237,13 +269,11 @@ export default function LoginPage() {
 
             border-radius: 50%;
 
-            border:
-              2px solid #e9eaec;
+            border: 2px solid #e9eaec;
 
             border-top-color: #e21b23;
 
-            animation:
-              spin .8s linear infinite;
+            animation: spin 0.8s linear infinite;
           }
 
           .loadingScreen p {
@@ -264,71 +294,54 @@ export default function LoginPage() {
     );
   }
 
+  // =========================================================
+  // LOGIN PAGE
+  // =========================================================
+
   return (
     <main className="loginPage">
-
-      {/* BACKGROUND DECORATION */}
 
       <div className="backgroundShape shapeOne" />
       <div className="backgroundShape shapeTwo" />
       <div className="backgroundGrid" />
 
-
-      {/* MAIN CARD */}
-
       <section className="loginShell">
 
-
-        {/* LEFT */}
+        {/* =================================================
+            LEFT VISUAL
+        ================================================= */}
 
         <div className="loginVisual">
 
           <div className="visualGlow" />
-
-
-          {/* CX LOGO */}
 
           <div className="visualLogo">
 
             <div className="logoOrbit orbitOne" />
             <div className="logoOrbit orbitTwo" />
 
-            <span>
-              CX
-            </span>
+            <span>CX</span>
 
             <i />
 
           </div>
 
-
           <div className="visualContent">
 
             <div className="visualEyebrow">
-
               <span />
-
               LION PARCEL
-
             </div>
-
 
             <h1>
               CUSTOMER
               <br />
-              <strong>
-                EXPERIENCE
-              </strong>
+              <strong>EXPERIENCE</strong>
             </h1>
 
-
-            <p>
-              Internal Command Center
-            </p>
-
+            <p>Internal Command Center</p>
 
             <div className="visualLine" />
-
 
             <div className="visualDescription">
               Centralized visibility for customer
@@ -338,43 +351,24 @@ export default function LoginPage() {
 
           </div>
 
-
-          {/* MINI STATS */}
-
           <div className="visualStats">
 
             <div>
-              <strong>
-                24/7
-              </strong>
-
-              <span>
-                MONITORING
-              </span>
+              <strong>24/7</strong>
+              <span>MONITORING</span>
             </div>
 
             <div>
-              <strong>
-                CX
-              </strong>
-
-              <span>
-                COMMAND
-              </span>
+              <strong>CX</strong>
+              <span>COMMAND</span>
             </div>
 
             <div>
-              <strong>
-                LIVE
-              </strong>
-
-              <span>
-                INSIGHT
-              </span>
+              <strong>LIVE</strong>
+              <span>INSIGHT</span>
             </div>
 
           </div>
-
 
           <div className="visualFooter">
             Internal Use Only • Directorate CX
@@ -382,13 +376,13 @@ export default function LoginPage() {
 
         </div>
 
-
-        {/* RIGHT */}
+        {/* =================================================
+            RIGHT LOGIN
+        ================================================= */}
 
         <div className="loginPanel">
 
           <div className="loginPanelInner">
-
 
             {/* MOBILE BRAND */}
 
@@ -399,9 +393,7 @@ export default function LoginPage() {
               </div>
 
               <div>
-                <strong>
-                  CUSTOMER EXPERIENCE
-                </strong>
+                <strong>CUSTOMER EXPERIENCE</strong>
 
                 <span>
                   Internal Command Center
@@ -410,31 +402,22 @@ export default function LoginPage() {
 
             </div>
 
-
             {/* HEADER */}
 
             <div className="loginHeader">
 
               <div className="welcomeBadge">
-
                 <span />
-
                 SECURE ACCESS
-
               </div>
 
-
-              <h2>
-                Welcome back.
-              </h2>
-
+              <h2>Welcome back.</h2>
 
               <p>
                 Sign in to access your CX Command Center.
               </p>
 
             </div>
-
 
             {/* FORM */}
 
@@ -443,14 +426,11 @@ export default function LoginPage() {
               className="loginForm"
             >
 
-
               {/* EMAIL */}
 
               <div className="fieldGroup">
 
-                <label>
-                  WORK EMAIL
-                </label>
+                <label>WORK EMAIL</label>
 
                 <div className="inputWrapper">
 
@@ -473,16 +453,13 @@ export default function LoginPage() {
 
               </div>
 
-
               {/* PASSWORD */}
 
               <div className="fieldGroup">
 
                 <div className="labelRow">
 
-                  <label>
-                    PASSWORD
-                  </label>
+                  <label>PASSWORD</label>
 
                   <button
                     type="button"
@@ -494,7 +471,6 @@ export default function LoginPage() {
                   </button>
 
                 </div>
-
 
                 <div className="inputWrapper">
 
@@ -517,14 +493,11 @@ export default function LoginPage() {
                     disabled={loading}
                   />
 
-
                   <button
                     type="button"
                     className="passwordToggle"
                     onClick={() =>
-                      setShowPassword(
-                        !showPassword
-                      )
+                      setShowPassword(!showPassword)
                     }
                     disabled={loading}
                   >
@@ -535,40 +508,31 @@ export default function LoginPage() {
 
               </div>
 
-
-              {/* MESSAGE */}
+              {/* ERROR */}
 
               {error && (
-
                 <div className="message errorMessage">
 
-                  <span>
-                    !
-                  </span>
+                  <span>!</span>
 
                   {error}
 
                 </div>
-
               )}
 
+              {/* SUCCESS */}
 
               {success && (
-
                 <div className="message successMessage">
 
-                  <span>
-                    ✓
-                  </span>
+                  <span>✓</span>
 
                   {success}
 
                 </div>
-
               )}
 
-
-              {/* LOGIN */}
+              {/* LOGIN BUTTON */}
 
               <button
                 type="submit"
@@ -584,16 +548,13 @@ export default function LoginPage() {
                 ) : (
                   <>
                     Sign In
-                    <span>
-                      →
-                    </span>
+                    <span>→</span>
                   </>
                 )}
 
               </button>
 
-
-              {/* REMEMBER */}
+              {/* SECURITY */}
 
               <div className="securityInfo">
 
@@ -618,7 +579,6 @@ export default function LoginPage() {
 
             </form>
 
-
             {/* FOOTER */}
 
             <div className="loginFooter">
@@ -639,25 +599,21 @@ export default function LoginPage() {
 
       </section>
 
-
       <style jsx global>{`
 
         @import url(
           'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap'
         );
 
-
         * {
           box-sizing: border-box;
         }
-
 
         html,
         body {
           margin: 0;
           padding: 0;
         }
-
 
         body {
           font-family:
@@ -666,20 +622,15 @@ export default function LoginPage() {
             sans-serif;
 
           background: #f3f4f6;
-
           color: #1e2125;
         }
-
 
         button,
         input {
           font-family: inherit;
         }
 
-
-        /* =====================================
-           PAGE
-        ===================================== */
+        /* PAGE */
 
         .loginPage {
 
@@ -713,9 +664,7 @@ export default function LoginPage() {
               #ffffff 48%,
               #f1f2f4 100%
             );
-
         }
-
 
         .backgroundShape {
 
@@ -724,9 +673,7 @@ export default function LoginPage() {
           border-radius: 50%;
 
           pointer-events: none;
-
         }
-
 
         .shapeOne {
 
@@ -739,9 +686,7 @@ export default function LoginPage() {
           border:
             1px solid
             rgba(226,27,35,.07);
-
         }
-
 
         .shapeTwo {
 
@@ -754,9 +699,7 @@ export default function LoginPage() {
           border:
             1px solid
             rgba(0,0,0,.05);
-
         }
-
 
         .backgroundGrid {
 
@@ -788,13 +731,9 @@ export default function LoginPage() {
               black 70%,
               transparent
             );
-
         }
 
-
-        /* =====================================
-           SHELL
-        ===================================== */
+        /* SHELL */
 
         .loginShell {
 
@@ -826,13 +765,9 @@ export default function LoginPage() {
           box-shadow:
             0 30px 80px
             rgba(20,20,20,.12);
-
         }
 
-
-        /* =====================================
-           LEFT VISUAL
-        ===================================== */
+        /* LEFT */
 
         .loginVisual {
 
@@ -856,9 +791,7 @@ export default function LoginPage() {
 
           border-right:
             1px solid #e7e8ea;
-
         }
-
 
         .visualGlow {
 
@@ -879,13 +812,9 @@ export default function LoginPage() {
               rgba(226,27,35,.025) 40%,
               transparent 70%
             );
-
         }
 
-
-        /* =====================================
-           LOGO
-        ===================================== */
+        /* LOGO */
 
         .visualLogo {
 
@@ -914,9 +843,7 @@ export default function LoginPage() {
           box-shadow:
             0 14px 35px
             rgba(226,27,35,.13);
-
         }
-
 
         .visualLogo span {
 
@@ -931,9 +858,7 @@ export default function LoginPage() {
           font-weight: 800;
 
           letter-spacing: -2px;
-
         }
-
 
         .logoOrbit {
 
@@ -944,9 +869,7 @@ export default function LoginPage() {
             rgba(226,27,35,.25);
 
           border-radius: 50%;
-
         }
-
 
         .orbitOne {
 
@@ -955,9 +878,7 @@ export default function LoginPage() {
 
           transform:
             rotate(-30deg);
-
         }
-
 
         .orbitTwo {
 
@@ -966,9 +887,7 @@ export default function LoginPage() {
 
           transform:
             rotate(37deg);
-
         }
-
 
         .visualLogo i {
 
@@ -987,13 +906,9 @@ export default function LoginPage() {
           box-shadow:
             0 0 0 5px
             rgba(226,27,35,.08);
-
         }
 
-
-        /* =====================================
-           CONTENT
-        ===================================== */
+        /* CONTENT */
 
         .visualContent {
 
@@ -1002,11 +917,8 @@ export default function LoginPage() {
           z-index: 3;
 
           margin-top: auto;
-
           margin-bottom: auto;
-
         }
-
 
         .visualEyebrow {
 
@@ -1023,9 +935,7 @@ export default function LoginPage() {
           font-weight: 800;
 
           letter-spacing: 2px;
-
         }
-
 
         .visualEyebrow span {
 
@@ -1035,9 +945,7 @@ export default function LoginPage() {
           background: #e21b23;
 
           border-radius: 5px;
-
         }
-
 
         .visualContent h1 {
 
@@ -1053,18 +961,14 @@ export default function LoginPage() {
           letter-spacing: -2px;
 
           font-weight: 500;
-
         }
-
 
         .visualContent h1 strong {
 
           color: #e21b23;
 
           font-weight: 800;
-
         }
-
 
         .visualContent p {
 
@@ -1075,9 +979,7 @@ export default function LoginPage() {
           font-size: 12px;
 
           font-weight: 600;
-
         }
-
 
         .visualLine {
 
@@ -1090,9 +992,7 @@ export default function LoginPage() {
           background: #e21b23;
 
           border-radius: 5px;
-
         }
-
 
         .visualDescription {
 
@@ -1103,13 +1003,9 @@ export default function LoginPage() {
           font-size: 9px;
 
           line-height: 1.8;
-
         }
 
-
-        /* =====================================
-           STATS
-        ===================================== */
+        /* STATS */
 
         .visualStats {
 
@@ -1128,9 +1024,7 @@ export default function LoginPage() {
 
           border-top:
             1px solid #e4e5e7;
-
         }
-
 
         .visualStats div {
 
@@ -1144,9 +1038,7 @@ export default function LoginPage() {
 
           background:
             rgba(255,255,255,.65);
-
         }
-
 
         .visualStats strong {
 
@@ -1157,9 +1049,7 @@ export default function LoginPage() {
           font-size: 13px;
 
           font-weight: 800;
-
         }
-
 
         .visualStats span {
 
@@ -1174,9 +1064,7 @@ export default function LoginPage() {
           letter-spacing: .7px;
 
           font-weight: 700;
-
         }
-
 
         .visualFooter {
 
@@ -1189,13 +1077,9 @@ export default function LoginPage() {
           color: #b0b3b8;
 
           font-size: 7px;
-
         }
 
-
-        /* =====================================
-           LOGIN PANEL
-        ===================================== */
+        /* LOGIN PANEL */
 
         .loginPanel {
 
@@ -1211,9 +1095,7 @@ export default function LoginPage() {
               #ffffff,
               #fcfcfc
             );
-
         }
-
 
         .loginPanelInner {
 
@@ -1224,22 +1106,16 @@ export default function LoginPage() {
 
           padding:
             35px 0;
-
         }
-
 
         /* MOBILE BRAND */
 
         .mobileBrand {
 
           display: none;
-
         }
 
-
-        /* =====================================
-           HEADER
-        ===================================== */
+        /* HEADER */
 
         .welcomeBadge {
 
@@ -1263,9 +1139,7 @@ export default function LoginPage() {
           font-weight: 800;
 
           letter-spacing: 1px;
-
         }
-
 
         .welcomeBadge span {
 
@@ -1279,9 +1153,7 @@ export default function LoginPage() {
           box-shadow:
             0 0 0 3px
             rgba(226,27,35,.08);
-
         }
-
 
         .loginHeader h2 {
 
@@ -1291,9 +1163,7 @@ export default function LoginPage() {
           font-size: 29px;
 
           letter-spacing: -1.3px;
-
         }
-
 
         .loginHeader p {
 
@@ -1304,27 +1174,19 @@ export default function LoginPage() {
           font-size: 9px;
 
           line-height: 1.6;
-
         }
 
-
-        /* =====================================
-           FORM
-        ===================================== */
+        /* FORM */
 
         .loginForm {
 
           margin-top: 29px;
-
         }
-
 
         .fieldGroup {
 
           margin-bottom: 17px;
-
         }
-
 
         .fieldGroup label {
 
@@ -1339,9 +1201,7 @@ export default function LoginPage() {
           font-weight: 800;
 
           letter-spacing: 1px;
-
         }
-
 
         .labelRow {
 
@@ -1350,16 +1210,12 @@ export default function LoginPage() {
           align-items: center;
 
           justify-content: space-between;
-
         }
-
 
         .labelRow label {
 
           margin-bottom: 7px;
-
         }
-
 
         .forgotBtn {
 
@@ -1376,18 +1232,14 @@ export default function LoginPage() {
           cursor: pointer;
 
           padding: 0;
-
         }
-
 
         .forgotBtn:disabled {
 
           opacity: .5;
 
           cursor: not-allowed;
-
         }
-
 
         .inputWrapper {
 
@@ -1412,9 +1264,7 @@ export default function LoginPage() {
           transition:
             border-color .2s,
             box-shadow .2s;
-
         }
-
 
         .inputWrapper:focus-within {
 
@@ -1424,9 +1274,7 @@ export default function LoginPage() {
           box-shadow:
             0 0 0 3px
             rgba(226,27,35,.06);
-
         }
-
 
         .inputIcon {
 
@@ -1439,9 +1287,7 @@ export default function LoginPage() {
           font-weight: 800;
 
           text-align: center;
-
         }
-
 
         .inputWrapper input {
 
@@ -1460,23 +1306,17 @@ export default function LoginPage() {
           color: #25282c;
 
           font-size: 9px;
-
         }
-
 
         .inputWrapper input::placeholder {
 
           color: #b5b8bd;
-
         }
-
 
         .inputWrapper input:disabled {
 
           opacity: .6;
-
         }
-
 
         .passwordToggle {
 
@@ -1491,13 +1331,9 @@ export default function LoginPage() {
           font-weight: 700;
 
           cursor: pointer;
-
         }
 
-
-        /* =====================================
-           MESSAGE
-        ===================================== */
+        /* MESSAGE */
 
         .message {
 
@@ -1517,9 +1353,7 @@ export default function LoginPage() {
           font-size: 7.5px;
 
           line-height: 1.5;
-
         }
-
 
         .message span {
 
@@ -1536,9 +1370,7 @@ export default function LoginPage() {
           border-radius: 50%;
 
           font-weight: 800;
-
         }
-
 
         .errorMessage {
 
@@ -1548,18 +1380,14 @@ export default function LoginPage() {
 
           border:
             1px solid #ffdadd;
-
         }
-
 
         .errorMessage span {
 
           background: #e21b23;
 
           color: #fff;
-
         }
-
 
         .successMessage {
 
@@ -1569,22 +1397,16 @@ export default function LoginPage() {
 
           border:
             1px solid #d6f0df;
-
         }
-
 
         .successMessage span {
 
           background: #1b9b57;
 
           color: #fff;
-
         }
 
-
-        /* =====================================
-           LOGIN BUTTON
-        ===================================== */
+        /* LOGIN BUTTON */
 
         .loginButton {
 
@@ -1625,9 +1447,7 @@ export default function LoginPage() {
           transition:
             transform .2s,
             box-shadow .2s;
-
         }
-
 
         .loginButton:hover:not(:disabled) {
 
@@ -1637,35 +1457,27 @@ export default function LoginPage() {
           box-shadow:
             0 13px 28px
             rgba(226,27,35,.24);
-
         }
-
 
         .loginButton:active:not(:disabled) {
 
           transform:
             translateY(0);
-
         }
-
 
         .loginButton:disabled {
 
           opacity: .75;
 
           cursor: not-allowed;
-
         }
-
 
         .loginButton > span:not(.buttonSpinner) {
 
           font-size: 15px;
 
           line-height: 0;
-
         }
-
 
         .buttonSpinner {
 
@@ -1682,13 +1494,9 @@ export default function LoginPage() {
 
           animation:
             spin .7s linear infinite;
-
         }
 
-
-        /* =====================================
-           SECURITY
-        ===================================== */
+        /* SECURITY */
 
         .securityInfo {
 
@@ -1709,9 +1517,7 @@ export default function LoginPage() {
 
           border:
             1px solid #ececee;
-
         }
-
 
         .securityIcon {
 
@@ -1734,9 +1540,7 @@ export default function LoginPage() {
           font-size: 8px;
 
           font-weight: 800;
-
         }
-
 
         .securityInfo strong {
 
@@ -1745,9 +1549,7 @@ export default function LoginPage() {
           color: #686c72;
 
           font-size: 7.5px;
-
         }
-
 
         .securityInfo span {
 
@@ -1760,13 +1562,9 @@ export default function LoginPage() {
           font-size: 6.5px;
 
           line-height: 1.5;
-
         }
 
-
-        /* =====================================
-           FOOTER
-        ===================================== */
+        /* FOOTER */
 
         .loginFooter {
 
@@ -1785,22 +1583,16 @@ export default function LoginPage() {
           color: #b0b3b8;
 
           font-size: 6.5px;
-
         }
 
-
-        /* =====================================
-           RESPONSIVE
-        ===================================== */
+        /* RESPONSIVE */
 
         @media (max-width: 850px) {
 
           .loginPage {
 
             padding: 20px;
-
           }
-
 
           .loginShell {
 
@@ -1810,23 +1602,17 @@ export default function LoginPage() {
             max-width: 500px;
 
             min-height: auto;
-
           }
-
 
           .loginVisual {
 
             display: none;
-
           }
-
 
           .loginPanel {
 
             min-height: 650px;
-
           }
-
 
           .mobileBrand {
 
@@ -1837,9 +1623,7 @@ export default function LoginPage() {
             gap: 10px;
 
             margin-bottom: 42px;
-
           }
-
 
           .mobileLogo {
 
@@ -1872,9 +1656,7 @@ export default function LoginPage() {
             box-shadow:
               0 8px 20px
               rgba(226,27,35,.1);
-
           }
-
 
           .mobileBrand strong {
 
@@ -1885,9 +1667,7 @@ export default function LoginPage() {
             font-size: 8px;
 
             letter-spacing: .4px;
-
           }
-
 
           .mobileBrand span {
 
@@ -1898,20 +1678,15 @@ export default function LoginPage() {
             color: #a0a3a8;
 
             font-size: 6.5px;
-
           }
-
         }
-
 
         @media (max-width: 500px) {
 
           .loginPage {
 
             padding: 0;
-
           }
-
 
           .loginShell {
 
@@ -1922,24 +1697,18 @@ export default function LoginPage() {
             border-radius: 0;
 
             box-shadow: none;
-
           }
-
 
           .loginPanel {
 
             min-height: 100vh;
-
           }
-
 
           .loginPanelInner {
 
             width:
               calc(100% - 42px);
-
           }
-
         }
 
       `}</style>
