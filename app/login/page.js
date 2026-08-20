@@ -1,3 +1,4 @@
+```jsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -20,50 +21,48 @@ export default function LoginPage() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [checking, setChecking] = useState(true);
+  const [checking, setChecking] = useState(false);
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  // =========================================================
-  // CHECK EXISTING SESSION
-  // =========================================================
-
   useEffect(() => {
-    let mounted = true;
+    let active = true;
 
     async function checkSession() {
       if (!supabase) {
-        if (mounted) {
-          setChecking(false);
-        }
         return;
       }
 
       try {
-        const {
-          data: { session },
-          error,
-        } = await supabase.auth.getSession();
+        setChecking(true);
 
-        if (!mounted) return;
+        const result = await Promise.race([
+          supabase.auth.getSession(),
 
-        if (error) {
-          console.error("Session check error:", error);
-          setChecking(false);
-          return;
-        }
+          new Promise((resolve) =>
+            setTimeout(
+              () =>
+                resolve({
+                  data: { session: null },
+                }),
+              5000
+            )
+          ),
+        ]);
+
+        if (!active) return;
+
+        const session = result?.data?.session;
 
         if (session) {
           router.replace("/");
           return;
         }
-
-        setChecking(false);
       } catch (err) {
-        console.error("Session check failed:", err);
-
-        if (mounted) {
+        console.log("Session check skipped:", err);
+      } finally {
+        if (active) {
           setChecking(false);
         }
       }
@@ -72,13 +71,9 @@ export default function LoginPage() {
     checkSession();
 
     return () => {
-      mounted = false;
+      active = false;
     };
   }, [router]);
-
-  // =========================================================
-  // LOGIN
-  // =========================================================
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -86,14 +81,16 @@ export default function LoginPage() {
     setError("");
     setSuccess("");
 
-    if (!email.trim() || !password) {
+    const cleanEmail = email.trim();
+
+    if (!cleanEmail || !password) {
       setError("Email dan password wajib diisi.");
       return;
     }
 
     if (!supabase) {
       setError(
-        "Konfigurasi Supabase belum tersedia. Periksa Environment Variables."
+        "Supabase belum terhubung. Periksa NEXT_PUBLIC_SUPABASE_URL dan NEXT_PUBLIC_SUPABASE_ANON_KEY di Vercel."
       );
       return;
     }
@@ -101,16 +98,17 @@ export default function LoginPage() {
     try {
       setLoading(true);
 
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
+      const { error } = await supabase.auth.signInWithPassword({
+        email: cleanEmail,
         password,
       });
 
       if (error) {
-        console.error("Login error:", error);
+        const message = error.message?.toLowerCase() || "";
 
         if (
-          error.message?.toLowerCase().includes("invalid login credentials")
+          message.includes("invalid login credentials") ||
+          message.includes("invalid credentials")
         ) {
           setError("Email atau password salah.");
         } else {
@@ -120,39 +118,37 @@ export default function LoginPage() {
         return;
       }
 
-      if (!data?.session) {
-        setError("Login gagal. Session tidak berhasil dibuat.");
-        return;
-      }
-
       setSuccess("Login berhasil. Membuka Command Center...");
 
-      // Langsung masuk ke dashboard
-      router.replace("/");
+      setTimeout(() => {
+        router.replace("/");
+        router.refresh();
+      }, 500);
     } catch (err) {
-      console.error("Login exception:", err);
-      setError("Terjadi kesalahan saat login. Silakan coba lagi.");
+      console.error(err);
+
+      setError(
+        "Terjadi kesalahan saat login. Silakan coba lagi."
+      );
     } finally {
       setLoading(false);
     }
   }
 
-  // =========================================================
-  // FORGOT PASSWORD
-  // =========================================================
-
   async function handleForgotPassword() {
     setError("");
     setSuccess("");
 
-    if (!email.trim()) {
+    const cleanEmail = email.trim();
+
+    if (!cleanEmail) {
       setError("Masukkan email terlebih dahulu.");
       return;
     }
 
     if (!supabase) {
       setError(
-        "Konfigurasi Supabase belum tersedia. Periksa Environment Variables."
+        "Supabase belum terhubung. Periksa Environment Variables."
       );
       return;
     }
@@ -160,143 +156,33 @@ export default function LoginPage() {
     try {
       setLoading(true);
 
-      const { error } = await supabase.auth.resetPasswordForEmail(
-        email.trim(),
-        {
-          redirectTo: `${window.location.origin}/reset-password`,
-        }
-      );
+      const { error } =
+        await supabase.auth.resetPasswordForEmail(
+          cleanEmail,
+          {
+            redirectTo:
+              `${window.location.origin}/reset-password`,
+          }
+        );
 
       if (error) {
         setError(error.message);
         return;
       }
 
-      setSuccess("Link reset password sudah dikirim ke email kamu.");
+      setSuccess(
+        "Link reset password sudah dikirim ke email kamu."
+      );
     } catch (err) {
-      console.error("Reset password error:", err);
+      console.error(err);
 
-      setError("Gagal mengirim link reset password. Silakan coba lagi.");
+      setError(
+        "Gagal mengirim link reset password."
+      );
     } finally {
       setLoading(false);
     }
   }
-
-  // =========================================================
-  // INITIAL LOADING
-  // =========================================================
-
-  if (checking) {
-    return (
-      <div className="loadingScreen">
-        <div className="loadingLogo">CX</div>
-
-        <div className="loadingSpinner" />
-
-        <p>Preparing Command Center...</p>
-
-        <style jsx global>{`
-          * {
-            box-sizing: border-box;
-          }
-
-          html,
-          body {
-            margin: 0;
-            padding: 0;
-          }
-
-          body {
-            font-family:
-              "Plus Jakarta Sans",
-              Arial,
-              sans-serif;
-          }
-
-          .loadingScreen {
-            min-height: 100vh;
-
-            display: flex;
-            flex-direction: column;
-
-            align-items: center;
-            justify-content: center;
-
-            background:
-              radial-gradient(
-                circle at 20% 20%,
-                rgba(226, 27, 35, 0.06),
-                transparent 30%
-              ),
-              linear-gradient(
-                135deg,
-                #f0f1f3,
-                #ffffff 55%,
-                #f5f5f6
-              );
-
-            color: #555960;
-          }
-
-          .loadingLogo {
-            width: 58px;
-            height: 58px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 16px;
-
-            background: #ffffff;
-
-            border: 1px solid #e3e4e6;
-
-            color: #e21b23;
-
-            font-size: 17px;
-            font-weight: 800;
-
-            box-shadow:
-              0 12px 35px rgba(226, 27, 35, 0.12);
-          }
-
-          .loadingSpinner {
-            width: 23px;
-            height: 23px;
-
-            margin-top: 22px;
-
-            border-radius: 50%;
-
-            border: 2px solid #e9eaec;
-
-            border-top-color: #e21b23;
-
-            animation: spin 0.8s linear infinite;
-          }
-
-          .loadingScreen p {
-            margin-top: 13px;
-
-            color: #a0a3a8;
-
-            font-size: 9px;
-          }
-
-          @keyframes spin {
-            to {
-              transform: rotate(360deg);
-            }
-          }
-        `}</style>
-      </div>
-    );
-  }
-
-  // =========================================================
-  // LOGIN PAGE
-  // =========================================================
 
   return (
     <main className="loginPage">
@@ -307,23 +193,19 @@ export default function LoginPage() {
 
       <section className="loginShell">
 
-        {/* =================================================
-            LEFT VISUAL
-        ================================================= */}
+        {/* LEFT SIDE */}
 
         <div className="loginVisual">
 
           <div className="visualGlow" />
 
           <div className="visualLogo">
-
             <div className="logoOrbit orbitOne" />
             <div className="logoOrbit orbitTwo" />
 
             <span>CX</span>
 
             <i />
-
           </div>
 
           <div className="visualContent">
@@ -339,7 +221,9 @@ export default function LoginPage() {
               <strong>EXPERIENCE</strong>
             </h1>
 
-            <p>Internal Command Center</p>
+            <p>
+              Internal Command Center
+            </p>
 
             <div className="visualLine" />
 
@@ -376,15 +260,11 @@ export default function LoginPage() {
 
         </div>
 
-        {/* =================================================
-            RIGHT LOGIN
-        ================================================= */}
+        {/* RIGHT SIDE */}
 
         <div className="loginPanel">
 
           <div className="loginPanelInner">
-
-            {/* MOBILE BRAND */}
 
             <div className="mobileBrand">
 
@@ -393,7 +273,9 @@ export default function LoginPage() {
               </div>
 
               <div>
-                <strong>CUSTOMER EXPERIENCE</strong>
+                <strong>
+                  CUSTOMER EXPERIENCE
+                </strong>
 
                 <span>
                   Internal Command Center
@@ -402,8 +284,6 @@ export default function LoginPage() {
 
             </div>
 
-            {/* HEADER */}
-
             <div className="loginHeader">
 
               <div className="welcomeBadge">
@@ -411,7 +291,9 @@ export default function LoginPage() {
                 SECURE ACCESS
               </div>
 
-              <h2>Welcome back.</h2>
+              <h2>
+                Welcome back.
+              </h2>
 
               <p>
                 Sign in to access your CX Command Center.
@@ -419,18 +301,16 @@ export default function LoginPage() {
 
             </div>
 
-            {/* FORM */}
-
             <form
               onSubmit={handleLogin}
               className="loginForm"
             >
 
-              {/* EMAIL */}
-
               <div className="fieldGroup">
 
-                <label>WORK EMAIL</label>
+                <label>
+                  WORK EMAIL
+                </label>
 
                 <div className="inputWrapper">
 
@@ -453,13 +333,13 @@ export default function LoginPage() {
 
               </div>
 
-              {/* PASSWORD */}
-
               <div className="fieldGroup">
 
                 <div className="labelRow">
 
-                  <label>PASSWORD</label>
+                  <label>
+                    PASSWORD
+                  </label>
 
                   <button
                     type="button"
@@ -497,7 +377,9 @@ export default function LoginPage() {
                     type="button"
                     className="passwordToggle"
                     onClick={() =>
-                      setShowPassword(!showPassword)
+                      setShowPassword(
+                        !showPassword
+                      )
                     }
                     disabled={loading}
                   >
@@ -508,31 +390,19 @@ export default function LoginPage() {
 
               </div>
 
-              {/* ERROR */}
-
               {error && (
                 <div className="message errorMessage">
-
                   <span>!</span>
-
                   {error}
-
                 </div>
               )}
-
-              {/* SUCCESS */}
 
               {success && (
                 <div className="message successMessage">
-
                   <span>✓</span>
-
                   {success}
-
                 </div>
               )}
-
-              {/* LOGIN BUTTON */}
 
               <button
                 type="submit"
@@ -554,8 +424,6 @@ export default function LoginPage() {
 
               </button>
 
-              {/* SECURITY */}
-
               <div className="securityInfo">
 
                 <div className="securityIcon">
@@ -563,7 +431,6 @@ export default function LoginPage() {
                 </div>
 
                 <div>
-
                   <strong>
                     Secure internal access
                   </strong>
@@ -572,14 +439,11 @@ export default function LoginPage() {
                     Your session is protected by
                     Supabase Authentication.
                   </span>
-
                 </div>
 
               </div>
 
             </form>
-
-            {/* FOOTER */}
 
             <div className="loginFooter">
 
@@ -630,10 +494,7 @@ export default function LoginPage() {
           font-family: inherit;
         }
 
-        /* PAGE */
-
         .loginPage {
-
           min-height: 100vh;
 
           position: relative;
@@ -667,19 +528,14 @@ export default function LoginPage() {
         }
 
         .backgroundShape {
-
           position: absolute;
-
           border-radius: 50%;
-
           pointer-events: none;
         }
 
         .shapeOne {
-
           width: 500px;
           height: 500px;
-
           left: -280px;
           top: -250px;
 
@@ -689,10 +545,8 @@ export default function LoginPage() {
         }
 
         .shapeTwo {
-
           width: 420px;
           height: 420px;
-
           right: -240px;
           bottom: -220px;
 
@@ -702,11 +556,8 @@ export default function LoginPage() {
         }
 
         .backgroundGrid {
-
           position: absolute;
-
           inset: 0;
-
           opacity: .16;
 
           background-image:
@@ -720,8 +571,7 @@ export default function LoginPage() {
               transparent 1px
             );
 
-          background-size:
-            50px 50px;
+          background-size: 50px 50px;
 
           mask-image:
             linear-gradient(
@@ -733,19 +583,12 @@ export default function LoginPage() {
             );
         }
 
-        /* SHELL */
-
         .loginShell {
-
-          width: min(
-            1080px,
-            100%
-          );
+          width: min(1080px, 100%);
 
           min-height: 650px;
 
           position: relative;
-
           z-index: 2;
 
           display: grid;
@@ -767,16 +610,11 @@ export default function LoginPage() {
             rgba(20,20,20,.12);
         }
 
-        /* LEFT */
-
         .loginVisual {
-
           position: relative;
-
           overflow: hidden;
 
           display: flex;
-
           flex-direction: column;
 
           padding: 45px;
@@ -794,7 +632,6 @@ export default function LoginPage() {
         }
 
         .visualGlow {
-
           position: absolute;
 
           width: 420px;
@@ -814,10 +651,7 @@ export default function LoginPage() {
             );
         }
 
-        /* LOGO */
-
         .visualLogo {
-
           width: 72px;
           height: 72px;
 
@@ -846,22 +680,18 @@ export default function LoginPage() {
         }
 
         .visualLogo span {
-
           position: relative;
-
           z-index: 4;
 
           color: #e21b23;
 
           font-size: 21px;
-
           font-weight: 800;
 
           letter-spacing: -2px;
         }
 
         .logoOrbit {
-
           position: absolute;
 
           border:
@@ -872,25 +702,18 @@ export default function LoginPage() {
         }
 
         .orbitOne {
-
           width: 61px;
           height: 27px;
-
-          transform:
-            rotate(-30deg);
+          transform: rotate(-30deg);
         }
 
         .orbitTwo {
-
           width: 40px;
           height: 57px;
-
-          transform:
-            rotate(37deg);
+          transform: rotate(37deg);
         }
 
         .visualLogo i {
-
           position: absolute;
 
           width: 6px;
@@ -908,12 +731,8 @@ export default function LoginPage() {
             rgba(226,27,35,.08);
         }
 
-        /* CONTENT */
-
         .visualContent {
-
           position: relative;
-
           z-index: 3;
 
           margin-top: auto;
@@ -921,24 +740,19 @@ export default function LoginPage() {
         }
 
         .visualEyebrow {
-
           display: flex;
-
           align-items: center;
-
           gap: 8px;
 
           color: #e21b23;
 
           font-size: 8px;
-
           font-weight: 800;
 
           letter-spacing: 2px;
         }
 
         .visualEyebrow span {
-
           width: 19px;
           height: 2px;
 
@@ -948,14 +762,11 @@ export default function LoginPage() {
         }
 
         .visualContent h1 {
-
-          margin:
-            14px 0 4px;
+          margin: 14px 0 4px;
 
           color: #202328;
 
           font-size: 39px;
-
           line-height: 1.08;
 
           letter-spacing: -2px;
@@ -964,30 +775,24 @@ export default function LoginPage() {
         }
 
         .visualContent h1 strong {
-
           color: #e21b23;
-
           font-weight: 800;
         }
 
         .visualContent p {
-
           margin: 0;
 
           color: #777b82;
 
           font-size: 12px;
-
           font-weight: 600;
         }
 
         .visualLine {
-
           width: 45px;
           height: 2px;
 
-          margin:
-            23px 0 15px;
+          margin: 23px 0 15px;
 
           background: #e21b23;
 
@@ -995,22 +800,16 @@ export default function LoginPage() {
         }
 
         .visualDescription {
-
           max-width: 340px;
 
           color: #92969c;
 
           font-size: 9px;
-
           line-height: 1.8;
         }
 
-        /* STATS */
-
         .visualStats {
-
           position: relative;
-
           z-index: 3;
 
           display: grid;
@@ -1027,9 +826,7 @@ export default function LoginPage() {
         }
 
         .visualStats div {
-
-          padding:
-            11px 10px;
+          padding: 11px 10px;
 
           border:
             1px solid #e4e5e7;
@@ -1041,18 +838,15 @@ export default function LoginPage() {
         }
 
         .visualStats strong {
-
           display: block;
 
           color: #25282c;
 
           font-size: 13px;
-
           font-weight: 800;
         }
 
         .visualStats span {
-
           display: block;
 
           margin-top: 4px;
@@ -1067,9 +861,7 @@ export default function LoginPage() {
         }
 
         .visualFooter {
-
           position: relative;
-
           z-index: 3;
 
           margin-top: 22px;
@@ -1079,14 +871,10 @@ export default function LoginPage() {
           font-size: 7px;
         }
 
-        /* LOGIN PANEL */
-
         .loginPanel {
-
           display: flex;
 
           align-items: center;
-
           justify-content: center;
 
           background:
@@ -1098,35 +886,25 @@ export default function LoginPage() {
         }
 
         .loginPanelInner {
-
           width: min(
             360px,
             calc(100% - 70px)
           );
 
-          padding:
-            35px 0;
+          padding: 35px 0;
         }
 
-        /* MOBILE BRAND */
-
         .mobileBrand {
-
           display: none;
         }
 
-        /* HEADER */
-
         .welcomeBadge {
-
           display: inline-flex;
 
           align-items: center;
-
           gap: 6px;
 
-          padding:
-            6px 8px;
+          padding: 6px 8px;
 
           border-radius: 6px;
 
@@ -1142,7 +920,6 @@ export default function LoginPage() {
         }
 
         .welcomeBadge span {
-
           width: 5px;
           height: 5px;
 
@@ -1156,9 +933,7 @@ export default function LoginPage() {
         }
 
         .loginHeader h2 {
-
-          margin:
-            17px 0 5px;
+          margin: 17px 0 5px;
 
           font-size: 29px;
 
@@ -1166,7 +941,6 @@ export default function LoginPage() {
         }
 
         .loginHeader p {
-
           margin: 0;
 
           color: #9b9ea4;
@@ -1176,20 +950,15 @@ export default function LoginPage() {
           line-height: 1.6;
         }
 
-        /* FORM */
-
         .loginForm {
-
           margin-top: 29px;
         }
 
         .fieldGroup {
-
           margin-bottom: 17px;
         }
 
         .fieldGroup label {
-
           display: block;
 
           margin-bottom: 7px;
@@ -1204,21 +973,17 @@ export default function LoginPage() {
         }
 
         .labelRow {
-
           display: flex;
 
           align-items: center;
-
           justify-content: space-between;
         }
 
         .labelRow label {
-
           margin-bottom: 7px;
         }
 
         .forgotBtn {
-
           border: 0;
 
           background: transparent;
@@ -1235,14 +1000,11 @@ export default function LoginPage() {
         }
 
         .forgotBtn:disabled {
-
           opacity: .5;
-
           cursor: not-allowed;
         }
 
         .inputWrapper {
-
           height: 48px;
 
           display: flex;
@@ -1251,8 +1013,7 @@ export default function LoginPage() {
 
           gap: 9px;
 
-          padding:
-            0 12px;
+          padding: 0 12px;
 
           border:
             1px solid #e1e2e4;
@@ -1267,7 +1028,6 @@ export default function LoginPage() {
         }
 
         .inputWrapper:focus-within {
-
           border-color:
             rgba(226,27,35,.45);
 
@@ -1277,7 +1037,6 @@ export default function LoginPage() {
         }
 
         .inputIcon {
-
           min-width: 20px;
 
           color: #a3a6ab;
@@ -1290,7 +1049,6 @@ export default function LoginPage() {
         }
 
         .inputWrapper input {
-
           flex: 1;
 
           min-width: 0;
@@ -1309,17 +1067,14 @@ export default function LoginPage() {
         }
 
         .inputWrapper input::placeholder {
-
           color: #b5b8bd;
         }
 
         .inputWrapper input:disabled {
-
           opacity: .6;
         }
 
         .passwordToggle {
-
           border: 0;
 
           background: transparent;
@@ -1333,10 +1088,7 @@ export default function LoginPage() {
           cursor: pointer;
         }
 
-        /* MESSAGE */
-
         .message {
-
           display: flex;
 
           align-items: flex-start;
@@ -1345,8 +1097,7 @@ export default function LoginPage() {
 
           padding: 10px;
 
-          margin:
-            4px 0 14px;
+          margin: 4px 0 14px;
 
           border-radius: 8px;
 
@@ -1356,7 +1107,6 @@ export default function LoginPage() {
         }
 
         .message span {
-
           width: 16px;
           height: 16px;
 
@@ -1373,7 +1123,6 @@ export default function LoginPage() {
         }
 
         .errorMessage {
-
           background: #fff1f2;
 
           color: #c91820;
@@ -1383,14 +1132,11 @@ export default function LoginPage() {
         }
 
         .errorMessage span {
-
           background: #e21b23;
-
           color: #fff;
         }
 
         .successMessage {
-
           background: #eefaf3;
 
           color: #17834a;
@@ -1400,16 +1146,11 @@ export default function LoginPage() {
         }
 
         .successMessage span {
-
           background: #1b9b57;
-
           color: #fff;
         }
 
-        /* LOGIN BUTTON */
-
         .loginButton {
-
           width: 100%;
 
           height: 49px;
@@ -1450,7 +1191,6 @@ export default function LoginPage() {
         }
 
         .loginButton:hover:not(:disabled) {
-
           transform:
             translateY(-1px);
 
@@ -1459,28 +1199,17 @@ export default function LoginPage() {
             rgba(226,27,35,.24);
         }
 
-        .loginButton:active:not(:disabled) {
-
-          transform:
-            translateY(0);
-        }
-
         .loginButton:disabled {
-
           opacity: .75;
-
           cursor: not-allowed;
         }
 
         .loginButton > span:not(.buttonSpinner) {
-
           font-size: 15px;
-
           line-height: 0;
         }
 
         .buttonSpinner {
-
           width: 14px;
           height: 14px;
 
@@ -1496,10 +1225,7 @@ export default function LoginPage() {
             spin .7s linear infinite;
         }
 
-        /* SECURITY */
-
         .securityInfo {
-
           display: flex;
 
           align-items: flex-start;
@@ -1508,8 +1234,7 @@ export default function LoginPage() {
 
           margin-top: 19px;
 
-          padding:
-            12px;
+          padding: 12px;
 
           border-radius: 9px;
 
@@ -1520,7 +1245,6 @@ export default function LoginPage() {
         }
 
         .securityIcon {
-
           width: 23px;
           height: 23px;
 
@@ -1543,7 +1267,6 @@ export default function LoginPage() {
         }
 
         .securityInfo strong {
-
           display: block;
 
           color: #686c72;
@@ -1552,7 +1275,6 @@ export default function LoginPage() {
         }
 
         .securityInfo span {
-
           display: block;
 
           margin-top: 3px;
@@ -1564,10 +1286,7 @@ export default function LoginPage() {
           line-height: 1.5;
         }
 
-        /* FOOTER */
-
         .loginFooter {
-
           display: flex;
 
           justify-content:
@@ -1585,19 +1304,20 @@ export default function LoginPage() {
           font-size: 6.5px;
         }
 
-        /* RESPONSIVE */
+        @keyframes spin {
+          to {
+            transform: rotate(360deg);
+          }
+        }
 
         @media (max-width: 850px) {
 
           .loginPage {
-
             padding: 20px;
           }
 
           .loginShell {
-
-            grid-template-columns:
-              1fr;
+            grid-template-columns: 1fr;
 
             max-width: 500px;
 
@@ -1605,17 +1325,14 @@ export default function LoginPage() {
           }
 
           .loginVisual {
-
             display: none;
           }
 
           .loginPanel {
-
             min-height: 650px;
           }
 
           .mobileBrand {
-
             display: flex;
 
             align-items: center;
@@ -1626,7 +1343,6 @@ export default function LoginPage() {
           }
 
           .mobileLogo {
-
             width: 43px;
             height: 43px;
 
@@ -1659,7 +1375,6 @@ export default function LoginPage() {
           }
 
           .mobileBrand strong {
-
             display: block;
 
             color: #282b2f;
@@ -1670,7 +1385,6 @@ export default function LoginPage() {
           }
 
           .mobileBrand span {
-
             display: block;
 
             margin-top: 3px;
@@ -1684,12 +1398,10 @@ export default function LoginPage() {
         @media (max-width: 500px) {
 
           .loginPage {
-
             padding: 0;
           }
 
           .loginShell {
-
             min-height: 100vh;
 
             border: 0;
@@ -1700,12 +1412,10 @@ export default function LoginPage() {
           }
 
           .loginPanel {
-
             min-height: 100vh;
           }
 
           .loginPanelInner {
-
             width:
               calc(100% - 42px);
           }
@@ -1716,3 +1426,4 @@ export default function LoginPage() {
     </main>
   );
 }
+```
