@@ -231,26 +231,35 @@ export default function Home() {
               OTHER
             </div>
           )}
+{!collapsed && (
+  <div className="navCaption otherCaption">
+    OTHER
+  </div>
+)}
 
-          <NavGroup
-            icon="•••"
-            label="Other"
-            open={open.Other}
-            collapsed={collapsed}
-            onClick={() => toggle("Other")}
-          />
+<NavItem
+  icon="•"
+  label="Other 1"
+  active={active === "Other 1"}
+  collapsed={collapsed}
+  onClick={() => selectMenu("Other 1")}
+/>
 
-          {!collapsed && open.Other && (
-            <SubMenu
-              items={[
-                "Other 1",
-                "Other 2",
-                "Other 3",
-              ]}
-              active={active}
-              onSelect={selectMenu}
-            />
-          )}
+<NavItem
+  icon="•"
+  label="Other 2"
+  active={active === "Other 2"}
+  collapsed={collapsed}
+  onClick={() => selectMenu("Other 2")}
+/>
+
+<NavItem
+  icon="•"
+  label="Other 3"
+  active={active === "Other 3"}
+  collapsed={collapsed}
+  onClick={() => selectMenu("Other 3")}
+/>
 
         </nav>
 
