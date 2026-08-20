@@ -27,21 +27,21 @@ export default function Home() {
   return (
     <div className={`cxApp ${collapsed ? "isCollapsed" : ""}`}>
 
-      {/* =====================================================
-          SIDEBAR
-      ===================================================== */}
+      {/* ================= SIDEBAR ================= */}
 
       <aside className="cxSidebar">
 
-        {/* BRAND */}
-
         <div className="brandArea">
 
-          <div className="brandLogo">
-            <img
-              src="https://zonalogo.com/assets/logo-lion-parcel.webp"
-              alt="Lion Parcel"
-            />
+          {/* CUSTOM CX BRAND ICON */}
+
+          <div className="cxBrandMark">
+            <div className="cxOrbit orbitA"></div>
+            <div className="cxOrbit orbitB"></div>
+
+            <span className="cxLetter">CX</span>
+
+            <span className="cxPoint"></span>
           </div>
 
           {!collapsed && (
@@ -65,11 +65,12 @@ export default function Home() {
         </div>
 
 
-        {/* COLLAPSE */}
+        {/* COLLAPSE BUTTON */}
 
         <button
           className="collapseBtn"
           onClick={() => setCollapsed(!collapsed)}
+          aria-label="Collapse sidebar"
         >
           {collapsed ? "›" : "‹"}
         </button>
@@ -84,6 +85,7 @@ export default function Home() {
               MAIN MENU
             </div>
           )}
+
 
           <NavItem
             icon="⌂"
@@ -218,7 +220,7 @@ export default function Home() {
           />
 
 
-          {/* OTHER */}
+          {/* OTHER PALING BAWAH */}
 
           {!collapsed && (
             <div className="navCaption otherCaption">
@@ -257,12 +259,16 @@ export default function Home() {
             <div className="systemCard">
 
               <div className="systemHeader">
-                <span>System Status</span>
+
+                <span>
+                  System Status
+                </span>
 
                 <span className="online">
                   <i />
                   Online
                 </span>
+
               </div>
 
               <div className="systemLine">
@@ -285,23 +291,31 @@ export default function Home() {
       </aside>
 
 
-      {/* =====================================================
-          MAIN
-      ===================================================== */}
+      {/* ================= MAIN ================= */}
 
       <main className="cxMain">
 
 
-        {/* HEADER */}
+        {/* TOP HEADER */}
 
         <header className="topHeader">
 
           <div className="headerLeft">
 
             <div className="breadcrumb">
-              <span>DIRECTORATE CX</span>
-              <b>/</b>
-              <strong>INTERNAL COMMAND CENTER</strong>
+
+              <span>
+                DIRECTORATE CX
+              </span>
+
+              <b>
+                /
+              </b>
+
+              <strong>
+                INTERNAL COMMAND CENTER
+              </strong>
+
             </div>
 
           </div>
@@ -311,13 +325,17 @@ export default function Home() {
 
             <div className="searchBox">
 
-              <span>⌕</span>
+              <span>
+                ⌕
+              </span>
 
               <input
                 placeholder="Search anything..."
               />
 
-              <kbd>⌘ K</kbd>
+              <kbd>
+                ⌘ K
+              </kbd>
 
             </div>
 
@@ -326,9 +344,13 @@ export default function Home() {
               ◫
             </button>
 
+
             <button className="iconBtn notificationBtn">
+
               ♢
+
               <i />
+
             </button>
 
 
@@ -361,9 +383,7 @@ export default function Home() {
         </header>
 
 
-        {/* =====================================================
-            CONTENT
-        ===================================================== */}
+        {/* ================= CONTENT ================= */}
 
         <div className="dashboardContent">
 
@@ -377,14 +397,22 @@ export default function Home() {
             <div className="heroText">
 
               <div className="eyebrow">
+
                 <span />
+
                 DIRECTORATE CX
+
               </div>
 
               <h1>
+
                 Customer Experience
                 <br />
-                <em>Command Center.</em>
+
+                <em>
+                  Command Center.
+                </em>
+
               </h1>
 
               <p>
@@ -398,13 +426,23 @@ export default function Home() {
             <div className="heroRight">
 
               <div className="heroDate">
-                <span>◷</span>
+
+                <span>
+                  ◷
+                </span>
+
                 01 AUG — 20 AUG 2026
+
               </div>
 
               <button className="primaryBtn">
-                <span>↓</span>
+
+                <span>
+                  ↓
+                </span>
+
                 Export Report
+
               </button>
 
             </div>
@@ -431,7 +469,6 @@ export default function Home() {
               suffix="%"
               change="+4.8%"
               icon="♥"
-              positive
             />
 
             <Metric
@@ -440,7 +477,6 @@ export default function Home() {
               suffix="%"
               change="+2.1%"
               icon="◷"
-              positive
             />
 
             <Metric
@@ -448,7 +484,6 @@ export default function Home() {
               value="128"
               change="-12.6%"
               icon="!"
-              positive
             />
 
             <Metric
@@ -456,7 +491,6 @@ export default function Home() {
               value="4,821"
               change="+8.4%"
               icon="◉"
-              positive
             />
 
           </section>
@@ -560,19 +594,36 @@ export default function Home() {
 
               <div className="chartLabels">
 
-                <span>W1</span>
-                <span>W2</span>
-                <span>W3</span>
-                <span>W4</span>
-                <span>W5</span>
-                <span>W6</span>
+                <span>
+                  W1
+                </span>
+
+                <span>
+                  W2
+                </span>
+
+                <span>
+                  W3
+                </span>
+
+                <span>
+                  W4
+                </span>
+
+                <span>
+                  W5
+                </span>
+
+                <span>
+                  W6
+                </span>
 
               </div>
 
             </div>
 
 
-            {/* PRIORITY */}
+            {/* ALERT */}
 
             <div className="premiumCard alertCard">
 
@@ -646,7 +697,7 @@ export default function Home() {
             </div>
 
 
-            {/* LAYERS */}
+            {/* LAYER */}
 
             <div className="premiumCard">
 
@@ -782,6 +833,7 @@ export default function Home() {
 
               </div>
 
+
               <div className="scoreText">
 
                 <div className="eyebrow">
@@ -804,6 +856,8 @@ export default function Home() {
           </section>
 
 
+          {/* FOOTER */}
+
           <footer className="mainFooter">
 
             <span>
@@ -821,9 +875,7 @@ export default function Home() {
       </main>
 
 
-      {/* =====================================================
-          STYLE
-      ===================================================== */}
+      {/* ================= CSS ================= */}
 
       <style jsx global>{`
 
@@ -831,18 +883,15 @@ export default function Home() {
           'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap'
         );
 
-
         * {
           box-sizing: border-box;
         }
-
 
         html,
         body {
           margin: 0;
           padding: 0;
         }
-
 
         body {
           font-family:
@@ -851,31 +900,30 @@ export default function Home() {
 
           background: #f3f4f6;
 
-          color: #1e2024;
+          color: #1d2024;
         }
-
 
         button,
         input {
           font-family: inherit;
         }
 
-
         button {
           outline: none;
         }
 
 
-        /* =================================================
-           APP
-        ================================================= */
+        /* ================= APP ================= */
 
         .cxApp {
+
           --red: #e21b23;
-          --redDark: #c9151c;
+          --redDark: #c9141c;
           --redSoft: #fff0f1;
 
           min-height: 100vh;
+
+          display: flex;
 
           background:
             radial-gradient(
@@ -885,52 +933,50 @@ export default function Home() {
             ),
             linear-gradient(
               135deg,
-              #f1f2f4,
-              #ffffff 50%,
+              #f0f1f3,
+              #ffffff 52%,
               #f3f4f6
             );
 
-          display: flex;
         }
 
 
-        /* =================================================
-           SIDEBAR
-        ================================================= */
+        /* ================= SIDEBAR ================= */
 
         .cxSidebar {
+
           width: 275px;
 
           position: fixed;
 
-          top: 0;
           left: 0;
+          top: 0;
           bottom: 0;
 
           z-index: 50;
 
+          display: flex;
+          flex-direction: column;
+
           background:
             linear-gradient(
               180deg,
-              #ffffff 0%,
+              #ffffff,
               #fafafa 65%,
-              #f2f3f5 100%
+              #f2f3f5
             );
 
           border-right:
-            1px solid #e6e7e9;
+            1px solid #e5e6e8;
 
-          display: flex;
-
-          flex-direction: column;
+          box-shadow:
+            8px 0 35px
+            rgba(20,20,20,.025);
 
           transition:
             width .3s
             cubic-bezier(.4,0,.2,1);
 
-          box-shadow:
-            8px 0 35px
-            rgba(20,20,20,.025);
         }
 
 
@@ -939,9 +985,10 @@ export default function Home() {
         }
 
 
-        /* BRAND */
+        /* ================= CX BRAND ================= */
 
         .brandArea {
+
           height: 91px;
 
           padding:
@@ -952,61 +999,141 @@ export default function Home() {
           align-items: center;
 
           gap: 12px;
+
         }
 
 
-        .brandLogo {
+        .cxBrandMark {
+
           width: 44px;
           height: 44px;
 
           flex-shrink: 0;
 
-          border-radius: 12px;
-
-          overflow: hidden;
-
-          background: #e21b23;
+          position: relative;
 
           display: flex;
 
           align-items: center;
-
           justify-content: center;
+
+          overflow: hidden;
+
+          border-radius: 13px;
+
+          background:
+            linear-gradient(
+              145deg,
+              #ffffff 0%,
+              #f5f5f6 48%,
+              #eeeeef 100%
+            );
+
+          border:
+            1px solid #e0e1e3;
 
           box-shadow:
             0 8px 20px
-            rgba(226,27,35,.18);
+            rgba(226,27,35,.13);
+
         }
 
 
-        .brandLogo img {
-          width: 100%;
-          height: 100%;
+        .cxLetter {
 
-          object-fit: contain;
+          position: relative;
 
-          padding: 3px;
+          z-index: 5;
+
+          font-size: 13px;
+
+          font-weight: 800;
+
+          letter-spacing: -1.2px;
+
+          color: #e21b23;
+
+        }
+
+
+        .cxOrbit {
+
+          position: absolute;
+
+          border:
+            1.5px solid
+            rgba(226,27,35,.27);
+
+          border-radius: 50%;
+
+        }
+
+
+        .orbitA {
+
+          width: 36px;
+          height: 15px;
+
+          transform:
+            rotate(-27deg);
+
+        }
+
+
+        .orbitB {
+
+          width: 25px;
+          height: 35px;
+
+          transform:
+            rotate(38deg);
+
+        }
+
+
+        .cxPoint {
+
+          position: absolute;
+
+          width: 4px;
+          height: 4px;
+
+          right: 7px;
+          top: 8px;
+
+          border-radius: 50%;
+
+          background: #e21b23;
+
+          box-shadow:
+            0 0 0 3px
+            rgba(226,27,35,.08);
+
         }
 
 
         .brandInfo {
           overflow: hidden;
-
           white-space: nowrap;
         }
 
 
         .brandTitle {
+
           font-size: 16px;
 
           font-weight: 800;
 
           letter-spacing: -.5px;
+
         }
 
 
         .brandSub {
+
           margin-top: 5px;
+
+          color: var(--red);
 
           font-size: 7.5px;
 
@@ -1014,22 +1141,24 @@ export default function Home() {
 
           letter-spacing: 1.25px;
 
-          color: var(--red);
         }
 
 
         .brandTiny {
+
           margin-top: 3px;
+
+          color: #a1a4aa;
 
           font-size: 8px;
 
-          color: #a1a4aa;
         }
 
 
-        /* COLLAPSE */
+        /* ================= COLLAPSE ================= */
 
         .collapseBtn {
+
           position: absolute;
 
           right: -12px;
@@ -1043,7 +1172,7 @@ export default function Home() {
           border:
             1px solid #dedfe2;
 
-          background: #fff;
+          background: #ffffff;
 
           color: var(--red);
 
@@ -1054,31 +1183,38 @@ export default function Home() {
             rgba(0,0,0,.08);
 
           transition: .2s;
+
         }
 
 
         .collapseBtn:hover {
+
           background: var(--red);
 
-          color: #fff;
+          color: #ffffff;
 
-          transform: scale(1.08);
+          transform:
+            scale(1.08);
+
         }
 
 
-        /* NAV */
+        /* ================= NAV ================= */
 
         .navigation {
+
           flex: 1;
 
           overflow-y: auto;
 
           padding:
             11px 13px;
+
         }
 
 
         .navCaption {
+
           padding:
             9px 10px 7px;
 
@@ -1089,6 +1225,7 @@ export default function Home() {
           font-weight: 800;
 
           letter-spacing: 1.5px;
+
         }
 
 
@@ -1098,19 +1235,21 @@ export default function Home() {
 
 
         .otherCaption {
+
           margin-top: 18px;
 
           padding-top: 17px;
 
           border-top:
             1px solid #e9eaec;
+
         }
 
 
         .navItem,
         .navGroup {
-          width: 100%;
 
+          width: 100%;
           height: 42px;
 
           border: 0;
@@ -1130,24 +1269,27 @@ export default function Home() {
 
           cursor: pointer;
 
-          transition:
-            .18s ease;
+          transition: .18s;
 
           position: relative;
 
           text-align: left;
+
         }
 
 
         .navItem:hover,
         .navGroup:hover {
+
           background: #f7f7f8;
 
           color: var(--red);
+
         }
 
 
         .navItem.active {
+
           background:
             linear-gradient(
               90deg,
@@ -1158,10 +1300,12 @@ export default function Home() {
           color: var(--red);
 
           font-weight: 700;
+
         }
 
 
         .navItem.active::before {
+
           content: "";
 
           position: absolute;
@@ -1177,38 +1321,46 @@ export default function Home() {
 
           border-radius:
             0 4px 4px 0;
+
         }
 
 
         .navIcon {
+
           width: 27px;
+
+          flex-shrink: 0;
 
           text-align: center;
 
-          font-size: 12px;
-
           color: #9da0a5;
 
-          flex-shrink: 0;
+          font-size: 12px;
+
         }
 
 
         .navItem.active .navIcon,
         .navGroup.open .navIcon {
+
           color: var(--red);
+
         }
 
 
         .navLabel {
+
           font-size: 10px;
 
           font-weight: 600;
 
           white-space: nowrap;
+
         }
 
 
         .navArrow {
+
           margin-left: auto;
 
           color: #a6a9ae;
@@ -1216,34 +1368,45 @@ export default function Home() {
           font-size: 17px;
 
           transition: .2s;
+
         }
 
 
         .navGroup.open {
+
           color: var(--red);
 
           background: #fafafa;
+
         }
 
 
         .navGroup.open .navArrow {
-          transform: rotate(90deg);
+
+          transform:
+            rotate(90deg);
 
           color: var(--red);
+
         }
 
 
+        /* ================= SUB MENU ================= */
+
         .subMenu {
+
           margin-left: 27px;
+
+          padding-left: 8px;
 
           border-left:
             1px solid #e4e5e7;
 
-          padding-left: 8px;
         }
 
 
         .subItem {
+
           width: 100%;
 
           height: 35px;
@@ -1270,52 +1433,64 @@ export default function Home() {
           align-items: center;
 
           gap: 8px;
+
         }
 
 
         .subItem:hover {
+
           color: var(--red);
 
           background: #fafafa;
+
         }
 
 
         .subItem.active {
+
           color: var(--red);
 
           background: #fff2f3;
 
           font-weight: 700;
+
         }
 
 
         .subDot {
+
           width: 4px;
           height: 4px;
 
           border-radius: 50%;
 
           background: #c7c9cd;
+
         }
 
 
         .subItem.active .subDot {
+
           background: var(--red);
+
         }
 
 
-        /* SIDEBAR FOOTER */
+        /* ================= FOOTER ================= */
 
         .sidebarFooter {
+
           padding:
             12px 13px 16px;
 
           border-top:
             1px solid #e7e8ea;
+
         }
 
 
         .systemCard {
+
           padding: 11px;
 
           border:
@@ -1325,10 +1500,12 @@ export default function Home() {
 
           background:
             rgba(255,255,255,.7);
+
         }
 
 
         .systemHeader {
+
           display: flex;
 
           justify-content:
@@ -1337,64 +1514,75 @@ export default function Home() {
           font-size: 7.5px;
 
           font-weight: 700;
+
         }
 
 
         .online {
-          color: #16934a;
 
           display: flex;
 
           align-items: center;
 
           gap: 4px;
+
+          color: #16934a;
+
         }
 
 
         .online i {
+
           width: 5px;
           height: 5px;
 
           background: #16a05a;
 
           border-radius: 50%;
+
         }
 
 
         .systemLine {
+
           height: 4px;
+
+          margin-top: 9px;
 
           background: #e9eaec;
 
           border-radius: 10px;
 
-          margin-top: 9px;
-
           overflow: hidden;
+
         }
 
 
         .systemLine div {
-          width: 96%;
 
+          width: 96%;
           height: 100%;
 
           background: var(--red);
+
         }
 
 
         .systemCard small {
+
           display: block;
+
+          margin-top: 6px;
 
           color: #aaaeb3;
 
           font-size: 7px;
 
-          margin-top: 6px;
         }
 
 
         .copyright {
+
           text-align: center;
 
           color: #b0b2b6;
@@ -1402,38 +1590,40 @@ export default function Home() {
           font-size: 7px;
 
           margin-top: 11px;
+
         }
 
 
-        /* =================================================
-           MAIN
-        ================================================= */
+        /* ================= MAIN ================= */
 
         .cxMain {
+
           width:
             calc(100% - 275px);
 
           margin-left: 275px;
 
           transition:
-            margin-left .3s
-            cubic-bezier(.4,0,.2,1),
-            width .3s
-            cubic-bezier(.4,0,.2,1);
+            margin-left .3s,
+            width .3s;
+
         }
 
 
         .isCollapsed .cxMain {
-          margin-left: 78px;
 
           width:
             calc(100% - 78px);
+
+          margin-left: 78px;
+
         }
 
 
-        /* HEADER */
+        /* ================= HEADER ================= */
 
         .topHeader {
+
           height: 67px;
 
           position: sticky;
@@ -1460,10 +1650,12 @@ export default function Home() {
 
           border-bottom:
             1px solid #e7e8ea;
+
         }
 
 
         .breadcrumb {
+
           font-size: 7.5px;
 
           letter-spacing: .9px;
@@ -1471,34 +1663,42 @@ export default function Home() {
           color: #a1a4aa;
 
           font-weight: 700;
+
         }
 
 
         .breadcrumb b {
+
           margin:
             0 8px;
 
           color: #d4d5d8;
+
         }
 
 
         .breadcrumb strong {
+
           color: #555960;
 
           font-weight: 800;
+
         }
 
 
         .headerRight {
+
           display: flex;
 
           align-items: center;
 
           gap: 8px;
+
         }
 
 
         .searchBox {
+
           width: 230px;
           height: 36px;
 
@@ -1517,17 +1717,21 @@ export default function Home() {
             1px solid #e2e3e5;
 
           border-radius: 9px;
+
         }
 
 
         .searchBox span {
+
           color: #96999f;
 
           font-size: 15px;
+
         }
 
 
         .searchBox input {
+
           flex: 1;
 
           border: 0;
@@ -1539,13 +1743,11 @@ export default function Home() {
           font-size: 9px;
 
           color: #333;
+
         }
 
 
         .searchBox kbd {
-          font-size: 7px;
-
-          color: #a2a5aa;
 
           padding:
             3px 5px;
@@ -1556,10 +1758,16 @@ export default function Home() {
           border-radius: 4px;
 
           background: #fff;
+
+          color: #a2a5aa;
+
+          font-size: 7px;
+
         }
 
 
         .iconBtn {
+
           width: 36px;
           height: 36px;
 
@@ -1575,11 +1783,16 @@ export default function Home() {
           cursor: pointer;
 
           position: relative;
+
         }
 
 
         .notificationBtn i {
+
           position: absolute;
+
+          right: 7px;
+          top: 7px;
 
           width: 5px;
           height: 5px;
@@ -1588,12 +1801,11 @@ export default function Home() {
 
           background: var(--red);
 
-          right: 7px;
-          top: 7px;
         }
 
 
         .profile {
+
           display: flex;
 
           align-items: center;
@@ -1601,10 +1813,12 @@ export default function Home() {
           gap: 8px;
 
           padding-left: 4px;
+
         }
 
 
         .profileAvatar {
+
           width: 35px;
           height: 35px;
 
@@ -1614,7 +1828,7 @@ export default function Home() {
             linear-gradient(
               135deg,
               #ed3a41,
-              #c9141b
+              #c9141c
             );
 
           color: #fff;
@@ -1632,17 +1846,21 @@ export default function Home() {
           box-shadow:
             0 5px 13px
             rgba(226,27,35,.18);
+
         }
 
 
         .profileText strong {
+
           display: block;
 
           font-size: 8.5px;
+
         }
 
 
         .profileText small {
+
           display: block;
 
           margin-top: 2px;
@@ -1650,31 +1868,33 @@ export default function Home() {
           color: #a1a4a9;
 
           font-size: 7px;
+
         }
 
 
         .profileArrow {
+
           color: #a3a6ab;
 
           font-size: 10px;
 
-          margin-left: 3px;
         }
 
 
-        /* =================================================
-           CONTENT
-        ================================================= */
+        /* ================= CONTENT ================= */
 
         .dashboardContent {
+
           padding:
             25px 31px 32px;
+
         }
 
 
-        /* HERO */
+        /* ================= HERO ================= */
 
         .heroPanel {
+
           min-height: 190px;
 
           position: relative;
@@ -1699,18 +1919,20 @@ export default function Home() {
 
           display: flex;
 
+          align-items: center;
+
           justify-content:
             space-between;
-
-          align-items: center;
 
           box-shadow:
             0 12px 40px
             rgba(20,20,20,.035);
+
         }
 
 
         .heroGlow {
+
           position: absolute;
 
           width: 300px;
@@ -1724,18 +1946,20 @@ export default function Home() {
           background:
             rgba(226,27,35,.045);
 
-          filter: blur(3px);
         }
 
 
         .heroText {
+
           position: relative;
 
           z-index: 2;
+
         }
 
 
         .eyebrow {
+
           display: flex;
 
           align-items: center;
@@ -1749,20 +1973,24 @@ export default function Home() {
           font-weight: 800;
 
           letter-spacing: 1.5px;
+
         }
 
 
         .eyebrow span {
+
           width: 17px;
           height: 2px;
 
           background: var(--red);
 
           border-radius: 5px;
+
         }
 
 
         .heroPanel h1 {
+
           margin:
             10px 0 7px;
 
@@ -1771,17 +1999,21 @@ export default function Home() {
           line-height: 1.18;
 
           letter-spacing: -1.3px;
+
         }
 
 
         .heroPanel h1 em {
+
           color: var(--red);
 
           font-style: normal;
+
         }
 
 
         .heroPanel p {
+
           margin: 0;
 
           color: #8e9298;
@@ -1789,10 +2021,12 @@ export default function Home() {
           font-size: 9.5px;
 
           line-height: 1.7;
+
         }
 
 
         .heroRight {
+
           position: relative;
 
           z-index: 3;
@@ -1802,10 +2036,12 @@ export default function Home() {
           align-items: center;
 
           gap: 8px;
+
         }
 
 
         .heroDate {
+
           height: 38px;
 
           padding:
@@ -1822,24 +2058,29 @@ export default function Home() {
 
           gap: 7px;
 
-          background: rgba(255,255,255,.8);
+          background:
+            rgba(255,255,255,.8);
 
           color: #777b82;
 
           font-size: 7.5px;
 
           font-weight: 700;
+
         }
 
 
         .heroDate span {
+
           color: var(--red);
 
           font-size: 12px;
+
         }
 
 
         .primaryBtn {
+
           height: 38px;
 
           padding:
@@ -1867,27 +2108,32 @@ export default function Home() {
           box-shadow:
             0 8px 20px
             rgba(226,27,35,.2);
+
         }
 
 
         .primaryBtn span {
+
           margin-right: 5px;
+
         }
 
 
         .heroDecoration {
+
           position: absolute;
 
           right: -35px;
-
           bottom: -100px;
 
           width: 330px;
           height: 330px;
+
         }
 
 
         .ring {
+
           position: absolute;
 
           border:
@@ -1895,38 +2141,44 @@ export default function Home() {
             rgba(226,27,35,.12);
 
           border-radius: 50%;
+
         }
 
 
         .ringOne {
+
           width: 330px;
           height: 330px;
+
         }
 
 
         .ringTwo {
+
           width: 245px;
           height: 245px;
 
           left: 43px;
           top: 43px;
+
         }
 
 
         .ringThree {
+
           width: 160px;
           height: 160px;
 
           left: 85px;
           top: 85px;
+
         }
 
 
-        /* =================================================
-           KPI
-        ================================================= */
+        /* ================= KPI ================= */
 
         .kpiGrid {
+
           display: grid;
 
           grid-template-columns:
@@ -1935,10 +2187,12 @@ export default function Home() {
           gap: 13px;
 
           margin-top: 14px;
+
         }
 
 
         .metricCard {
+
           min-height: 145px;
 
           padding: 18px;
@@ -1958,30 +2212,36 @@ export default function Home() {
           transition:
             transform .2s,
             box-shadow .2s;
+
         }
 
 
         .metricCard:hover {
+
           transform:
             translateY(-3px);
 
           box-shadow:
             0 14px 30px
             rgba(20,20,20,.07);
+
         }
 
 
         .metricTop {
+
           display: flex;
 
           justify-content:
             space-between;
 
           align-items: center;
+
         }
 
 
         .metricIcon {
+
           width: 33px;
           height: 33px;
 
@@ -1998,13 +2258,11 @@ export default function Home() {
           justify-content: center;
 
           font-size: 12px;
+
         }
 
 
         .metricChange {
-          font-size: 7px;
-
-          font-weight: 800;
 
           padding:
             5px 7px;
@@ -2014,10 +2272,16 @@ export default function Home() {
           background: #eff9f3;
 
           color: #17894b;
+
+          font-size: 7px;
+
+          font-weight: 800;
+
         }
 
 
         .metricLabel {
+
           margin-top: 17px;
 
           color: #9b9ea4;
@@ -2027,10 +2291,12 @@ export default function Home() {
           font-weight: 700;
 
           letter-spacing: .55px;
+
         }
 
 
         .metricValue {
+
           margin-top: 3px;
 
           font-size: 25px;
@@ -2038,21 +2304,23 @@ export default function Home() {
           font-weight: 800;
 
           letter-spacing: -1px;
+
         }
 
 
         .metricValue small {
+
           font-size: 14px;
 
           color: #55595f;
+
         }
 
 
-        /* =================================================
-           CARDS
-        ================================================= */
+        /* ================= GRIDS ================= */
 
         .mainGrid {
+
           display: grid;
 
           grid-template-columns:
@@ -2061,10 +2329,12 @@ export default function Home() {
           gap: 14px;
 
           margin-top: 14px;
+
         }
 
 
         .lowerGrid {
+
           display: grid;
 
           grid-template-columns:
@@ -2073,10 +2343,12 @@ export default function Home() {
           gap: 14px;
 
           margin-top: 14px;
+
         }
 
 
         .bottomGrid {
+
           display: grid;
 
           grid-template-columns:
@@ -2085,10 +2357,12 @@ export default function Home() {
           gap: 14px;
 
           margin-top: 14px;
+
         }
 
 
         .premiumCard {
+
           background:
             rgba(255,255,255,.92);
 
@@ -2102,20 +2376,24 @@ export default function Home() {
           box-shadow:
             0 6px 25px
             rgba(20,20,20,.025);
+
         }
 
 
         .cardHeading {
+
           display: flex;
+
+          align-items: flex-start;
 
           justify-content:
             space-between;
 
-          align-items: flex-start;
         }
 
 
         .cardEyebrow {
+
           color: var(--red);
 
           font-size: 7px;
@@ -2123,10 +2401,12 @@ export default function Home() {
           font-weight: 800;
 
           letter-spacing: 1.2px;
+
         }
 
 
         .cardTitle {
+
           margin-top: 4px;
 
           font-size: 14px;
@@ -2134,10 +2414,12 @@ export default function Home() {
           font-weight: 800;
 
           letter-spacing: -.3px;
+
         }
 
 
         .cardAction {
+
           border: 0;
 
           background: transparent;
@@ -2149,10 +2431,12 @@ export default function Home() {
           font-weight: 700;
 
           cursor: pointer;
+
         }
 
 
         .cardBadge {
+
           padding:
             5px 7px;
 
@@ -2165,14 +2449,14 @@ export default function Home() {
           font-size: 6.5px;
 
           font-weight: 800;
+
         }
 
 
-        /* =================================================
-           CHART
-        ================================================= */
+        /* ================= CHART ================= */
 
         .performanceTop {
+
           display: flex;
 
           align-items: flex-end;
@@ -2181,28 +2465,34 @@ export default function Home() {
             space-between;
 
           margin-top: 20px;
+
         }
 
 
         .performanceValue {
+
           font-size: 27px;
 
           font-weight: 800;
 
           letter-spacing: -1.2px;
+
         }
 
 
         .performanceDescription {
+
           margin-top: 3px;
 
           color: #a0a3a8;
 
           font-size: 7.5px;
+
         }
 
 
         .chartLegend {
+
           display: flex;
 
           gap: 13px;
@@ -2210,38 +2500,48 @@ export default function Home() {
           color: #9a9da3;
 
           font-size: 7px;
+
         }
 
 
         .chartLegend span {
+
           display: flex;
 
           align-items: center;
 
           gap: 4px;
+
         }
 
 
         .actualDot,
         .targetDot {
+
           width: 6px;
           height: 6px;
 
           border-radius: 50%;
+
         }
 
 
         .actualDot {
+
           background: var(--red);
+
         }
 
 
         .targetDot {
+
           background: #d8dadd;
+
         }
 
 
         .chartArea {
+
           height: 185px;
 
           position: relative;
@@ -2250,52 +2550,52 @@ export default function Home() {
 
           border-bottom:
             1px solid #ececee;
+
         }
 
 
         .gridLines {
+
           position: absolute;
 
-          left: 0;
-          right: 0;
-          top: 0;
-          bottom: 0;
+          inset: 0;
 
           display: flex;
 
-          flex-direction:
-            column;
+          flex-direction: column;
 
           justify-content:
             space-between;
+
         }
 
 
         .gridLines span {
+
           height: 1px;
 
-          background:
-            #f0f1f2;
+          background: #f0f1f2;
+
         }
 
 
         .bars {
+
           position: absolute;
 
-          left: 8px;
-          right: 8px;
-          bottom: 0;
-          top: 0;
+          inset: 0 8px 0 8px;
 
           display: flex;
 
           align-items: flex-end;
 
           gap: 10px;
+
         }
 
 
         .barContainer {
+
           flex: 1;
 
           height: 100%;
@@ -2303,10 +2603,12 @@ export default function Home() {
           display: flex;
 
           align-items: flex-end;
+
         }
 
 
         .barValue {
+
           width: 100%;
 
           border-radius:
@@ -2322,10 +2624,12 @@ export default function Home() {
           box-shadow:
             0 5px 12px
             rgba(226,27,35,.1);
+
         }
 
 
         .chartLabels {
+
           display: flex;
 
           justify-content:
@@ -2336,12 +2640,14 @@ export default function Home() {
           font-size: 7px;
 
           padding-top: 7px;
+
         }
 
 
-        /* ALERT */
+        /* ================= ALERT ================= */
 
         .alertItem {
+
           display: flex;
 
           gap: 9px;
@@ -2351,10 +2657,12 @@ export default function Home() {
 
           border-bottom:
             1px solid #f0f1f2;
+
         }
 
 
         .alertIcon {
+
           width: 29px;
           height: 29px;
 
@@ -2375,24 +2683,30 @@ export default function Home() {
           font-size: 10px;
 
           font-weight: 800;
+
         }
 
 
         .alertIcon.danger {
+
           background: #fff0f1;
 
           color: var(--red);
+
         }
 
 
         .alertItem strong {
+
           display: block;
 
           font-size: 8.5px;
+
         }
 
 
         .alertItem p {
+
           margin:
             4px 0 0;
 
@@ -2401,10 +2715,12 @@ export default function Home() {
           font-size: 7px;
 
           line-height: 1.6;
+
         }
 
 
         .fullLink {
+
           margin-top: 12px;
 
           border: 0;
@@ -2418,37 +2734,47 @@ export default function Home() {
           font-weight: 700;
 
           cursor: pointer;
+
         }
 
 
-        /* CHANNEL */
+        /* ================= CHANNEL ================= */
 
         .channel {
+
           margin-top: 18px;
+
         }
 
 
         .channelHead {
+
           display: flex;
 
           justify-content:
             space-between;
 
           font-size: 8px;
+
         }
 
 
         .channelName {
+
           color: #777b82;
+
         }
 
 
         .channelValue {
+
           font-weight: 800;
+
         }
 
 
         .channelTrack {
+
           height: 5px;
 
           margin-top: 7px;
@@ -2458,10 +2784,12 @@ export default function Home() {
           border-radius: 10px;
 
           overflow: hidden;
+
         }
 
 
         .channelFill {
+
           height: 100%;
 
           border-radius: 10px;
@@ -2472,12 +2800,14 @@ export default function Home() {
               #e21b23,
               #f45c61
             );
+
         }
 
 
-        /* LAYER */
+        /* ================= LAYER ================= */
 
         .layerRow {
+
           height: 35px;
 
           display: flex;
@@ -2491,10 +2821,12 @@ export default function Home() {
             1px solid #f0f1f2;
 
           font-size: 8px;
+
         }
 
 
         .layerName {
+
           display: flex;
 
           align-items: center;
@@ -2502,22 +2834,26 @@ export default function Home() {
           gap: 7px;
 
           color: #7b7f85;
+
         }
 
 
         .layerDot {
+
           width: 5px;
           height: 5px;
 
           background: var(--red);
 
           border-radius: 50%;
+
         }
 
 
-        /* MODULE */
+        /* ================= MODULE ================= */
 
         .moduleGrid {
+
           display: grid;
 
           grid-template-columns:
@@ -2526,10 +2862,12 @@ export default function Home() {
           gap: 8px;
 
           margin-top: 17px;
+
         }
 
 
         .moduleCard {
+
           height: 70px;
 
           padding: 10px;
@@ -2546,10 +2884,12 @@ export default function Home() {
           cursor: pointer;
 
           transition: .18s;
+
         }
 
 
         .moduleCard:hover {
+
           background: #fff;
 
           border-color: #efb2b5;
@@ -2560,26 +2900,32 @@ export default function Home() {
           box-shadow:
             0 7px 16px
             rgba(0,0,0,.05);
+
         }
 
 
         .moduleCard span {
+
           color: var(--red);
 
           font-size: 13px;
+
         }
 
 
         .moduleCard strong {
+
           display: block;
 
           margin-top: 7px;
 
           font-size: 8px;
+
         }
 
 
         .moduleCard small {
+
           display: block;
 
           margin-top: 3px;
@@ -2587,12 +2933,14 @@ export default function Home() {
           color: #b0b3b7;
 
           font-size: 6.5px;
+
         }
 
 
-        /* ACTIVITY */
+        /* ================= ACTIVITY ================= */
 
         .activityItem {
+
           display: flex;
 
           align-items: center;
@@ -2604,10 +2952,12 @@ export default function Home() {
 
           border-bottom:
             1px solid #f0f1f2;
+
         }
 
 
         .activityIcon {
+
           width: 28px;
           height: 28px;
 
@@ -2626,30 +2976,36 @@ export default function Home() {
           font-size: 9px;
 
           font-weight: 800;
+
         }
 
 
         .activityText strong {
+
           display: block;
 
           font-size: 8px;
+
         }
 
 
         .activityText small {
+
           display: block;
+
+          margin-top: 3px;
 
           color: #a4a7ac;
 
           font-size: 7px;
 
-          margin-top: 3px;
         }
 
 
-        /* SCORE */
+        /* ================= SCORE ================= */
 
         .scoreCard {
+
           display: flex;
 
           align-items: center;
@@ -2657,10 +3013,12 @@ export default function Home() {
           gap: 20px;
 
           min-height: 150px;
+
         }
 
 
         .scoreCircle {
+
           width: 105px;
           height: 105px;
 
@@ -2679,17 +3037,12 @@ export default function Home() {
           align-items: center;
 
           justify-content: center;
-        }
 
-
-        .scoreCircle::before {
-          content: "";
-
-          position: absolute;
         }
 
 
         .scoreCircle > div {
+
           width: 80px;
           height: 80px;
 
@@ -2704,35 +3057,45 @@ export default function Home() {
           align-items: center;
 
           justify-content: center;
+
         }
 
 
         .scoreCircle strong {
+
           font-size: 24px;
 
           letter-spacing: -1px;
+
         }
 
 
         .scoreCircle span {
+
+          margin-top: 2px;
+
           color: #a0a3a8;
 
           font-size: 6px;
 
-          margin-top: 2px;
         }
 
 
         .scoreText h3 {
+
           margin:
             7px 0 4px;
 
           font-size: 17px;
+
         }
 
 
         .scoreText p {
+
           margin: 0;
+
+          max-width: 190px;
 
           color: #999da3;
 
@@ -2740,13 +3103,13 @@ export default function Home() {
 
           line-height: 1.6;
 
-          max-width: 190px;
         }
 
 
-        /* FOOTER */
+        /* ================= FOOTER ================= */
 
         .mainFooter {
+
           display: flex;
 
           justify-content:
@@ -2758,23 +3121,26 @@ export default function Home() {
           color: #a7aaaf;
 
           font-size: 7px;
+
         }
 
 
-        /* =================================================
-           RESPONSIVE
-        ================================================= */
+        /* ================= RESPONSIVE ================= */
 
         @media (max-width: 1150px) {
 
           .kpiGrid {
+
             grid-template-columns:
               repeat(2, 1fr);
+
           }
 
           .lowerGrid {
+
             grid-template-columns:
               1fr 1fr;
+
           }
 
         }
@@ -2783,21 +3149,27 @@ export default function Home() {
         @media (max-width: 900px) {
 
           .searchBox {
+
             display: none;
+
           }
 
           .mainGrid,
           .bottomGrid {
+
             grid-template-columns:
               1fr;
+
           }
 
           .heroPanel {
+
             align-items: flex-start;
 
             flex-direction: column;
 
             gap: 20px;
+
           }
 
         }
@@ -2806,47 +3178,64 @@ export default function Home() {
         @media (max-width: 700px) {
 
           .cxSidebar {
+
             display: none;
+
           }
 
           .cxMain,
           .isCollapsed .cxMain {
+
             width: 100%;
 
             margin-left: 0;
+
           }
 
           .dashboardContent {
-            padding:
-              17px;
+
+            padding: 17px;
+
           }
 
           .topHeader {
+
             padding:
               0 17px;
+
           }
 
           .kpiGrid,
           .lowerGrid {
+
             grid-template-columns:
               1fr;
+
           }
 
           .heroPanel {
+
             padding: 23px;
+
           }
 
           .heroPanel h1 {
+
             font-size: 23px;
+
           }
 
           .heroRight {
+
             flex-wrap: wrap;
+
           }
 
           .profileText,
           .profileArrow {
+
             display: none;
+
           }
 
         }
@@ -2871,9 +3260,7 @@ function NavItem({
 }) {
   return (
     <button
-      className={`navItem ${
-        active ? "active" : ""
-      }`}
+      className={`navItem ${active ? "active" : ""}`}
       onClick={onClick}
       title={collapsed ? label : ""}
     >
@@ -2906,9 +3293,7 @@ function NavGroup({
 }) {
   return (
     <button
-      className={`navGroup ${
-        open ? "open" : ""
-      }`}
+      className={`navGroup ${open ? "open" : ""}`}
       onClick={onClick}
       title={collapsed ? label : ""}
     >
