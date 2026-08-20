@@ -2,55 +2,119 @@
 
 import { useState } from "react";
 
-const kpis = [
-  ["CX Score", "92.8%", "+4.6%", "red"],
-  ["Customer Satisfaction", "94.2%", "+2.8%", "blue"],
-  ["Resolution Rate", "96.7%", "+5.1%", "green"],
-  ["Open Cases", "1,284", "-12.4%", "orange"],
-];
-
-const alerts = [
-  ["SLA Breach Risk", "127 cases approaching SLA limit", "critical"],
-  ["Customer Sentiment", "Negative sentiment increased in Bandung", "warning"],
-  ["Service Recovery", "Jakarta region improved by 8.4%", "success"],
-];
-
 export default function Home() {
-  const [active, setActive] = useState("Overview");
+  const [active, setActive] = useState("Dashboard");
+
+  const menu = [
+    ["Dashboard", "⌂"],
+    ["CX Performance", "◈"],
+    ["Customer Voice", "♡"],
+    ["SLA Monitoring", "◷"],
+    ["Service Recovery", "↗"],
+    ["Analytics", "▦"],
+  ];
+
+  const kpis = [
+    {
+      title: "CX SCORE",
+      value: "92.8%",
+      change: "+4.6%",
+      label: "vs last period",
+      icon: "✦",
+      type: "red",
+    },
+    {
+      title: "CUSTOMER SATISFACTION",
+      value: "94.2%",
+      change: "+2.8%",
+      label: "vs last period",
+      icon: "♥",
+      type: "pink",
+    },
+    {
+      title: "RESOLUTION RATE",
+      value: "96.7%",
+      change: "+5.1%",
+      label: "vs last period",
+      icon: "✓",
+      type: "green",
+    },
+    {
+      title: "OPEN CASES",
+      value: "1,284",
+      change: "-12.4%",
+      label: "vs last period",
+      icon: "◉",
+      type: "orange",
+    },
+  ];
+
+  const channels = [
+    ["WhatsApp", "5,842", 86],
+    ["Phone", "3,921", 68],
+    ["Email", "2,486", 51],
+    ["Social Media", "1,653", 37],
+  ];
 
   return (
-    <div className="cx">
+    <main className="page">
 
-      <style>{`
+      <style jsx global>{`
+
         * {
           box-sizing: border-box;
         }
 
+        html,
         body {
           margin: 0;
-          background: #f3f4f6;
-          font-family: Arial, Helvetica, sans-serif;
+          padding: 0;
+          background: #f5f6f7;
+          font-family:
+            Inter,
+            ui-sans-serif,
+            system-ui,
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            sans-serif;
+          color: #202124;
         }
 
-        .cx {
+        button {
+          font-family: inherit;
+        }
+
+        .page {
           min-height: 100vh;
-          background: #f3f4f6;
-          color: #171717;
+          background:
+            radial-gradient(
+              circle at 75% 5%,
+              rgba(215, 25, 32, .07),
+              transparent 28%
+            ),
+            linear-gradient(
+              135deg,
+              #f1f2f3 0%,
+              #ffffff 48%,
+              #f4f5f6 100%
+            );
         }
 
-        /* HEADER */
+        /* ================= HEADER ================= */
 
         .header {
-          height: 72px;
-          background: white;
-          border-bottom: 1px solid #e5e7eb;
+          height: 74px;
+          background: rgba(255,255,255,.92);
+          backdrop-filter: blur(15px);
+          border-bottom: 1px solid #e9eaec;
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 0 30px;
+          padding: 0 32px;
           position: sticky;
           top: 0;
-          z-index: 10;
+          z-index: 20;
         }
 
         .brand {
@@ -60,557 +124,742 @@ export default function Home() {
         }
 
         .logo {
-          width: 43px;
-          height: 43px;
-          border-radius: 12px;
-          background: #d71920;
+          width: 44px;
+          height: 44px;
+          border-radius: 13px;
+          background: linear-gradient(
+            145deg,
+            #ef1c24,
+            #c80f16
+          );
           color: white;
           display: flex;
           align-items: center;
           justify-content: center;
           font-size: 14px;
           font-weight: 900;
-          box-shadow: 0 8px 20px rgba(215,25,32,.25);
+          box-shadow:
+            0 8px 22px rgba(215,25,32,.25);
         }
 
-        .brand-title {
-          font-size: 17px;
-          font-weight: 800;
+        .brandName {
+          font-size: 16px;
+          font-weight: 850;
+          letter-spacing: -.3px;
         }
 
-        .brand-sub {
+        .brandSub {
+          font-size: 10px;
+          color: #96999d;
           margin-top: 3px;
-          font-size: 11px;
-          color: #888;
+        }
+
+        .headerRight {
+          display: flex;
+          align-items: center;
+          gap: 16px;
         }
 
         .live {
           display: flex;
           align-items: center;
-          gap: 8px;
-          background: #f7f7f7;
-          border: 1px solid #eee;
-          padding: 9px 14px;
-          border-radius: 20px;
-          font-size: 11px;
-          font-weight: bold;
+          gap: 7px;
+          padding: 8px 12px;
+          border-radius: 30px;
+          background: #f3faf5;
+          border: 1px solid #dff1e4;
+          color: #218342;
+          font-size: 9px;
+          font-weight: 800;
+          letter-spacing: .8px;
         }
 
-        .live-dot {
+        .liveDot {
           width: 7px;
           height: 7px;
-          background: #16a34a;
           border-radius: 50%;
+          background: #22a05a;
+          box-shadow: 0 0 0 4px rgba(34,160,90,.1);
         }
 
-        /* LAYOUT */
+        .notification {
+          width: 37px;
+          height: 37px;
+          border-radius: 11px;
+          border: 1px solid #e8e9eb;
+          background: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #707378;
+          cursor: pointer;
+        }
+
+        .avatar {
+          width: 37px;
+          height: 37px;
+          border-radius: 12px;
+          background: #202124;
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 11px;
+          font-weight: 800;
+        }
+
+        /* ================= LAYOUT ================= */
 
         .layout {
           display: flex;
-          min-height: calc(100vh - 72px);
+          min-height: calc(100vh - 74px);
         }
 
         .sidebar {
-          width: 235px;
-          background: #17181a;
-          color: white;
-          padding: 24px 15px;
+          width: 230px;
+          background: rgba(255,255,255,.75);
+          border-right: 1px solid #e8e9eb;
+          padding: 25px 14px;
           flex-shrink: 0;
         }
 
-        .side-label {
-          color: #666;
+        .sideTitle {
           font-size: 9px;
-          font-weight: 800;
-          letter-spacing: 2px;
-          margin: 4px 12px 16px;
-          text-transform: uppercase;
+          font-weight: 850;
+          color: #a0a2a5;
+          letter-spacing: 1.7px;
+          padding: 0 12px;
+          margin-bottom: 13px;
         }
 
         .menu {
           display: flex;
           flex-direction: column;
-          gap: 5px;
+          gap: 4px;
         }
 
-        .menu button {
-          border: 0;
+        .menuButton {
+          width: 100%;
+          border: none;
           background: transparent;
-          color: #929292;
-          padding: 12px 13px;
+          color: #777a7e;
+          padding: 12px 12px;
           border-radius: 10px;
           text-align: left;
-          font-size: 13px;
-          font-weight: 600;
+          font-size: 11px;
+          font-weight: 650;
           cursor: pointer;
+          transition: .2s;
+          display: flex;
+          align-items: center;
+          gap: 11px;
         }
 
-        .menu button:hover {
-          background: rgba(255,255,255,.06);
-          color: white;
+        .menuButton:hover {
+          background: #f5f5f6;
+          color: #222;
         }
 
-        .menu button.active {
-          background: #d71920;
-          color: white;
-          box-shadow: 0 8px 20px rgba(215,25,32,.22);
+        .menuButton.active {
+          background: #fff0f1;
+          color: #d71920;
+          font-weight: 800;
         }
 
-        .date-box {
+        .menuIcon {
+          width: 24px;
+          text-align: center;
+          font-size: 15px;
+        }
+
+        .sidebarBottom {
           margin-top: 35px;
-          padding: 15px;
-          border: 1px solid #292a2d;
-          border-radius: 14px;
-          background: rgba(255,255,255,.03);
+          border-radius: 15px;
+          background:
+            linear-gradient(
+              145deg,
+              #f3f3f4,
+              #ffffff
+            );
+          border: 1px solid #e6e7e9;
+          padding: 16px;
         }
 
-        .date-label {
-          font-size: 9px;
-          color: #666;
-          text-transform: uppercase;
-          letter-spacing: 1px;
+        .todayLabel {
+          color: #a1a3a6;
+          font-size: 8px;
+          font-weight: 800;
+          letter-spacing: 1.4px;
         }
 
-        .date {
-          margin-top: 8px;
-          font-size: 22px;
+        .today {
+          font-size: 21px;
           font-weight: 900;
+          margin-top: 6px;
         }
 
-        .date-sub {
-          color: #666;
-          font-size: 10px;
-          margin-top: 4px;
+        .todaySub {
+          color: #999ca0;
+          font-size: 9px;
+          margin-top: 3px;
         }
 
-        /* CONTENT */
+        /* ================= CONTENT ================= */
 
         .content {
           flex: 1;
           min-width: 0;
+          padding: 32px;
         }
 
         .hero {
           position: relative;
           overflow: hidden;
+          border-radius: 23px;
+          min-height: 230px;
+          padding: 34px 38px;
           background:
-            radial-gradient(circle at 80% 20%, rgba(215,25,32,.25), transparent 30%),
-            #1a1b1d;
-          color: white;
-          padding: 38px 40px;
+            radial-gradient(
+              circle at 85% 35%,
+              rgba(215,25,32,.17),
+              transparent 30%
+            ),
+            linear-gradient(
+              115deg,
+              #ffffff 0%,
+              #f3f4f5 62%,
+              #e9eaec 100%
+            );
+          border: 1px solid #e5e6e8;
+          box-shadow: 0 15px 45px rgba(0,0,0,.05);
         }
 
-        .hero-tag {
-          display: inline-block;
-          background: #d71920;
-          border-radius: 20px;
-          padding: 7px 12px;
-          font-size: 9px;
-          font-weight: 800;
-          letter-spacing: 1.2px;
-          text-transform: uppercase;
+        .hero:after {
+          content: "";
+          position: absolute;
+          width: 260px;
+          height: 260px;
+          border-radius: 50%;
+          right: -80px;
+          top: -100px;
+          border: 45px solid rgba(215,25,32,.06);
         }
 
-        .hero h1 {
-          margin: 15px 0 5px;
-          font-size: 34px;
+        .heroTag {
+          position: relative;
+          z-index: 2;
+          display: inline-flex;
+          padding: 7px 11px;
+          border-radius: 30px;
+          background: #fff0f1;
+          color: #d71920;
+          font-size: 8px;
+          font-weight: 900;
+          letter-spacing: 1.4px;
+        }
+
+        .heroTitle {
+          position: relative;
+          z-index: 2;
+          margin: 16px 0 8px;
+          font-size: 31px;
           line-height: 1.15;
+          letter-spacing: -1.1px;
           font-weight: 900;
         }
 
-        .hero h1 span {
-          color: #888;
+        .heroTitle span {
+          color: #96999d;
         }
 
-        .hero p {
-          max-width: 650px;
-          margin: 12px 0 0;
-          color: #999;
-          font-size: 13px;
+        .heroDescription {
+          position: relative;
+          z-index: 2;
+          max-width: 620px;
+          margin: 0;
+          color: #7d8084;
+          font-size: 11px;
           line-height: 1.7;
         }
 
-        .dashboard {
-          padding: 28px 32px;
+        .heroBottom {
+          position: absolute;
+          right: 35px;
+          bottom: 28px;
+          z-index: 2;
+          display: flex;
+          gap: 9px;
         }
 
-        /* KPI */
+        .filter {
+          border: 1px solid #dedfe1;
+          background: rgba(255,255,255,.8);
+          padding: 9px 13px;
+          border-radius: 9px;
+          font-size: 9px;
+          color: #686b70;
+        }
+
+        /* ================= KPI ================= */
 
         .kpis {
+          margin-top: 20px;
           display: grid;
           grid-template-columns: repeat(4, 1fr);
-          gap: 16px;
+          gap: 15px;
         }
 
-        .card {
-          background: white;
-          border: 1px solid #e7e7e7;
+        .kpi {
+          background: rgba(255,255,255,.88);
+          border: 1px solid #e6e7e9;
           border-radius: 17px;
-          padding: 20px;
-          box-shadow: 0 8px 25px rgba(0,0,0,.04);
+          padding: 19px;
+          box-shadow: 0 9px 28px rgba(0,0,0,.035);
+          transition: transform .2s, box-shadow .2s;
         }
 
-        .kpi-top {
+        .kpi:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 14px 35px rgba(0,0,0,.07);
+        }
+
+        .kpiTop {
           display: flex;
           justify-content: space-between;
-          align-items: flex-start;
+          align-items: center;
         }
 
-        .kpi-title {
-          color: #777;
-          font-size: 11px;
-          font-weight: 700;
+        .kpiTitle {
+          color: #929599;
+          font-size: 8px;
+          font-weight: 850;
+          letter-spacing: .8px;
         }
 
-        .kpi-value {
-          margin-top: 8px;
-          font-size: 29px;
-          font-weight: 900;
-        }
-
-        .kpi-icon {
-          width: 39px;
-          height: 39px;
-          border-radius: 11px;
+        .kpiIcon {
+          width: 35px;
+          height: 35px;
+          border-radius: 10px;
           display: flex;
           align-items: center;
           justify-content: center;
+          font-size: 14px;
           font-weight: 900;
         }
 
-        .red {
+        .iconRed {
           background: #fff0f1;
           color: #d71920;
         }
 
-        .blue {
-          background: #eff6ff;
-          color: #2563eb;
+        .iconPink {
+          background: #fff3f5;
+          color: #e24758;
         }
 
-        .green {
-          background: #ecfdf3;
-          color: #16a34a;
+        .iconGreen {
+          background: #effaf3;
+          color: #299257;
         }
 
-        .orange {
-          background: #fff7ed;
-          color: #ea580c;
+        .iconOrange {
+          background: #fff6ed;
+          color: #df7b27;
+        }
+
+        .kpiValue {
+          margin-top: 12px;
+          font-size: 28px;
+          font-weight: 900;
+          letter-spacing: -1px;
+        }
+
+        .kpiBottom {
+          display: flex;
+          align-items: center;
+          gap: 7px;
+          margin-top: 13px;
         }
 
         .change {
-          margin-top: 17px;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-
-        .change span {
-          background: #ecfdf3;
-          color: #16a34a;
-          padding: 5px 7px;
+          background: #edf9f1;
+          color: #299257;
+          padding: 4px 6px;
           border-radius: 5px;
-          font-size: 9px;
-          font-weight: 800;
+          font-size: 8px;
+          font-weight: 850;
         }
 
-        .change small {
-          color: #aaa;
-          font-size: 9px;
+        .changeText {
+          color: #a0a2a5;
+          font-size: 8px;
         }
 
-        /* GRID */
+        /* ================= GRID ================= */
 
-        .grid-main {
+        .mainGrid {
           display: grid;
-          grid-template-columns: 1.5fr 1fr;
-          gap: 17px;
-          margin-top: 17px;
+          grid-template-columns: 1.55fr 1fr;
+          gap: 15px;
+          margin-top: 15px;
         }
 
-        .card-header {
+        .card {
+          background: rgba(255,255,255,.9);
+          border: 1px solid #e5e6e8;
+          border-radius: 18px;
+          padding: 21px;
+          box-shadow: 0 8px 27px rgba(0,0,0,.035);
+        }
+
+        .cardHeader {
           display: flex;
           justify-content: space-between;
           align-items: flex-start;
         }
 
         .eyebrow {
-          color: #999;
-          font-size: 10px;
-          font-weight: 700;
+          color: #a0a2a5;
+          font-size: 8px;
+          font-weight: 850;
+          letter-spacing: 1.1px;
         }
 
-        .card-title {
+        .cardTitle {
           margin-top: 5px;
-          font-size: 17px;
+          font-size: 15px;
           font-weight: 900;
         }
 
-        .select {
-          border: 1px solid #e5e7eb;
+        .period {
+          border: 1px solid #e4e5e7;
           background: white;
+          color: #777a7e;
           border-radius: 8px;
-          padding: 7px 10px;
-          font-size: 10px;
-          color: #666;
+          padding: 7px 9px;
+          font-size: 8px;
         }
 
-        /* CHART */
+        /* ================= CHART ================= */
 
         .chart {
-          height: 245px;
-          margin-top: 28px;
+          height: 230px;
+          margin-top: 25px;
           display: flex;
           align-items: flex-end;
-          gap: 7px;
-          border-bottom: 1px solid #eee;
+          gap: 8px;
+          border-bottom: 1px solid #ededee;
+          position: relative;
+        }
+
+        .chartGrid {
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 25%;
+          border-top: 1px dashed #ececee;
+        }
+
+        .chartGrid2 {
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 50%;
+          border-top: 1px dashed #ececee;
         }
 
         .bar {
+          position: relative;
+          z-index: 2;
           flex: 1;
-          background: linear-gradient(to top,#d71920,#ef777c);
-          border-radius: 5px 5px 0 0;
+          min-width: 4px;
+          border-radius: 7px 7px 0 0;
+          background:
+            linear-gradient(
+              180deg,
+              #e63a41,
+              #d71920
+            );
           opacity: .82;
+          transition: .2s;
         }
 
         .bar:hover {
           opacity: 1;
+          transform: scaleY(1.02);
         }
 
-        .chart-labels {
+        .chartLabels {
           display: flex;
           justify-content: space-between;
-          color: #aaa;
-          font-size: 9px;
-          margin-top: 9px;
+          margin-top: 8px;
+          color: #a3a5a8;
+          font-size: 8px;
         }
 
-        /* SCORE */
+        /* ================= SCORE ================= */
 
-        .score-area {
+        .scoreBox {
           display: flex;
           justify-content: center;
-          margin: 30px 0;
+          padding: 21px 0;
         }
 
-        .score-circle {
-          width: 170px;
-          height: 170px;
+        .circle {
+          width: 168px;
+          height: 168px;
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
           background:
-            radial-gradient(circle, white 57%, transparent 58%),
-            conic-gradient(#d71920 0 92.8%, #eee 92.8% 100%);
+            radial-gradient(
+              circle,
+              white 57%,
+              transparent 58%
+            ),
+            conic-gradient(
+              #d71920 0deg,
+              #e63a41 334deg,
+              #e9eaec 334deg
+            );
+          box-shadow: 0 10px 30px rgba(215,25,32,.08);
         }
 
-        .score-number {
+        .score {
           text-align: center;
         }
 
-        .score-number strong {
+        .score strong {
           display: block;
-          font-size: 37px;
+          font-size: 35px;
           font-weight: 900;
+          letter-spacing: -1px;
         }
 
-        .score-number span {
-          color: #999;
-          font-size: 9px;
-          font-weight: bold;
-          text-transform: uppercase;
+        .score span {
+          color: #9a9da1;
+          font-size: 8px;
+          font-weight: 850;
+          letter-spacing: 1px;
         }
 
-        .mini-stats {
+        .scoreStats {
           display: grid;
           grid-template-columns: repeat(3,1fr);
           gap: 7px;
         }
 
-        .mini {
-          background: #f7f7f7;
+        .scoreStat {
+          background: #f7f7f8;
+          border: 1px solid #ededee;
           border-radius: 10px;
-          padding: 10px;
           text-align: center;
+          padding: 9px 5px;
         }
 
-        .mini strong {
-          font-size: 16px;
+        .scoreStat strong {
+          font-size: 14px;
         }
 
-        .mini span {
+        .scoreStat span {
           display: block;
           margin-top: 3px;
-          color: #999;
-          font-size: 8px;
+          color: #9b9da0;
+          font-size: 7px;
         }
 
-        /* LOWER */
+        /* ================= LOWER ================= */
 
-        .lower {
+        .lowerGrid {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 17px;
-          margin-top: 17px;
+          gap: 15px;
+          margin-top: 15px;
         }
 
         .channel {
           margin-top: 21px;
         }
 
-        .channel-row {
-          margin-bottom: 17px;
+        .channelRow {
+          margin-bottom: 16px;
         }
 
-        .channel-head {
+        .channelHead {
           display: flex;
           justify-content: space-between;
-          font-size: 11px;
-          font-weight: 700;
           margin-bottom: 7px;
+          font-size: 9px;
+          font-weight: 750;
         }
 
-        .channel-head span:last-child {
-          color: #777;
+        .channelValue {
+          color: #8c8f93;
         }
 
         .progress {
-          height: 7px;
-          background: #eee;
+          height: 6px;
+          background: #eeeeef;
           border-radius: 20px;
           overflow: hidden;
         }
 
-        .progress div {
+        .progressFill {
           height: 100%;
-          background: #d71920;
+          background:
+            linear-gradient(
+              90deg,
+              #d71920,
+              #ef7479
+            );
           border-radius: 20px;
         }
 
-        /* ALERT */
+        /* ================= ALERTS ================= */
 
         .alert {
           display: flex;
-          gap: 12px;
-          background: #f8f8f8;
-          border: 1px solid #eee;
+          gap: 11px;
+          align-items: flex-start;
+          padding: 11px;
+          margin-top: 9px;
+          background: #f8f8f9;
+          border: 1px solid #ededee;
           border-radius: 11px;
-          padding: 13px;
-          margin-top: 10px;
         }
 
-        .alert-dot {
-          width: 8px;
-          height: 8px;
+        .alertDot {
+          width: 7px;
+          height: 7px;
           border-radius: 50%;
-          margin-top: 4px;
+          margin-top: 3px;
           flex-shrink: 0;
         }
 
-        .critical {
+        .dotRed {
           background: #d71920;
         }
 
-        .warning {
-          background: #f59e0b;
+        .dotOrange {
+          background: #ed941d;
         }
 
-        .success {
-          background: #16a34a;
+        .dotGreen {
+          background: #2ba05d;
         }
 
-        .alert-title {
-          font-size: 11px;
-          font-weight: 800;
+        .alertTitle {
+          font-size: 9px;
+          font-weight: 850;
         }
 
-        .alert-text {
-          margin-top: 4px;
-          color: #777;
-          font-size: 10px;
+        .alertText {
+          color: #929599;
+          font-size: 8px;
+          margin-top: 3px;
         }
 
-        /* FOOTER */
+        /* ================= INSIGHT ================= */
 
         .insight {
-          margin-top: 17px;
-          padding: 22px 25px;
-          background:
-            radial-gradient(circle at 90% 50%, rgba(255,255,255,.13), transparent 25%),
-            #d71920;
+          position: relative;
+          overflow: hidden;
+          margin-top: 15px;
+          padding: 21px 25px;
+          border-radius: 18px;
           color: white;
-          border-radius: 17px;
+          background:
+            radial-gradient(
+              circle at 85% 40%,
+              rgba(255,255,255,.2),
+              transparent 25%
+            ),
+            linear-gradient(
+              105deg,
+              #d71920,
+              #e63239
+            );
           display: flex;
-          justify-content: space-between;
           align-items: center;
-          gap: 20px;
+          justify-content: space-between;
         }
 
-        .insight-label {
-          font-size: 9px;
-          font-weight: 800;
-          letter-spacing: 2px;
-          color: #ffc5c7;
+        .insightLabel {
+          color: #ffcdd0;
+          font-size: 7px;
+          font-weight: 900;
+          letter-spacing: 1.6px;
         }
 
-        .insight h3 {
-          margin: 7px 0 4px;
-          font-size: 18px;
+        .insightTitle {
+          margin: 6px 0 3px;
+          font-size: 16px;
+          font-weight: 900;
         }
 
-        .insight p {
+        .insightText {
           margin: 0;
-          font-size: 10px;
-          color: #ffc5c7;
+          color: #ffdfe1;
+          font-size: 8px;
         }
 
-        .insight button {
-          border: 0;
+        .insightButton {
+          border: none;
           background: white;
           color: #d71920;
-          padding: 11px 17px;
           border-radius: 9px;
-          font-size: 10px;
+          padding: 10px 14px;
+          font-size: 8px;
           font-weight: 900;
           cursor: pointer;
-          white-space: nowrap;
         }
 
-        @media(max-width: 1000px) {
+        /* ================= RESPONSIVE ================= */
+
+        @media(max-width: 1100px) {
+
           .kpis {
             grid-template-columns: repeat(2,1fr);
           }
 
-          .grid-main,
-          .lower {
+          .mainGrid,
+          .lowerGrid {
             grid-template-columns: 1fr;
           }
 
-          .sidebar {
-            width: 190px;
-          }
         }
 
-        @media(max-width: 700px) {
+        @media(max-width: 750px) {
+
           .sidebar {
             display: none;
           }
 
-          .header {
-            padding: 0 15px;
+          .content {
+            padding: 17px;
           }
 
-          .dashboard {
-            padding: 18px;
+          .header {
+            padding: 0 17px;
+          }
+
+          .brandSub,
+          .live {
+            display: none;
           }
 
           .hero {
-            padding: 30px 20px;
+            padding: 27px;
           }
 
-          .hero h1 {
-            font-size: 27px;
+          .heroTitle {
+            font-size: 25px;
+          }
+
+          .heroBottom {
+            position: static;
+            margin-top: 20px;
           }
 
           .kpis {
@@ -618,292 +867,476 @@ export default function Home() {
           }
 
           .insight {
-            flex-direction: column;
             align-items: flex-start;
+            flex-direction: column;
+            gap: 16px;
           }
+
         }
+
       `}</style>
 
       {/* HEADER */}
+
       <header className="header">
+
         <div className="brand">
-          <div className="logo">LP</div>
+
+          <div className="logo">
+            LP
+          </div>
 
           <div>
-            <div className="brand-title">
+            <div className="brandName">
               CX Command Center
             </div>
-            <div className="brand-sub">
-              Customer Experience • Performance Intelligence
+
+            <div className="brandSub">
+              Customer Experience Intelligence
             </div>
           </div>
+
         </div>
 
-        <div className="live">
-          <div className="live-dot"></div>
-          LIVE DATA
+        <div className="headerRight">
+
+          <div className="live">
+            <div className="liveDot" />
+            LIVE DATA
+          </div>
+
+          <button className="notification">
+            ♢
+          </button>
+
+          <div className="avatar">
+            CX
+          </div>
+
         </div>
+
       </header>
 
       <div className="layout">
 
         {/* SIDEBAR */}
+
         <aside className="sidebar">
-          <div className="side-label">
-            Command Center
+
+          <div className="sideTitle">
+            COMMAND CENTER
           </div>
 
           <div className="menu">
-            {[
-              ["Overview", "⌂"],
-              ["CX Performance", "◈"],
-              ["Customer Voice", "◉"],
-              ["SLA Monitoring", "◷"],
-              ["Service Recovery", "↗"],
-              ["Analytics", "▦"],
-            ].map(([name, icon]) => (
+
+            {menu.map(([name, icon]) => (
+
               <button
                 key={name}
-                className={active === name ? "active" : ""}
+                className={
+                  active === name
+                    ? "menuButton active"
+                    : "menuButton"
+                }
                 onClick={() => setActive(name)}
               >
-                {icon} &nbsp;&nbsp; {name}
+
+                <span className="menuIcon">
+                  {icon}
+                </span>
+
+                {name}
+
               </button>
+
             ))}
+
           </div>
 
-          <div className="date-box">
-            <div className="date-label">
-              Today
+          <div className="sidebarBottom">
+
+            <div className="todayLabel">
+              TODAY
             </div>
 
-            <div className="date">
-              20 Aug
+            <div className="today">
+              20 AUG
             </div>
 
-            <div className="date-sub">
+            <div className="todaySub">
               Thursday • 11:32 WIB
             </div>
+
           </div>
+
         </aside>
 
-        {/* MAIN */}
+        {/* CONTENT */}
+
         <section className="content">
 
+          {/* HERO */}
+
           <div className="hero">
-            <div className="hero-tag">
-              Customer Experience
+
+            <div className="heroTag">
+              CUSTOMER EXPERIENCE
             </div>
 
-            <h1>
-              Good morning, CX Team.
+            <h1 className="heroTitle">
+              Experience that moves
+              <br />
               <span>
-                <br />
-                Here&apos;s your experience pulse.
+                every customer forward.
               </span>
             </h1>
 
-            <p>
-              Monitor customer sentiment, service quality, SLA,
-              resolution performance and operational experience
-              in one command center.
+            <p className="heroDescription">
+              Monitor customer experience, service quality,
+              sentiment, SLA performance and resolution from
+              one centralized command center.
             </p>
+
+            <div className="heroBottom">
+
+              <div className="filter">
+                Today ▾
+              </div>
+
+              <div className="filter">
+                All Regions ▾
+              </div>
+
+            </div>
+
           </div>
 
-          <div className="dashboard">
+          {/* KPI */}
 
-            {/* KPI */}
-            <div className="kpis">
-              {kpis.map((kpi, i) => (
-                <div className="card" key={kpi[0]}>
-                  <div className="kpi-top">
-                    <div>
-                      <div className="kpi-title">
-                        {kpi[0]}
-                      </div>
+          <div className="kpis">
 
-                      <div className="kpi-value">
-                        {kpi[1]}
-                      </div>
-                    </div>
+            {kpis.map((item) => (
 
-                    <div className={`kpi-icon ${kpi[3]}`}>
-                      {["✦","♥","✓","◉"][i]}
-                    </div>
+              <div className="kpi" key={item.title}>
+
+                <div className="kpiTop">
+
+                  <div className="kpiTitle">
+                    {item.title}
                   </div>
 
-                  <div className="change">
-                    <span>{kpi[2]}</span>
-                    <small>vs last period</small>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* MAIN */}
-            <div className="grid-main">
-
-              <div className="card">
-                <div className="card-header">
-                  <div>
-                    <div className="eyebrow">
-                      EXPERIENCE TREND
-                    </div>
-
-                    <div className="card-title">
-                      Customer Experience Index
-                    </div>
+                  <div
+                    className={
+                      `kpiIcon ${
+                        item.type === "red"
+                          ? "iconRed"
+                          : item.type === "pink"
+                          ? "iconPink"
+                          : item.type === "green"
+                          ? "iconGreen"
+                          : "iconOrange"
+                      }`
+                    }
+                  >
+                    {item.icon}
                   </div>
 
-                  <div className="select">
-                    Last 30 Days ▾
-                  </div>
                 </div>
 
-                <div className="chart">
-                  {[48,56,53,62,58,66,61,72,69,75,71,82,78,88,84,92,89,95].map(
-                    (height, i) => (
-                      <div
-                        className="bar"
-                        key={i}
-                        style={{height: `${height}%`}}
-                      />
-                    )
-                  )}
+                <div className="kpiValue">
+                  {item.value}
                 </div>
 
-                <div className="chart-labels">
-                  <span>01 Aug</span>
-                  <span>07 Aug</span>
-                  <span>14 Aug</span>
-                  <span>20 Aug</span>
+                <div className="kpiBottom">
+
+                  <span className="change">
+                    {item.change}
+                  </span>
+
+                  <span className="changeText">
+                    {item.label}
+                  </span>
+
                 </div>
+
               </div>
 
-              <div className="card">
-                <div className="eyebrow">
-                  EXPERIENCE HEALTH
-                </div>
+            ))}
 
-                <div className="card-title">
-                  Overall CX Health
-                </div>
+          </div>
 
-                <div className="score-area">
-                  <div className="score-circle">
-                    <div className="score-number">
-                      <strong>92.8</strong>
-                      <span>CX Score</span>
-                    </div>
-                  </div>
-                </div>
+          {/* CHART + SCORE */}
 
-                <div className="mini-stats">
-                  <div className="mini">
-                    <strong>94%</strong>
-                    <span>Satisfaction</span>
+          <div className="mainGrid">
+
+            <div className="card">
+
+              <div className="cardHeader">
+
+                <div>
+
+                  <div className="eyebrow">
+                    EXPERIENCE TREND
                   </div>
 
-                  <div className="mini">
-                    <strong>97%</strong>
-                    <span>Resolution</span>
+                  <div className="cardTitle">
+                    CX Performance
                   </div>
 
-                  <div className="mini">
-                    <strong>91%</strong>
-                    <span>Sentiment</span>
-                  </div>
                 </div>
+
+                <div className="period">
+                  Last 30 Days ▾
+                </div>
+
               </div>
+
+              <div className="chart">
+
+                <div className="chartGrid" />
+                <div className="chartGrid2" />
+
+                {[
+                  48,55,51,62,58,66,61,70,
+                  67,76,72,80,77,86,82,91,
+                  87,94
+                ].map((height, index) => (
+
+                  <div
+                    key={index}
+                    className="bar"
+                    style={{
+                      height: `${height}%`
+                    }}
+                  />
+
+                ))}
+
+              </div>
+
+              <div className="chartLabels">
+                <span>01 AUG</span>
+                <span>07 AUG</span>
+                <span>14 AUG</span>
+                <span>20 AUG</span>
+              </div>
+
             </div>
 
-            {/* LOWER */}
-            <div className="lower">
+            {/* SCORE */}
 
-              <div className="card">
-                <div className="eyebrow">
-                  CUSTOMER VOICE
+            <div className="card">
+
+              <div className="eyebrow">
+                EXPERIENCE HEALTH
+              </div>
+
+              <div className="cardTitle">
+                Overall CX Health
+              </div>
+
+              <div className="scoreBox">
+
+                <div className="circle">
+
+                  <div className="score">
+
+                    <strong>
+                      92.8
+                    </strong>
+
+                    <span>
+                      CX SCORE
+                    </span>
+
+                  </div>
+
                 </div>
 
-                <div className="card-title">
-                  Contact Channels
+              </div>
+
+              <div className="scoreStats">
+
+                <div className="scoreStat">
+                  <strong>94%</strong>
+                  <span>SATISFACTION</span>
                 </div>
 
-                <div className="channel">
+                <div className="scoreStat">
+                  <strong>97%</strong>
+                  <span>RESOLUTION</span>
+                </div>
 
-                  {[
-                    ["WhatsApp","5,842",42],
-                    ["Phone","3,921",28],
-                    ["Email","2,486",18],
-                    ["Social Media","1,653",12],
-                  ].map(row => (
-                    <div className="channel-row" key={row[0]}>
-                      <div className="channel-head">
-                        <span>{row[0]}</span>
-                        <span>{row[1]}</span>
+                <div className="scoreStat">
+                  <strong>91%</strong>
+                  <span>SENTIMENT</span>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* LOWER */}
+
+          <div className="lowerGrid">
+
+            {/* CUSTOMER VOICE */}
+
+            <div className="card">
+
+              <div className="eyebrow">
+                CUSTOMER VOICE
+              </div>
+
+              <div className="cardTitle">
+                Contact Channels
+              </div>
+
+              <div className="channel">
+
+                {channels.map(
+                  ([name, value, progress]) => (
+
+                    <div
+                      className="channelRow"
+                      key={name}
+                    >
+
+                      <div className="channelHead">
+
+                        <span>
+                          {name}
+                        </span>
+
+                        <span className="channelValue">
+                          {value}
+                        </span>
+
                       </div>
 
                       <div className="progress">
-                        <div style={{width:`${row[2]*2.1}%`}} />
-                      </div>
-                    </div>
-                  ))}
 
-                </div>
+                        <div
+                          className="progressFill"
+                          style={{
+                            width: `${progress}%`
+                          }}
+                        />
+
+                      </div>
+
+                    </div>
+
+                  )
+                )}
+
               </div>
 
-              <div className="card">
-                <div className="eyebrow">
-                  REAL-TIME MONITORING
-                </div>
-
-                <div className="card-title">
-                  CX Alerts
-                </div>
-
-                {alerts.map(alert => (
-                  <div className="alert" key={alert[0]}>
-                    <div className={`alert-dot ${alert[2]}`} />
-
-                    <div>
-                      <div className="alert-title">
-                        {alert[0]}
-                      </div>
-
-                      <div className="alert-text">
-                        {alert[1]}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
             </div>
 
-            {/* INSIGHT */}
-            <div className="insight">
-              <div>
-                <div className="insight-label">
-                  CX INTELLIGENCE
-                </div>
+            {/* ALERT */}
 
-                <h3>
-                  Experience is our competitive advantage.
-                </h3>
+            <div className="card">
 
-                <p>
-                  Turn customer feedback into actionable insight
-                  and measurable service improvement.
-                </p>
+              <div className="eyebrow">
+                REAL-TIME MONITORING
               </div>
 
-              <button>
-                Open CX Analytics →
-              </button>
+              <div className="cardTitle">
+                CX Alerts
+              </div>
+
+              <div className="alert">
+
+                <div className="alertDot dotRed" />
+
+                <div>
+
+                  <div className="alertTitle">
+                    SLA Breach Risk
+                  </div>
+
+                  <div className="alertText">
+                    127 cases approaching SLA limit
+                  </div>
+
+                </div>
+
+              </div>
+
+              <div className="alert">
+
+                <div className="alertDot dotOrange" />
+
+                <div>
+
+                  <div className="alertTitle">
+                    Customer Sentiment
+                  </div>
+
+                  <div className="alertText">
+                    Negative sentiment increased in Bandung
+                  </div>
+
+                </div>
+
+              </div>
+
+              <div className="alert">
+
+                <div className="alertDot dotGreen" />
+
+                <div>
+
+                  <div className="alertTitle">
+                    Service Recovery
+                  </div>
+
+                  <div className="alertText">
+                    Jakarta region improved by 8.4%
+                  </div>
+
+                </div>
+
+              </div>
+
             </div>
 
           </div>
+
+          {/* INSIGHT */}
+
+          <div className="insight">
+
+            <div>
+
+              <div className="insightLabel">
+                CX INTELLIGENCE
+              </div>
+
+              <div className="insightTitle">
+                Experience is our competitive advantage.
+              </div>
+
+              <p className="insightText">
+                Turn customer feedback into measurable
+                service improvement.
+              </p>
+
+            </div>
+
+            <button className="insightButton">
+              OPEN CX ANALYTICS →
+            </button>
+
+          </div>
+
         </section>
+
       </div>
-    </div>
+
+    </main>
   );
 }
