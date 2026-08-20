@@ -1,8 +1,8 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "CX Command Center",
-  description: "Lion Parcel Customer Experience Command Center",
+  title: "CX Command Center | Lion Parcel",
+  description: "Customer Experience Command Center",
 };
 
 export default function RootLayout({ children }) {
