@@ -1,8 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "../lib/supabase";
 
 export default function Home() {
+  const router = useRouter();
+
+  const [checkingAuth, setCheckingAuth] = useState(true);
+  const [user, setUser] = useState(null);
+
   const [collapsed, setCollapsed] = useState(false);
   const [active, setActive] = useState("Dashboard");
 
@@ -12,6 +19,52 @@ export default function Home() {
     B2C: false,
     Other: false,
   });
+
+  useEffect(() => {
+    let mounted = true;
+
+    const checkAuth = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!mounted) return;
+
+      if (!session) {
+        router.replace("/login");
+        return;
+      }
+
+      setUser(session.user);
+      setCheckingAuth(false);
+    };
+
+    checkAuth();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!mounted) return;
+
+      if (!session) {
+        router.replace("/login");
+        return;
+      }
+
+      setUser(session.user);
+      setCheckingAuth(false);
+    });
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, [router]);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.replace("/login");
+  };
 
   const toggle = (name) => {
     setOpen((prev) => ({
@@ -24,6 +77,106 @@ export default function Home() {
     setActive(name);
   };
 
+  if (checkingAuth) {
+    return (
+      <>
+        <div className="loadingScreen">
+          <div className="loadingLogo">CX</div>
+
+          <div className="loadingSpinner"></div>
+
+          <div className="loadingTitle">
+            CUSTOMER EXPERIENCE
+          </div>
+
+          <div className="loadingText">
+            Checking authentication...
+          </div>
+        </div>
+
+        <style jsx global>{`
+          * {
+            box-sizing: border-box;
+          }
+
+          body {
+            margin: 0;
+          }
+
+          .loadingScreen {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background:
+              radial-gradient(
+                circle at 50% 20%,
+                rgba(226,27,35,.08),
+                transparent 35%
+              ),
+              #f6f7f8;
+            font-family:
+              Arial,
+              Helvetica,
+              sans-serif;
+          }
+
+          .loadingLogo {
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 18px;
+            background: linear-gradient(
+              135deg,
+              #ed3a41,
+              #c9141c
+            );
+            color: white;
+            font-size: 19px;
+            font-weight: 800;
+            box-shadow:
+              0 15px 35px
+              rgba(226,27,35,.2);
+          }
+
+          .loadingSpinner {
+            width: 28px;
+            height: 28px;
+            margin-top: 25px;
+            border: 3px solid #e5e5e5;
+            border-top-color: #e21b23;
+            border-radius: 50%;
+            animation:
+              cxSpin .8s linear infinite;
+          }
+
+          .loadingTitle {
+            margin-top: 20px;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #25282c;
+          }
+
+          .loadingText {
+            margin-top: 6px;
+            font-size: 9px;
+            color: #9b9ea4;
+          }
+
+          @keyframes cxSpin {
+            to {
+              transform: rotate(360deg);
+            }
+          }
+        `}</style>
+      </>
+    );
+  }
+
   return (
     <div className={`cxApp ${collapsed ? "isCollapsed" : ""}`}>
 
@@ -32,8 +185,6 @@ export default function Home() {
       ===================================================== */}
 
       <aside className="cxSidebar">
-
-        {/* BRAND */}
 
         <div className="brandArea">
 
@@ -64,9 +215,6 @@ export default function Home() {
 
         </div>
 
-
-        {/* COLLAPSE */}
-
         <button
           className="collapseBtn"
           onClick={() => setCollapsed(!collapsed)}
@@ -74,9 +222,6 @@ export default function Home() {
         >
           {collapsed ? "›" : "‹"}
         </button>
-
-
-        {/* NAVIGATION */}
 
         <nav className="navigation">
 
@@ -86,9 +231,6 @@ export default function Home() {
             </div>
           )}
 
-
-          {/* DASHBOARD */}
-
           <NavItem
             icon="⌂"
             label="Dashboard"
@@ -96,9 +238,6 @@ export default function Home() {
             collapsed={collapsed}
             onClick={() => selectMenu("Dashboard")}
           />
-
-
-          {/* LAYER 1 */}
 
           <NavGroup
             icon="◉"
@@ -121,9 +260,6 @@ export default function Home() {
             />
           )}
 
-
-          {/* LAYER 2 */}
-
           <NavGroup
             icon="◎"
             label="Layer 2"
@@ -142,9 +278,6 @@ export default function Home() {
               onSelect={selectMenu}
             />
           )}
-
-
-          {/* B2C */}
 
           <NavGroup
             icon="◇"
@@ -165,15 +298,11 @@ export default function Home() {
             />
           )}
 
-
           {!collapsed && (
             <div className="navCaption operationalCaption">
               OPERATIONS
             </div>
           )}
-
-
-          {/* OPERATIONS */}
 
           <NavItem
             icon="▣"
@@ -223,48 +352,37 @@ export default function Home() {
             onClick={() => selectMenu("Forecast")}
           />
 
-
-          {/* OTHER PALING BAWAH */}
-
           {!collapsed && (
             <div className="navCaption otherCaption">
               OTHER
             </div>
           )}
-{!collapsed && (
-  <div className="navCaption otherCaption">
-    OTHER
-  </div>
-)}
 
-<NavItem
-  icon="•"
-  label="Other 1"
-  active={active === "Other 1"}
-  collapsed={collapsed}
-  onClick={() => selectMenu("Other 1")}
-/>
+          <NavItem
+            icon="•"
+            label="Other 1"
+            active={active === "Other 1"}
+            collapsed={collapsed}
+            onClick={() => selectMenu("Other 1")}
+          />
 
-<NavItem
-  icon="•"
-  label="Other 2"
-  active={active === "Other 2"}
-  collapsed={collapsed}
-  onClick={() => selectMenu("Other 2")}
-/>
+          <NavItem
+            icon="•"
+            label="Other 2"
+            active={active === "Other 2"}
+            collapsed={collapsed}
+            onClick={() => selectMenu("Other 2")}
+          />
 
-<NavItem
-  icon="•"
-  label="Other 3"
-  active={active === "Other 3"}
-  collapsed={collapsed}
-  onClick={() => selectMenu("Other 3")}
-/>
+          <NavItem
+            icon="•"
+            label="Other 3"
+            active={active === "Other 3"}
+            collapsed={collapsed}
+            onClick={() => selectMenu("Other 3")}
+          />
 
         </nav>
-
-
-        {/* SIDEBAR FOOTER */}
 
         {!collapsed && (
           <div className="sidebarFooter">
@@ -303,15 +421,11 @@ export default function Home() {
 
       </aside>
 
-
       {/* =====================================================
           MAIN
       ===================================================== */}
 
       <main className="cxMain">
-
-
-        {/* TOP HEADER */}
 
         <header className="topHeader">
 
@@ -323,9 +437,7 @@ export default function Home() {
                 DIRECTORATE CX
               </span>
 
-              <b>
-                /
-              </b>
+              <b>/</b>
 
               <strong>
                 INTERNAL COMMAND CENTER
@@ -335,14 +447,11 @@ export default function Home() {
 
           </div>
 
-
           <div className="headerRight">
 
             <div className="searchBox">
 
-              <span>
-                ⌕
-              </span>
+              <span>⌕</span>
 
               <input
                 placeholder="Search anything..."
@@ -354,20 +463,14 @@ export default function Home() {
 
             </div>
 
-
             <button className="iconBtn">
               ◫
             </button>
 
-
             <button className="iconBtn notificationBtn">
-
               ♢
-
               <i />
-
             </button>
-
 
             <div className="profile">
 
@@ -378,7 +481,9 @@ export default function Home() {
               <div className="profileText">
 
                 <strong>
-                  CX Admin
+                  {user?.email
+                    ? user.email.split("@")[0]
+                    : "CX Admin"}
                 </strong>
 
                 <small>
@@ -387,9 +492,13 @@ export default function Home() {
 
               </div>
 
-              <span className="profileArrow">
-                ▾
-              </span>
+              <button
+                className="logoutBtn"
+                onClick={handleLogout}
+                title="Logout"
+              >
+                ↪
+              </button>
 
             </div>
 
@@ -397,13 +506,7 @@ export default function Home() {
 
         </header>
 
-
-        {/* =====================================================
-            DASHBOARD CONTENT
-        ===================================================== */}
-
         <div className="dashboardContent">
-
 
           {/* HERO */}
 
@@ -436,14 +539,11 @@ export default function Home() {
 
             </div>
 
-
             <div className="heroRight">
 
               <div className="heroDate">
 
-                <span>
-                  ◷
-                </span>
+                <span>◷</span>
 
                 01 AUG — 20 AUG 2026
 
@@ -451,16 +551,13 @@ export default function Home() {
 
               <button className="primaryBtn">
 
-                <span>
-                  ↓
-                </span>
+                <span>↓</span>
 
                 Export Report
 
               </button>
 
             </div>
-
 
             <div className="heroDecoration">
 
@@ -471,7 +568,6 @@ export default function Home() {
             </div>
 
           </section>
-
 
           {/* KPI */}
 
@@ -509,11 +605,9 @@ export default function Home() {
 
           </section>
 
-
           {/* PERFORMANCE + ALERT */}
 
           <section className="mainGrid">
-
 
             <div className="premiumCard performanceCard">
 
@@ -522,7 +616,6 @@ export default function Home() {
                 title="CX Performance Overview"
                 action="View Details →"
               />
-
 
               <div className="performanceTop">
 
@@ -537,7 +630,6 @@ export default function Home() {
                   </div>
 
                 </div>
-
 
                 <div className="chartLegend">
 
@@ -555,18 +647,14 @@ export default function Home() {
 
               </div>
 
-
               <div className="chartArea">
 
                 <div className="gridLines">
-
                   <span />
                   <span />
                   <span />
                   <span />
-
                 </div>
-
 
                 <div className="bars">
 
@@ -605,7 +693,6 @@ export default function Home() {
 
               </div>
 
-
               <div className="chartLabels">
 
                 <span>W1</span>
@@ -619,9 +706,6 @@ export default function Home() {
 
             </div>
 
-
-            {/* ALERT */}
-
             <div className="premiumCard alertCard">
 
               <CardHeading
@@ -629,7 +713,6 @@ export default function Home() {
                 title="Priority Alerts"
                 badge="3 ACTIVE"
               />
-
 
               <AlertItem
                 danger
@@ -647,7 +730,6 @@ export default function Home() {
                 description="Customer Voice sentiment dropped by 6%."
               />
 
-
               <button className="fullLink">
                 View all alerts →
               </button>
@@ -656,13 +738,9 @@ export default function Home() {
 
           </section>
 
-
           {/* LOWER */}
 
           <section className="lowerGrid">
-
-
-            {/* CHANNEL */}
 
             <div className="premiumCard">
 
@@ -692,9 +770,6 @@ export default function Home() {
               />
 
             </div>
-
-
-            {/* LAYER */}
 
             <div className="premiumCard">
 
@@ -730,16 +805,12 @@ export default function Home() {
 
             </div>
 
-
-            {/* MODULES */}
-
             <div className="premiumCard">
 
               <CardHeading
                 eyebrow="QUICK ACCESS"
                 title="CX Modules"
               />
-
 
               <div className="moduleGrid">
 
@@ -778,11 +849,9 @@ export default function Home() {
 
           </section>
 
-
           {/* BOTTOM */}
 
           <section className="bottomGrid">
-
 
             <div className="premiumCard activityCard">
 
@@ -812,7 +881,6 @@ export default function Home() {
 
             </div>
 
-
             <div className="premiumCard scoreCard">
 
               <div className="scoreCircle">
@@ -830,7 +898,6 @@ export default function Home() {
                 </div>
 
               </div>
-
 
               <div className="scoreText">
 
@@ -853,9 +920,6 @@ export default function Home() {
 
           </section>
 
-
-          {/* FOOTER */}
-
           <footer className="mainFooter">
 
             <span>
@@ -871,11 +935,6 @@ export default function Home() {
         </div>
 
       </main>
-
-
-      {/* =====================================================
-          GLOBAL CSS
-      ===================================================== */}
 
       <style jsx global>{`
 
@@ -897,9 +956,7 @@ export default function Home() {
           font-family:
             "Plus Jakarta Sans",
             sans-serif;
-
           background: #f3f4f6;
-
           color: #1d2024;
         }
 
@@ -912,11 +969,7 @@ export default function Home() {
           outline: none;
         }
 
-
-        /* APP */
-
         .cxApp {
-
           --red: #e21b23;
           --redDark: #c9141c;
           --redSoft: #fff0f1;
@@ -937,14 +990,9 @@ export default function Home() {
               #ffffff 52%,
               #f3f4f6
             );
-
         }
 
-
-        /* SIDEBAR */
-
         .cxSidebar {
-
           width: 275px;
 
           position: fixed;
@@ -976,35 +1024,22 @@ export default function Home() {
           transition:
             width .3s
             cubic-bezier(.4,0,.2,1);
-
         }
-
 
         .isCollapsed .cxSidebar {
           width: 78px;
         }
 
-
-        /* BRAND */
-
         .brandArea {
-
           height: 91px;
-
-          padding:
-            20px 19px;
+          padding: 20px 19px;
 
           display: flex;
-
           align-items: center;
-
           gap: 12px;
-
         }
 
-
         .cxBrandMark {
-
           width: 44px;
           height: 44px;
 
@@ -1013,7 +1048,6 @@ export default function Home() {
           position: relative;
 
           display: flex;
-
           align-items: center;
           justify-content: center;
 
@@ -1035,29 +1069,20 @@ export default function Home() {
           box-shadow:
             0 8px 20px
             rgba(226,27,35,.13);
-
         }
 
-
         .cxLetter {
-
           position: relative;
-
           z-index: 5;
 
           font-size: 13px;
-
           font-weight: 800;
-
           letter-spacing: -1.2px;
 
           color: #e21b23;
-
         }
 
-
         .cxOrbit {
-
           position: absolute;
 
           border:
@@ -1065,34 +1090,21 @@ export default function Home() {
             rgba(226,27,35,.27);
 
           border-radius: 50%;
-
         }
-
 
         .orbitA {
-
           width: 36px;
           height: 15px;
-
-          transform:
-            rotate(-27deg);
-
+          transform: rotate(-27deg);
         }
-
 
         .orbitB {
-
           width: 25px;
           height: 35px;
-
-          transform:
-            rotate(38deg);
-
+          transform: rotate(38deg);
         }
 
-
         .cxPoint {
-
           position: absolute;
 
           width: 4px;
@@ -1108,52 +1120,30 @@ export default function Home() {
           box-shadow:
             0 0 0 3px
             rgba(226,27,35,.08);
-
         }
-
 
         .brandInfo {
           overflow: hidden;
           white-space: nowrap;
         }
 
-
-        /* ONLY 2 LINES */
-
         .brandTitle {
-
           font-size: 11px;
-
           font-weight: 800;
-
           letter-spacing: .35px;
-
           color: #24272b;
-
           white-space: nowrap;
-
         }
-
 
         .brandTiny {
-
           margin-top: 4px;
-
           color: #9b9ea4;
-
           font-size: 8px;
-
           font-weight: 500;
-
           white-space: nowrap;
-
         }
 
-
-        /* COLLAPSE */
-
         .collapseBtn {
-
           position: absolute;
 
           right: -12px;
@@ -1178,77 +1168,47 @@ export default function Home() {
             rgba(0,0,0,.08);
 
           transition: .2s;
-
         }
-
 
         .collapseBtn:hover {
-
           background: var(--red);
-
           color: #ffffff;
-
-          transform:
-            scale(1.08);
-
+          transform: scale(1.08);
         }
-
-
-        /* NAV */
 
         .navigation {
-
           flex: 1;
-
           overflow-y: auto;
-
-          padding:
-            11px 13px;
-
+          padding: 11px 13px;
         }
 
-
         .navCaption {
-
-          padding:
-            9px 10px 7px;
+          padding: 9px 10px 7px;
 
           color: #a4a7ad;
 
           font-size: 7px;
-
           font-weight: 800;
-
           letter-spacing: 1.5px;
-
         }
-
 
         .operationalCaption {
           margin-top: 13px;
         }
 
-
         .otherCaption {
-
           margin-top: 18px;
-
           padding-top: 17px;
-
           border-top:
             1px solid #e9eaec;
-
         }
-
 
         .navItem,
         .navGroup {
-
           width: 100%;
           height: 42px;
 
           border: 0;
-
           border-radius: 10px;
 
           background: transparent;
@@ -1256,11 +1216,9 @@ export default function Home() {
           color: #6d7178;
 
           display: flex;
-
           align-items: center;
 
-          padding:
-            0 11px;
+          padding: 0 11px;
 
           cursor: pointer;
 
@@ -1269,22 +1227,15 @@ export default function Home() {
           position: relative;
 
           text-align: left;
-
         }
-
 
         .navItem:hover,
         .navGroup:hover {
-
           background: #f7f7f8;
-
           color: var(--red);
-
         }
 
-
         .navItem.active {
-
           background:
             linear-gradient(
               90deg,
@@ -1293,14 +1244,10 @@ export default function Home() {
             );
 
           color: var(--red);
-
           font-weight: 700;
-
         }
 
-
         .navItem.active::before {
-
           content: "";
 
           position: absolute;
@@ -1316,14 +1263,10 @@ export default function Home() {
 
           border-radius:
             0 4px 4px 0;
-
         }
 
-
         .navIcon {
-
           width: 27px;
-
           flex-shrink: 0;
 
           text-align: center;
@@ -1331,31 +1274,20 @@ export default function Home() {
           color: #9da0a5;
 
           font-size: 12px;
-
         }
-
 
         .navItem.active .navIcon,
         .navGroup.open .navIcon {
-
           color: var(--red);
-
         }
-
 
         .navLabel {
-
           font-size: 10px;
-
           font-weight: 600;
-
           white-space: nowrap;
-
         }
 
-
         .navArrow {
-
           margin-left: auto;
 
           color: #a6a9ae;
@@ -1363,51 +1295,31 @@ export default function Home() {
           font-size: 17px;
 
           transition: .2s;
-
         }
-
 
         .navGroup.open {
-
           color: var(--red);
-
           background: #fafafa;
-
         }
-
 
         .navGroup.open .navArrow {
-
-          transform:
-            rotate(90deg);
-
+          transform: rotate(90deg);
           color: var(--red);
-
         }
 
-
-        /* SUB MENU */
-
         .subMenu {
-
           margin-left: 27px;
-
           padding-left: 8px;
 
           border-left:
             1px solid #e4e5e7;
-
         }
 
-
         .subItem {
-
           width: 100%;
-
           height: 35px;
 
           border: 0;
-
           border-radius: 8px;
 
           background: transparent;
@@ -1416,76 +1328,50 @@ export default function Home() {
 
           text-align: left;
 
-          padding:
-            0 9px;
+          padding: 0 9px;
 
           font-size: 9px;
 
           cursor: pointer;
 
           display: flex;
-
           align-items: center;
 
           gap: 8px;
-
         }
-
 
         .subItem:hover {
-
           color: var(--red);
-
           background: #fafafa;
-
         }
-
 
         .subItem.active {
-
           color: var(--red);
-
           background: #fff2f3;
-
           font-weight: 700;
-
         }
 
-
         .subDot {
-
           width: 4px;
           height: 4px;
 
           border-radius: 50%;
 
           background: #c7c9cd;
-
         }
-
 
         .subItem.active .subDot {
-
           background: var(--red);
-
         }
 
-
-        /* SIDEBAR FOOTER */
-
         .sidebarFooter {
-
-          padding:
-            12px 13px 16px;
+          padding: 12px 13px 16px;
 
           border-top:
             1px solid #e7e8ea;
-
         }
 
-
         .systemCard {
-
           padding: 11px;
 
           border:
@@ -1495,51 +1381,34 @@ export default function Home() {
 
           background:
             rgba(255,255,255,.7);
-
         }
-
 
         .systemHeader {
-
           display: flex;
-
-          justify-content:
-            space-between;
+          justify-content: space-between;
 
           font-size: 7.5px;
-
           font-weight: 700;
-
         }
 
-
         .online {
-
           display: flex;
-
           align-items: center;
-
           gap: 4px;
 
           color: #16934a;
-
         }
 
-
         .online i {
-
           width: 5px;
           height: 5px;
 
           background: #16a05a;
 
           border-radius: 50%;
-
         }
 
-
         .systemLine {
-
           height: 4px;
 
           margin-top: 9px;
@@ -1549,22 +1418,16 @@ export default function Home() {
           border-radius: 10px;
 
           overflow: hidden;
-
         }
 
-
         .systemLine div {
-
           width: 96%;
           height: 100%;
 
           background: var(--red);
-
         }
 
-
         .systemCard small {
-
           display: block;
 
           margin-top: 6px;
@@ -1572,12 +1435,9 @@ export default function Home() {
           color: #aaaeb3;
 
           font-size: 7px;
-
         }
 
-
         .copyright {
-
           text-align: center;
 
           color: #b0b2b6;
@@ -1585,14 +1445,9 @@ export default function Home() {
           font-size: 7px;
 
           margin-top: 11px;
-
         }
 
-
-        /* MAIN */
-
         .cxMain {
-
           width:
             calc(100% - 275px);
 
@@ -1601,41 +1456,30 @@ export default function Home() {
           transition:
             margin-left .3s,
             width .3s;
-
         }
 
-
         .isCollapsed .cxMain {
-
           width:
             calc(100% - 78px);
 
           margin-left: 78px;
-
         }
 
-
-        /* HEADER */
-
         .topHeader {
-
           height: 67px;
 
           position: sticky;
-
           top: 0;
 
           z-index: 20;
 
-          padding:
-            0 31px;
+          padding: 0 31px;
 
           display: flex;
 
           align-items: center;
 
-          justify-content:
-            space-between;
+          justify-content: space-between;
 
           background:
             rgba(255,255,255,.88);
@@ -1645,12 +1489,9 @@ export default function Home() {
 
           border-bottom:
             1px solid #e7e8ea;
-
         }
 
-
         .breadcrumb {
-
           font-size: 7.5px;
 
           letter-spacing: .9px;
@@ -1658,53 +1499,33 @@ export default function Home() {
           color: #a1a4aa;
 
           font-weight: 700;
-
         }
-
 
         .breadcrumb b {
-
-          margin:
-            0 8px;
-
+          margin: 0 8px;
           color: #d4d5d8;
-
         }
-
 
         .breadcrumb strong {
-
           color: #555960;
-
           font-weight: 800;
-
         }
-
 
         .headerRight {
-
           display: flex;
-
           align-items: center;
-
           gap: 8px;
-
         }
 
-
         .searchBox {
-
           width: 230px;
           height: 36px;
 
           display: flex;
-
           align-items: center;
-
           gap: 8px;
 
-          padding:
-            0 10px;
+          padding: 0 10px;
 
           background: #fafafa;
 
@@ -1712,40 +1533,27 @@ export default function Home() {
             1px solid #e2e3e5;
 
           border-radius: 9px;
-
         }
-
 
         .searchBox span {
-
           color: #96999f;
-
           font-size: 15px;
-
         }
 
-
         .searchBox input {
-
           flex: 1;
 
           border: 0;
-
           outline: 0;
 
           background: transparent;
 
           font-size: 9px;
-
           color: #333;
-
         }
 
-
         .searchBox kbd {
-
-          padding:
-            3px 5px;
+          padding: 3px 5px;
 
           border:
             1px solid #dddfe2;
@@ -1757,12 +1565,9 @@ export default function Home() {
           color: #a2a5aa;
 
           font-size: 7px;
-
         }
 
-
         .iconBtn {
-
           width: 36px;
           height: 36px;
 
@@ -1778,12 +1583,9 @@ export default function Home() {
           cursor: pointer;
 
           position: relative;
-
         }
 
-
         .notificationBtn i {
-
           position: absolute;
 
           right: 7px;
@@ -1795,12 +1597,9 @@ export default function Home() {
           border-radius: 50%;
 
           background: var(--red);
-
         }
 
-
         .profile {
-
           display: flex;
 
           align-items: center;
@@ -1808,12 +1607,9 @@ export default function Home() {
           gap: 8px;
 
           padding-left: 4px;
-
         }
 
-
         .profileAvatar {
-
           width: 35px;
           height: 35px;
 
@@ -1831,7 +1627,6 @@ export default function Home() {
           display: flex;
 
           align-items: center;
-
           justify-content: center;
 
           font-size: 9px;
@@ -1841,21 +1636,14 @@ export default function Home() {
           box-shadow:
             0 5px 13px
             rgba(226,27,35,.18);
-
         }
-
 
         .profileText strong {
-
           display: block;
-
           font-size: 8.5px;
-
         }
 
-
         .profileText small {
-
           display: block;
 
           margin-top: 2px;
@@ -1863,33 +1651,37 @@ export default function Home() {
           color: #a1a4a9;
 
           font-size: 7px;
-
         }
 
+        .logoutBtn {
+          width: 30px;
+          height: 30px;
 
-        .profileArrow {
+          border:
+            1px solid #e4e5e7;
 
-          color: #a3a6ab;
+          border-radius: 8px;
 
-          font-size: 10px;
+          background: #fff;
 
+          color: #777;
+
+          cursor: pointer;
+
+          transition: .2s;
         }
 
-
-        /* CONTENT */
+        .logoutBtn:hover {
+          background: #fff0f1;
+          color: var(--red);
+          border-color: #f0c4c6;
+        }
 
         .dashboardContent {
-
-          padding:
-            25px 31px 32px;
-
+          padding: 25px 31px 32px;
         }
 
-
-        /* HERO */
-
         .heroPanel {
-
           min-height: 190px;
 
           position: relative;
@@ -1909,25 +1701,20 @@ export default function Home() {
               #fff5f6 100%
             );
 
-          padding:
-            31px 32px;
+          padding: 31px 32px;
 
           display: flex;
 
           align-items: center;
 
-          justify-content:
-            space-between;
+          justify-content: space-between;
 
           box-shadow:
             0 12px 40px
             rgba(20,20,20,.035);
-
         }
 
-
         .heroGlow {
-
           position: absolute;
 
           width: 300px;
@@ -1940,21 +1727,14 @@ export default function Home() {
 
           background:
             rgba(226,27,35,.045);
-
         }
-
 
         .heroText {
-
           position: relative;
-
           z-index: 2;
-
         }
 
-
         .eyebrow {
-
           display: flex;
 
           align-items: center;
@@ -1968,47 +1748,33 @@ export default function Home() {
           font-weight: 800;
 
           letter-spacing: 1.5px;
-
         }
 
-
         .eyebrow span {
-
           width: 17px;
           height: 2px;
 
           background: var(--red);
 
           border-radius: 5px;
-
         }
 
-
         .heroPanel h1 {
-
-          margin:
-            10px 0 7px;
+          margin: 10px 0 7px;
 
           font-size: 29px;
 
           line-height: 1.18;
 
           letter-spacing: -1.3px;
-
         }
-
 
         .heroPanel h1 em {
-
           color: var(--red);
-
           font-style: normal;
-
         }
 
-
         .heroPanel p {
-
           margin: 0;
 
           color: #8e9298;
@@ -2016,12 +1782,9 @@ export default function Home() {
           font-size: 9.5px;
 
           line-height: 1.7;
-
         }
 
-
         .heroRight {
-
           position: relative;
 
           z-index: 3;
@@ -2031,16 +1794,12 @@ export default function Home() {
           align-items: center;
 
           gap: 8px;
-
         }
 
-
         .heroDate {
-
           height: 38px;
 
-          padding:
-            0 12px;
+          padding: 0 12px;
 
           border:
             1px solid #e2e3e6;
@@ -2061,25 +1820,17 @@ export default function Home() {
           font-size: 7.5px;
 
           font-weight: 700;
-
         }
-
 
         .heroDate span {
-
           color: var(--red);
-
           font-size: 12px;
-
         }
 
-
         .primaryBtn {
-
           height: 38px;
 
-          padding:
-            0 14px;
+          padding: 0 14px;
 
           border: 0;
 
@@ -2103,19 +1854,13 @@ export default function Home() {
           box-shadow:
             0 8px 20px
             rgba(226,27,35,.2);
-
         }
-
 
         .primaryBtn span {
-
           margin-right: 5px;
-
         }
 
-
         .heroDecoration {
-
           position: absolute;
 
           right: -35px;
@@ -2123,12 +1868,9 @@ export default function Home() {
 
           width: 330px;
           height: 330px;
-
         }
 
-
         .ring {
-
           position: absolute;
 
           border:
@@ -2136,44 +1878,30 @@ export default function Home() {
             rgba(226,27,35,.12);
 
           border-radius: 50%;
-
         }
-
 
         .ringOne {
-
           width: 330px;
           height: 330px;
-
         }
 
-
         .ringTwo {
-
           width: 245px;
           height: 245px;
 
           left: 43px;
           top: 43px;
-
         }
 
-
         .ringThree {
-
           width: 160px;
           height: 160px;
 
           left: 85px;
           top: 85px;
-
         }
 
-
-        /* KPI */
-
         .kpiGrid {
-
           display: grid;
 
           grid-template-columns:
@@ -2182,12 +1910,9 @@ export default function Home() {
           gap: 13px;
 
           margin-top: 14px;
-
         }
 
-
         .metricCard {
-
           min-height: 145px;
 
           padding: 18px;
@@ -2207,36 +1932,25 @@ export default function Home() {
           transition:
             transform .2s,
             box-shadow .2s;
-
         }
 
-
         .metricCard:hover {
-
-          transform:
-            translateY(-3px);
+          transform: translateY(-3px);
 
           box-shadow:
             0 14px 30px
             rgba(20,20,20,.07);
-
         }
-
 
         .metricTop {
-
           display: flex;
 
-          justify-content:
-            space-between;
+          justify-content: space-between;
 
           align-items: center;
-
         }
 
-
         .metricIcon {
-
           width: 33px;
           height: 33px;
 
@@ -2249,18 +1963,13 @@ export default function Home() {
           display: flex;
 
           align-items: center;
-
           justify-content: center;
 
           font-size: 12px;
-
         }
 
-
         .metricChange {
-
-          padding:
-            5px 7px;
+          padding: 5px 7px;
 
           border-radius: 6px;
 
@@ -2271,12 +1980,9 @@ export default function Home() {
           font-size: 7px;
 
           font-weight: 800;
-
         }
 
-
         .metricLabel {
-
           margin-top: 17px;
 
           color: #9b9ea4;
@@ -2286,12 +1992,9 @@ export default function Home() {
           font-weight: 700;
 
           letter-spacing: .55px;
-
         }
 
-
         .metricValue {
-
           margin-top: 3px;
 
           font-size: 25px;
@@ -2299,23 +2002,14 @@ export default function Home() {
           font-weight: 800;
 
           letter-spacing: -1px;
-
         }
-
 
         .metricValue small {
-
           font-size: 14px;
-
           color: #55595f;
-
         }
 
-
-        /* GRIDS */
-
         .mainGrid {
-
           display: grid;
 
           grid-template-columns:
@@ -2324,12 +2018,9 @@ export default function Home() {
           gap: 14px;
 
           margin-top: 14px;
-
         }
 
-
         .lowerGrid {
-
           display: grid;
 
           grid-template-columns:
@@ -2338,12 +2029,9 @@ export default function Home() {
           gap: 14px;
 
           margin-top: 14px;
-
         }
 
-
         .bottomGrid {
-
           display: grid;
 
           grid-template-columns:
@@ -2352,12 +2040,9 @@ export default function Home() {
           gap: 14px;
 
           margin-top: 14px;
-
         }
 
-
         .premiumCard {
-
           background:
             rgba(255,255,255,.92);
 
@@ -2371,24 +2056,17 @@ export default function Home() {
           box-shadow:
             0 6px 25px
             rgba(20,20,20,.025);
-
         }
 
-
         .cardHeading {
-
           display: flex;
 
           align-items: flex-start;
 
-          justify-content:
-            space-between;
-
+          justify-content: space-between;
         }
 
-
         .cardEyebrow {
-
           color: var(--red);
 
           font-size: 7px;
@@ -2396,12 +2074,9 @@ export default function Home() {
           font-weight: 800;
 
           letter-spacing: 1.2px;
-
         }
 
-
         .cardTitle {
-
           margin-top: 4px;
 
           font-size: 14px;
@@ -2409,12 +2084,9 @@ export default function Home() {
           font-weight: 800;
 
           letter-spacing: -.3px;
-
         }
 
-
         .cardAction {
-
           border: 0;
 
           background: transparent;
@@ -2426,14 +2098,10 @@ export default function Home() {
           font-weight: 700;
 
           cursor: pointer;
-
         }
 
-
         .cardBadge {
-
-          padding:
-            5px 7px;
+          padding: 5px 7px;
 
           border-radius: 5px;
 
@@ -2444,50 +2112,35 @@ export default function Home() {
           font-size: 6.5px;
 
           font-weight: 800;
-
         }
 
-
-        /* PERFORMANCE */
-
         .performanceTop {
-
           display: flex;
 
           align-items: flex-end;
 
-          justify-content:
-            space-between;
+          justify-content: space-between;
 
           margin-top: 20px;
-
         }
 
-
         .performanceValue {
-
           font-size: 27px;
 
           font-weight: 800;
 
           letter-spacing: -1.2px;
-
         }
 
-
         .performanceDescription {
-
           margin-top: 3px;
 
           color: #a0a3a8;
 
           font-size: 7.5px;
-
         }
 
-
         .chartLegend {
-
           display: flex;
 
           gap: 13px;
@@ -2495,48 +2148,33 @@ export default function Home() {
           color: #9a9da3;
 
           font-size: 7px;
-
         }
 
-
         .chartLegend span {
-
           display: flex;
 
           align-items: center;
 
           gap: 4px;
-
         }
-
 
         .actualDot,
         .targetDot {
-
           width: 6px;
           height: 6px;
 
           border-radius: 50%;
-
         }
-
 
         .actualDot {
-
           background: var(--red);
-
         }
-
 
         .targetDot {
-
           background: #d8dadd;
-
         }
 
-
         .chartArea {
-
           height: 185px;
 
           position: relative;
@@ -2545,12 +2183,9 @@ export default function Home() {
 
           border-bottom:
             1px solid #ececee;
-
         }
 
-
         .gridLines {
-
           position: absolute;
 
           inset: 0;
@@ -2559,23 +2194,15 @@ export default function Home() {
 
           flex-direction: column;
 
-          justify-content:
-            space-between;
-
+          justify-content: space-between;
         }
-
 
         .gridLines span {
-
           height: 1px;
-
           background: #f0f1f2;
-
         }
 
-
         .bars {
-
           position: absolute;
 
           inset: 0 8px 0 8px;
@@ -2585,12 +2212,9 @@ export default function Home() {
           align-items: flex-end;
 
           gap: 10px;
-
         }
 
-
         .barContainer {
-
           flex: 1;
 
           height: 100%;
@@ -2598,12 +2222,9 @@ export default function Home() {
           display: flex;
 
           align-items: flex-end;
-
         }
 
-
         .barValue {
-
           width: 100%;
 
           border-radius:
@@ -2619,45 +2240,32 @@ export default function Home() {
           box-shadow:
             0 5px 12px
             rgba(226,27,35,.1);
-
         }
 
-
         .chartLabels {
-
           display: flex;
 
-          justify-content:
-            space-around;
+          justify-content: space-around;
 
           color: #aaaeb4;
 
           font-size: 7px;
 
           padding-top: 7px;
-
         }
 
-
-        /* ALERT */
-
         .alertItem {
-
           display: flex;
 
           gap: 9px;
 
-          padding:
-            14px 0;
+          padding: 14px 0;
 
           border-bottom:
             1px solid #f0f1f2;
-
         }
 
-
         .alertIcon {
-
           width: 29px;
           height: 29px;
 
@@ -2668,7 +2276,6 @@ export default function Home() {
           display: flex;
 
           align-items: center;
-
           justify-content: center;
 
           background: #fff7e8;
@@ -2678,44 +2285,29 @@ export default function Home() {
           font-size: 10px;
 
           font-weight: 800;
-
         }
-
 
         .alertIcon.danger {
-
           background: #fff0f1;
-
           color: var(--red);
-
         }
-
 
         .alertItem strong {
-
           display: block;
-
           font-size: 8.5px;
-
         }
 
-
         .alertItem p {
-
-          margin:
-            4px 0 0;
+          margin: 4px 0 0;
 
           color: #9ca0a5;
 
           font-size: 7px;
 
           line-height: 1.6;
-
         }
 
-
         .fullLink {
-
           margin-top: 12px;
 
           border: 0;
@@ -2729,47 +2321,29 @@ export default function Home() {
           font-weight: 700;
 
           cursor: pointer;
-
         }
-
-
-        /* CHANNEL */
 
         .channel {
-
           margin-top: 18px;
-
         }
-
 
         .channelHead {
-
           display: flex;
 
-          justify-content:
-            space-between;
+          justify-content: space-between;
 
           font-size: 8px;
-
         }
-
 
         .channelName {
-
           color: #777b82;
-
         }
-
 
         .channelValue {
-
           font-weight: 800;
-
         }
 
-
         .channelTrack {
-
           height: 5px;
 
           margin-top: 7px;
@@ -2779,12 +2353,9 @@ export default function Home() {
           border-radius: 10px;
 
           overflow: hidden;
-
         }
 
-
         .channelFill {
-
           height: 100%;
 
           border-radius: 10px;
@@ -2795,33 +2366,24 @@ export default function Home() {
               #e21b23,
               #f45c61
             );
-
         }
 
-
-        /* LAYER */
-
         .layerRow {
-
           height: 35px;
 
           display: flex;
 
           align-items: center;
 
-          justify-content:
-            space-between;
+          justify-content: space-between;
 
           border-bottom:
             1px solid #f0f1f2;
 
           font-size: 8px;
-
         }
 
-
         .layerName {
-
           display: flex;
 
           align-items: center;
@@ -2829,26 +2391,18 @@ export default function Home() {
           gap: 7px;
 
           color: #7b7f85;
-
         }
 
-
         .layerDot {
-
           width: 5px;
           height: 5px;
 
           background: var(--red);
 
           border-radius: 50%;
-
         }
 
-
-        /* MODULE */
-
         .moduleGrid {
-
           display: grid;
 
           grid-template-columns:
@@ -2857,12 +2411,9 @@ export default function Home() {
           gap: 8px;
 
           margin-top: 17px;
-
         }
 
-
         .moduleCard {
-
           height: 70px;
 
           padding: 10px;
@@ -2879,48 +2430,34 @@ export default function Home() {
           cursor: pointer;
 
           transition: .18s;
-
         }
 
-
         .moduleCard:hover {
-
           background: #fff;
 
           border-color: #efb2b5;
 
-          transform:
-            translateY(-2px);
+          transform: translateY(-2px);
 
           box-shadow:
             0 7px 16px
             rgba(0,0,0,.05);
-
         }
-
 
         .moduleCard span {
-
           color: var(--red);
-
           font-size: 13px;
-
         }
 
-
         .moduleCard strong {
-
           display: block;
 
           margin-top: 7px;
 
           font-size: 8px;
-
         }
 
-
         .moduleCard small {
-
           display: block;
 
           margin-top: 3px;
@@ -2928,31 +2465,22 @@ export default function Home() {
           color: #b0b3b7;
 
           font-size: 6.5px;
-
         }
 
-
-        /* ACTIVITY */
-
         .activityItem {
-
           display: flex;
 
           align-items: center;
 
           gap: 10px;
 
-          padding:
-            12px 0;
+          padding: 12px 0;
 
           border-bottom:
             1px solid #f0f1f2;
-
         }
 
-
         .activityIcon {
-
           width: 28px;
           height: 28px;
 
@@ -2961,7 +2489,6 @@ export default function Home() {
           display: flex;
 
           align-items: center;
-
           justify-content: center;
 
           background: #fff0f1;
@@ -2971,21 +2498,14 @@ export default function Home() {
           font-size: 9px;
 
           font-weight: 800;
-
         }
-
 
         .activityText strong {
-
           display: block;
-
           font-size: 8px;
-
         }
 
-
         .activityText small {
-
           display: block;
 
           margin-top: 3px;
@@ -2993,14 +2513,9 @@ export default function Home() {
           color: #a4a7ac;
 
           font-size: 7px;
-
         }
 
-
-        /* SCORE */
-
         .scoreCard {
-
           display: flex;
 
           align-items: center;
@@ -3008,12 +2523,9 @@ export default function Home() {
           gap: 20px;
 
           min-height: 150px;
-
         }
 
-
         .scoreCircle {
-
           width: 105px;
           height: 105px;
 
@@ -3030,14 +2542,10 @@ export default function Home() {
           display: flex;
 
           align-items: center;
-
           justify-content: center;
-
         }
 
-
         .scoreCircle > div {
-
           width: 80px;
           height: 80px;
 
@@ -3050,44 +2558,28 @@ export default function Home() {
           flex-direction: column;
 
           align-items: center;
-
           justify-content: center;
-
         }
-
 
         .scoreCircle strong {
-
           font-size: 24px;
-
           letter-spacing: -1px;
-
         }
 
-
         .scoreCircle span {
-
           margin-top: 2px;
 
           color: #a0a3a8;
 
           font-size: 6px;
-
         }
-
 
         .scoreText h3 {
-
-          margin:
-            7px 0 4px;
-
+          margin: 7px 0 4px;
           font-size: 17px;
-
         }
 
-
         .scoreText p {
-
           margin: 0;
 
           max-width: 190px;
@@ -3097,140 +2589,95 @@ export default function Home() {
           font-size: 7.5px;
 
           line-height: 1.6;
-
         }
 
-
-        /* FOOTER */
-
         .mainFooter {
-
           display: flex;
 
-          justify-content:
-            space-between;
+          justify-content: space-between;
 
-          padding:
-            20px 2px 4px;
+          padding: 20px 2px 4px;
 
           color: #a7aaaf;
 
           font-size: 7px;
-
         }
-
-
-        /* RESPONSIVE */
 
         @media (max-width: 1150px) {
 
           .kpiGrid {
-
             grid-template-columns:
               repeat(2, 1fr);
-
           }
 
           .lowerGrid {
-
             grid-template-columns:
               1fr 1fr;
-
           }
 
         }
 
-
         @media (max-width: 900px) {
 
           .searchBox {
-
             display: none;
-
           }
 
           .mainGrid,
           .bottomGrid {
-
-            grid-template-columns:
-              1fr;
-
+            grid-template-columns: 1fr;
           }
 
           .heroPanel {
-
             align-items: flex-start;
 
             flex-direction: column;
 
             gap: 20px;
-
           }
 
         }
 
-
         @media (max-width: 700px) {
 
           .cxSidebar {
-
             display: none;
-
           }
 
           .cxMain,
           .isCollapsed .cxMain {
-
             width: 100%;
-
             margin-left: 0;
-
           }
 
           .dashboardContent {
-
             padding: 17px;
-
           }
 
           .topHeader {
-
-            padding:
-              0 17px;
-
+            padding: 0 17px;
           }
 
           .kpiGrid,
           .lowerGrid {
-
-            grid-template-columns:
-              1fr;
-
+            grid-template-columns: 1fr;
           }
 
           .heroPanel {
-
             padding: 23px;
-
           }
 
           .heroPanel h1 {
-
             font-size: 23px;
-
           }
 
           .heroRight {
-
             flex-wrap: wrap;
-
           }
 
           .profileText,
           .profileArrow {
-
             display: none;
-
           }
 
         }
@@ -3240,7 +2687,6 @@ export default function Home() {
     </div>
   );
 }
-
 
 /* =========================================================
    NAV ITEM
@@ -3259,7 +2705,6 @@ function NavItem({
       onClick={onClick}
       title={collapsed ? label : ""}
     >
-
       <span className="navIcon">
         {icon}
       </span>
@@ -3269,11 +2714,9 @@ function NavItem({
           {label}
         </span>
       )}
-
     </button>
   );
 }
-
 
 /* =========================================================
    NAV GROUP
@@ -3292,7 +2735,6 @@ function NavGroup({
       onClick={onClick}
       title={collapsed ? label : ""}
     >
-
       <span className="navIcon">
         {icon}
       </span>
@@ -3308,11 +2750,9 @@ function NavGroup({
           </span>
         </>
       )}
-
     </button>
   );
 }
-
 
 /* =========================================================
    SUB MENU
@@ -3327,7 +2767,6 @@ function SubMenu({
     <div className="subMenu">
 
       {items.map((item) => (
-
         <button
           key={item}
           className={`subItem ${
@@ -3335,19 +2774,15 @@ function SubMenu({
           }`}
           onClick={() => onSelect(item)}
         >
-
           <i className="subDot" />
 
           {item}
-
         </button>
-
       ))}
 
     </div>
   );
 }
-
 
 /* =========================================================
    METRIC
@@ -3395,7 +2830,6 @@ function Metric({
   );
 }
 
-
 /* =========================================================
    CARD HEADING
 ========================================================= */
@@ -3437,7 +2871,6 @@ function CardHeading({
   );
 }
 
-
 /* =========================================================
    ALERT
 ========================================================= */
@@ -3473,7 +2906,6 @@ function AlertItem({
     </div>
   );
 }
-
 
 /* =========================================================
    CHANNEL
@@ -3513,7 +2945,6 @@ function Channel({
   );
 }
 
-
 /* =========================================================
    LAYER
 ========================================================= */
@@ -3540,7 +2971,6 @@ function Layer({
     </div>
   );
 }
-
 
 /* =========================================================
    ACTIVITY
