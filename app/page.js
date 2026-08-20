@@ -1,310 +1,438 @@
+"use client";
+
+import { useState } from "react";
+
 const kpis = [
-  { label: "Total Cases", value: "1,284", change: "+12.8%", trend: "up" },
-  { label: "Open Cases", value: "327", change: "-8.4%", trend: "down" },
-  { label: "Resolved", value: "957", change: "+18.2%", trend: "up" },
-  { label: "SLA Achievement", value: "94.8%", change: "+2.6%", trend: "up" },
+  {
+    title: "Total CX Cases",
+    value: "1,284",
+    change: "+12.8%",
+    note: "vs last period",
+    icon: "◉",
+  },
+  {
+    title: "Open Cases",
+    value: "327",
+    change: "-8.4%",
+    note: "vs last period",
+    icon: "◌",
+  },
+  {
+    title: "Resolved Cases",
+    value: "957",
+    change: "+18.2%",
+    note: "vs last period",
+    icon: "✓",
+  },
+  {
+    title: "SLA Achievement",
+    value: "94.8%",
+    change: "+2.6%",
+    note: "vs last period",
+    icon: "◈",
+  },
 ];
 
 const cases = [
   {
     id: "CX-10284",
+    stt: "LPN-8829341",
     customer: "PT Nusantara Jaya",
-    issue: "Delivery Delay",
-    hub: "Jakarta Hub",
-    status: "Open",
+    category: "Delivery Issue",
+    hub: "Jakarta",
     priority: "High",
+    status: "Open",
+    aging: "2h 14m",
   },
   {
     id: "CX-10283",
+    stt: "LPN-8829277",
     customer: "Andi Pratama",
-    issue: "Package Tracking",
-    hub: "Bandung Hub",
-    status: "Processing",
+    category: "Tracking",
+    hub: "Bandung",
     priority: "Medium",
+    status: "Processing",
+    aging: "1h 42m",
   },
   {
     id: "CX-10282",
+    stt: "LPN-8829112",
     customer: "Toko Makmur",
-    issue: "Lost Package",
-    hub: "Surabaya Hub",
-    status: "Escalated",
+    category: "Lost Package",
+    hub: "Surabaya",
     priority: "Critical",
+    status: "Escalated",
+    aging: "8h 21m",
   },
   {
     id: "CX-10281",
+    stt: "LPN-8829033",
     customer: "Siti Rahma",
-    issue: "Wrong Delivery",
-    hub: "Bekasi Hub",
-    status: "Resolved",
+    category: "Wrong Delivery",
+    hub: "Bekasi",
     priority: "Low",
+    status: "Resolved",
+    aging: "45m",
+  },
+  {
+    id: "CX-10280",
+    stt: "LPN-8828998",
+    customer: "Budi Santoso",
+    category: "Delivery Delay",
+    hub: "Semarang",
+    priority: "High",
+    status: "Open",
+    aging: "3h 09m",
   },
 ];
 
-const bars = [42, 55, 48, 68, 62, 76, 72, 88, 81, 94, 86, 96];
+const reasons = [
+  { name: "Delivery Delay", value: 31, count: 398 },
+  { name: "Tracking Issue", value: 24, count: 308 },
+  { name: "Lost Package", value: 16, count: 205 },
+  { name: "Wrong Delivery", value: 12, count: 154 },
+  { name: "Others", value: 17, count: 219 },
+];
 
-function StatusBadge({ status }) {
-  const styles = {
-    Open: {
-      background: "#3b1d1d",
-      color: "#ff8d8d",
-    },
-    Processing: {
-      background: "#332b18",
-      color: "#ffd166",
-    },
-    Escalated: {
-      background: "#3a172e",
-      color: "#ff70b7",
-    },
-    Resolved: {
-      background: "#163329",
-      color: "#5ee6a8",
-    },
+const bars = [38, 45, 42, 55, 49, 67, 61, 74, 70, 82, 77, 91, 86, 96];
+
+function Status({ value }) {
+  const config = {
+    Open: ["#fff1f2", "#dc2626", "●"],
+    Processing: ["#fff7ed", "#ea580c", "●"],
+    Escalated: ["#fef2f2", "#b91c1c", "●"],
+    Resolved: ["#f0fdf4", "#16a34a", "●"],
   };
+
+  const [background, color, icon] = config[value];
 
   return (
     <span
       style={{
-        ...styles[status],
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 5,
         padding: "6px 10px",
-        borderRadius: "999px",
-        fontSize: "12px",
-        fontWeight: 600,
+        borderRadius: 999,
+        background,
+        color,
+        fontSize: 11,
+        fontWeight: 700,
       }}
     >
-      {status}
+      {icon} {value}
     </span>
   );
 }
 
-function PriorityBadge({ priority }) {
-  const colors = {
-    Critical: "#ff4d6d",
-    High: "#ff8a65",
-    Medium: "#ffd166",
-    Low: "#5ee6a8",
+function Priority({ value }) {
+  const config = {
+    Critical: "#dc2626",
+    High: "#ea580c",
+    Medium: "#d97706",
+    Low: "#16a34a",
   };
 
   return (
     <span
       style={{
-        color: colors[priority],
-        fontSize: "12px",
+        color: config[value],
+        fontSize: 11,
         fontWeight: 700,
       }}
     >
-      ● {priority}
+      {value}
     </span>
   );
 }
 
 export default function Home() {
+  const [active, setActive] = useState("Overview");
+
+  const menuGroups = [
+    {
+      title: "CUSTOMER EXPERIENCE",
+      items: ["Cases", "Complaints", "Customer Voice", "Sentiment"],
+    },
+    {
+      title: "PERFORMANCE",
+      items: ["SLA Monitoring", "Resolution", "Escalation", "CSAT"],
+    },
+    {
+      title: "ANALYTICS",
+      items: ["Hub Performance", "Trend Analysis", "CX Insights"],
+    },
+  ];
+
   return (
     <main
       style={{
         minHeight: "100vh",
-        background: "#070b16",
-        color: "#f8fafc",
+        background: "#f6f7f9",
+        color: "#202124",
         fontFamily:
-          "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif",
-        display: "flex",
+          "Inter, Arial, Helvetica, sans-serif",
       }}
     >
       {/* SIDEBAR */}
+
       <aside
         style={{
-          width: "245px",
-          minHeight: "100vh",
-          background: "#0b1020",
-          borderRight: "1px solid #1b2338",
-          padding: "24px 16px",
-          boxSizing: "border-box",
           position: "fixed",
           left: 0,
           top: 0,
+          bottom: 0,
+          width: 250,
+          background: "#ffffff",
+          borderRight: "1px solid #e7e7e7",
+          padding: "24px 16px",
+          boxSizing: "border-box",
+          zIndex: 10,
         }}
       >
+        {/* LOGO */}
+
         <div
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "12px",
-            padding: "0 10px 28px",
+            gap: 11,
+            padding: "0 9px 28px",
           }}
         >
           <div
             style={{
-              width: "38px",
-              height: "38px",
-              borderRadius: "12px",
-              background: "linear-gradient(135deg,#4f46e5,#06b6d4)",
+              width: 39,
+              height: 39,
+              borderRadius: 10,
+              background: "#e21b23",
+              color: "#fff",
               display: "grid",
               placeItems: "center",
+              fontSize: 13,
               fontWeight: 900,
-              boxShadow: "0 8px 25px rgba(59,130,246,.25)",
             }}
           >
-            CX
+            LP
           </div>
 
           <div>
-            <div style={{ fontWeight: 800, fontSize: "15px" }}>
-              CX Command
+            <div
+              style={{
+                fontSize: 15,
+                fontWeight: 800,
+                color: "#191919",
+              }}
+            >
+              LION PARCEL
             </div>
-            <div style={{ color: "#64748b", fontSize: "11px" }}>
-              INTERNAL CENTER
+
+            <div
+              style={{
+                fontSize: 10,
+                color: "#8a8a8a",
+                marginTop: 2,
+              }}
+            >
+              CUSTOMER EXPERIENCE
             </div>
           </div>
         </div>
 
+        {/* OVERVIEW */}
+
         <div
+          onClick={() => setActive("Overview")}
           style={{
-            color: "#475569",
-            fontSize: "10px",
-            fontWeight: 700,
-            letterSpacing: "1.5px",
-            padding: "0 12px 10px",
+            display: "flex",
+            alignItems: "center",
+            gap: 11,
+            padding: "11px 12px",
+            borderRadius: 8,
+            background:
+              active === "Overview" ? "#fff0f1" : "transparent",
+            color:
+              active === "Overview" ? "#d71920" : "#555",
+            fontSize: 13,
+            fontWeight: active === "Overview" ? 700 : 500,
+            cursor: "pointer",
+            marginBottom: 19,
           }}
         >
-          WORKSPACE
+          <span style={{ fontSize: 15 }}>◉</span>
+          Overview
         </div>
 
-        {[
-          ["▦", "Dashboard"],
-          ["◉", "CX Cases"],
-          ["◫", "SLA Monitoring"],
-          ["◈", "Analytics"],
-          ["⌁", "Operations"],
-        ].map(([icon, label], index) => (
-          <div
-            key={label}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-              padding: "12px",
-              borderRadius: "10px",
-              marginBottom: "4px",
-              background:
-                index === 0
-                  ? "linear-gradient(90deg,#1d2a52,#121a30)"
-                  : "transparent",
-              color: index === 0 ? "#fff" : "#94a3b8",
-              fontSize: "14px",
-              fontWeight: index === 0 ? 700 : 500,
-            }}
-          >
-            <span style={{ width: "18px", textAlign: "center" }}>{icon}</span>
-            {label}
+        {/* MENU GROUPS */}
+
+        {menuGroups.map((group) => (
+          <div key={group.title} style={{ marginBottom: 21 }}>
+            <div
+              style={{
+                fontSize: 9,
+                letterSpacing: 1.2,
+                fontWeight: 800,
+                color: "#a0a0a0",
+                padding: "0 12px 8px",
+              }}
+            >
+              {group.title}
+            </div>
+
+            {group.items.map((item) => (
+              <div
+                key={item}
+                onClick={() => setActive(item)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 11,
+                  padding: "9px 12px",
+                  borderRadius: 8,
+                  color: active === item ? "#d71920" : "#666",
+                  background:
+                    active === item ? "#fff0f1" : "transparent",
+                  fontSize: 12,
+                  fontWeight: active === item ? 700 : 500,
+                  cursor: "pointer",
+                  marginBottom: 2,
+                }}
+              >
+                <span
+                  style={{
+                    width: 15,
+                    color: active === item ? "#e21b23" : "#999",
+                  }}
+                >
+                  •
+                </span>
+
+                {item}
+              </div>
+            ))}
           </div>
         ))}
 
-        <div
-          style={{
-            color: "#475569",
-            fontSize: "10px",
-            fontWeight: 700,
-            letterSpacing: "1.5px",
-            padding: "25px 12px 10px",
-          }}
-        >
-          MANAGEMENT
-        </div>
-
-        {[
-          ["⚙", "Settings"],
-          ["♙", "Team"],
-        ].map(([icon, label]) => (
-          <div
-            key={label}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-              padding: "12px",
-              borderRadius: "10px",
-              color: "#94a3b8",
-              fontSize: "14px",
-            }}
-          >
-            <span style={{ width: "18px", textAlign: "center" }}>{icon}</span>
-            {label}
-          </div>
-        ))}
+        {/* BOTTOM MENU */}
 
         <div
           style={{
             position: "absolute",
-            left: "16px",
-            right: "16px",
-            bottom: "20px",
-            padding: "14px",
-            borderRadius: "14px",
-            background: "#10172a",
-            border: "1px solid #1d2942",
+            left: 16,
+            right: 16,
+            bottom: 18,
+            borderTop: "1px solid #eeeeee",
+            paddingTop: 14,
           }}
         >
-          <div style={{ color: "#64748b", fontSize: "11px" }}>
-            SYSTEM STATUS
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 11,
+              padding: "9px 12px",
+              color: "#666",
+              fontSize: 12,
+            }}
+          >
+            ⚙ Settings
           </div>
 
           <div
             style={{
-              marginTop: "8px",
               display: "flex",
               alignItems: "center",
-              gap: "7px",
-              fontSize: "12px",
+              gap: 11,
+              padding: "9px 12px",
+              color: "#666",
+              fontSize: 12,
             }}
           >
-            <span
+            ◇ Team Management
+          </div>
+
+          <div
+            style={{
+              marginTop: 9,
+              padding: "11px 12px",
+              background: "#fafafa",
+              borderRadius: 9,
+              border: "1px solid #eeeeee",
+            }}
+          >
+            <div
               style={{
-                width: "7px",
-                height: "7px",
-                borderRadius: "50%",
-                background: "#34d399",
-                boxShadow: "0 0 10px #34d399",
+                fontSize: 9,
+                color: "#999",
+                fontWeight: 700,
               }}
-            />
-            All systems operational
+            >
+              SYSTEM STATUS
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                marginTop: 6,
+                fontSize: 10,
+                color: "#555",
+              }}
+            >
+              <span
+                style={{
+                  width: 7,
+                  height: 7,
+                  background: "#16a34a",
+                  borderRadius: "50%",
+                }}
+              />
+              All systems operational
+            </div>
           </div>
         </div>
       </aside>
 
-      {/* CONTENT */}
+      {/* MAIN */}
+
       <section
         style={{
-          marginLeft: "245px",
-          width: "calc(100% - 245px)",
-          padding: "28px 34px",
+          marginLeft: 250,
+          padding: "27px 34px 40px",
           boxSizing: "border-box",
         }}
       >
         {/* HEADER */}
+
         <header
           style={{
             display: "flex",
-            alignItems: "center",
             justifyContent: "space-between",
-            marginBottom: "30px",
+            alignItems: "center",
+            marginBottom: 28,
           }}
         >
           <div>
             <div
               style={{
-                color: "#64748b",
-                fontSize: "12px",
-                marginBottom: "7px",
+                fontSize: 10,
+                fontWeight: 700,
+                color: "#999",
+                letterSpacing: 0.6,
+                marginBottom: 7,
               }}
             >
-              THURSDAY, 20 AUGUST 2026
+              CUSTOMER EXPERIENCE COMMAND CENTER
             </div>
 
             <h1
               style={{
                 margin: 0,
-                fontSize: "28px",
-                letterSpacing: "-0.7px",
+                fontSize: 26,
+                fontWeight: 800,
+                color: "#222",
+                letterSpacing: -0.5,
               }}
             >
               Good morning, CX Team 👋
@@ -313,12 +441,11 @@ export default function Home() {
             <p
               style={{
                 margin: "7px 0 0",
-                color: "#64748b",
-                fontSize: "13px",
+                color: "#8a8a8a",
+                fontSize: 12,
               }}
             >
-              Here's what's happening across your customer experience
-              operations.
+              Monitor customer experience performance and service quality.
             </p>
           </div>
 
@@ -326,30 +453,33 @@ export default function Home() {
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "12px",
+              gap: 10,
             }}
           >
             <button
               style={{
-                background: "#10172a",
-                border: "1px solid #1f2a44",
-                color: "#cbd5e1",
-                padding: "11px 15px",
-                borderRadius: "10px",
+                border: "1px solid #dedede",
+                background: "#fff",
+                borderRadius: 8,
+                padding: "10px 13px",
+                color: "#555",
+                fontSize: 11,
                 fontWeight: 600,
               }}
             >
-              Last 7 days ▾
+              01 Aug - 20 Aug 2026 ▾
             </button>
 
             <div
               style={{
-                width: "40px",
-                height: "40px",
-                borderRadius: "12px",
-                background: "linear-gradient(135deg,#312e81,#0891b2)",
+                width: 37,
+                height: 37,
+                borderRadius: 9,
+                background: "#e21b23",
+                color: "#fff",
                 display: "grid",
                 placeItems: "center",
+                fontSize: 11,
                 fontWeight: 800,
               }}
             >
@@ -359,128 +489,182 @@ export default function Home() {
         </header>
 
         {/* KPI */}
+
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
-            gap: "16px",
-            marginBottom: "18px",
+            gridTemplateColumns: "repeat(4, 1fr)",
+            gap: 14,
+            marginBottom: 16,
           }}
         >
-          {kpis.map((kpi) => (
+          {kpis.map((item, index) => (
             <div
-              key={kpi.label}
+              key={item.title}
               style={{
-                background:
-                  "linear-gradient(145deg,#10172a,#0d1323)",
-                border: "1px solid #1b263d",
-                borderRadius: "16px",
-                padding: "20px",
-                boxShadow: "0 10px 30px rgba(0,0,0,.15)",
+                background: "#fff",
+                border: "1px solid #e8e8e8",
+                borderRadius: 12,
+                padding: 18,
+                boxShadow: "0 2px 8px rgba(0,0,0,.025)",
               }}
             >
               <div
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  color: "#64748b",
-                  fontSize: "12px",
+                  alignItems: "center",
                 }}
               >
-                <span>{kpi.label}</span>
-                <span style={{ color: "#475569" }}>•••</span>
+                <span
+                  style={{
+                    color: "#777",
+                    fontSize: 11,
+                    fontWeight: 600,
+                  }}
+                >
+                  {item.title}
+                </span>
+
+                <span
+                  style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: 8,
+                    background:
+                      index === 0
+                        ? "#fff0f1"
+                        : "#f5f5f5",
+                    color:
+                      index === 0
+                        ? "#e21b23"
+                        : "#777",
+                    display: "grid",
+                    placeItems: "center",
+                    fontSize: 13,
+                  }}
+                >
+                  {item.icon}
+                </span>
               </div>
 
               <div
                 style={{
-                  fontSize: "29px",
+                  fontSize: 27,
                   fontWeight: 800,
-                  marginTop: "13px",
+                  marginTop: 15,
+                  color: "#242424",
                 }}
               >
-                {kpi.value}
+                {item.value}
               </div>
 
               <div
                 style={{
-                  marginTop: "10px",
-                  color: kpi.trend === "up" ? "#4ade80" : "#facc15",
-                  fontSize: "12px",
+                  marginTop: 8,
+                  fontSize: 10,
+                  color:
+                    item.change.startsWith("-")
+                      ? "#16a34a"
+                      : "#16a34a",
                   fontWeight: 700,
                 }}
               >
-                {kpi.change}{" "}
-                <span style={{ color: "#64748b", fontWeight: 500 }}>
-                  vs previous period
+                {item.change}{" "}
+                <span
+                  style={{
+                    color: "#999",
+                    fontWeight: 400,
+                  }}
+                >
+                  {item.note}
                 </span>
               </div>
             </div>
           ))}
         </div>
 
-        {/* CHART AREA */}
+        {/* MAIN ANALYTICS */}
+
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "2fr 1fr",
-            gap: "18px",
-            marginBottom: "18px",
+            gap: 16,
+            marginBottom: 16,
           }}
         >
+          {/* CASE TREND */}
+
           <div
             style={{
-              background: "#0d1323",
-              border: "1px solid #1b263d",
-              borderRadius: "16px",
-              padding: "22px",
+              background: "#fff",
+              border: "1px solid #e8e8e8",
+              borderRadius: 12,
+              padding: 20,
             }}
           >
             <div
               style={{
                 display: "flex",
                 justifyContent: "space-between",
-                alignItems: "center",
+                alignItems: "start",
               }}
             >
               <div>
-                <div style={{ fontWeight: 750 }}>Case Volume</div>
                 <div
                   style={{
-                    color: "#64748b",
-                    fontSize: "12px",
-                    marginTop: "4px",
+                    fontSize: 14,
+                    fontWeight: 800,
                   }}
                 >
-                  Daily customer experience cases
+                  CX Case Trend
+                </div>
+
+                <div
+                  style={{
+                    color: "#999",
+                    fontSize: 10,
+                    marginTop: 4,
+                  }}
+                >
+                  Customer cases received over time
                 </div>
               </div>
 
-              <div style={{ color: "#38bdf8", fontSize: "12px" }}>
-                +14.6%
+              <div
+                style={{
+                  fontSize: 10,
+                  color: "#e21b23",
+                  fontWeight: 700,
+                }}
+              >
+                +14.6% vs previous period
               </div>
             </div>
 
             <div
               style={{
-                height: "210px",
-                marginTop: "25px",
+                height: 205,
+                marginTop: 23,
                 display: "flex",
                 alignItems: "end",
-                gap: "12px",
-                borderBottom: "1px solid #1b263d",
-                padding: "0 10px",
+                gap: 11,
+                borderBottom: "1px solid #eeeeee",
+                padding: "0 7px",
               }}
             >
-              {bars.map((height, index) => (
+              {bars.map((height, i) => (
                 <div
-                  key={index}
+                  key={i}
                   style={{
                     flex: 1,
                     height: `${height}%`,
-                    borderRadius: "7px 7px 0 0",
+                    borderRadius: "5px 5px 0 0",
                     background:
-                      "linear-gradient(180deg,#38bdf8,#312e81)",
-                    boxShadow: "0 0 18px rgba(56,189,248,.08)",
+                      i === bars.length - 1
+                        ? "#e21b23"
+                        : "#f3b7ba",
                   }}
                 />
               ))}
@@ -490,65 +674,92 @@ export default function Home() {
               style={{
                 display: "flex",
                 justifyContent: "space-between",
-                color: "#475569",
-                fontSize: "10px",
-                marginTop: "10px",
+                color: "#aaa",
+                fontSize: 9,
+                marginTop: 8,
               }}
             >
-              <span>09 Aug</span>
-              <span>12 Aug</span>
-              <span>15 Aug</span>
+              <span>07 Aug</span>
+              <span>10 Aug</span>
+              <span>13 Aug</span>
+              <span>16 Aug</span>
               <span>20 Aug</span>
             </div>
           </div>
 
+          {/* SLA */}
+
           <div
             style={{
-              background: "#0d1323",
-              border: "1px solid #1b263d",
-              borderRadius: "16px",
-              padding: "22px",
+              background: "#fff",
+              border: "1px solid #e8e8e8",
+              borderRadius: 12,
+              padding: 20,
             }}
           >
-            <div style={{ fontWeight: 750 }}>SLA Performance</div>
+            <div
+              style={{
+                fontSize: 14,
+                fontWeight: 800,
+              }}
+            >
+              SLA Achievement
+            </div>
+
+            <div
+              style={{
+                color: "#999",
+                fontSize: 10,
+                marginTop: 4,
+              }}
+            >
+              Customer case response & resolution
+            </div>
 
             <div
               style={{
                 display: "grid",
                 placeItems: "center",
-                marginTop: "22px",
+                marginTop: 22,
               }}
             >
               <div
                 style={{
-                  width: "145px",
-                  height: "145px",
+                  width: 138,
+                  height: 138,
                   borderRadius: "50%",
                   background:
-                    "conic-gradient(#38bdf8 0deg 341deg,#172036 341deg 360deg)",
+                    "conic-gradient(#e21b23 0deg 341deg,#f1f1f1 341deg 360deg)",
                   display: "grid",
                   placeItems: "center",
                 }}
               >
                 <div
                   style={{
-                    width: "112px",
-                    height: "112px",
+                    width: 106,
+                    height: 106,
                     borderRadius: "50%",
-                    background: "#0d1323",
+                    background: "#fff",
                     display: "grid",
                     placeItems: "center",
                     textAlign: "center",
                   }}
                 >
                   <div>
-                    <div style={{ fontSize: "26px", fontWeight: 800 }}>
-                      94.8%
-                    </div>
                     <div
                       style={{
-                        color: "#64748b",
-                        fontSize: "10px",
+                        fontSize: 25,
+                        fontWeight: 800,
+                      }}
+                    >
+                      94.8%
+                    </div>
+
+                    <div
+                      style={{
+                        fontSize: 9,
+                        color: "#999",
+                        marginTop: 2,
                       }}
                     >
                       ACHIEVEMENT
@@ -562,58 +773,241 @@ export default function Home() {
               style={{
                 display: "flex",
                 justifyContent: "space-between",
-                marginTop: "24px",
-                fontSize: "12px",
+                marginTop: 20,
+                fontSize: 10,
               }}
             >
-              <span style={{ color: "#64748b" }}>Target</span>
+              <span style={{ color: "#999" }}>
+                Target
+              </span>
+
               <strong>95%</strong>
             </div>
 
             <div
               style={{
-                height: "6px",
-                background: "#182238",
-                borderRadius: "999px",
-                marginTop: "8px",
+                height: 5,
+                background: "#eeeeee",
+                borderRadius: 999,
+                marginTop: 7,
               }}
             >
               <div
                 style={{
-                  width: "94.8%",
                   height: "100%",
-                  borderRadius: "999px",
-                  background: "#38bdf8",
+                  width: "94.8%",
+                  background: "#e21b23",
+                  borderRadius: 999,
                 }}
               />
             </div>
           </div>
         </div>
 
-        {/* CASE TABLE */}
+        {/* LOWER ANALYTICS */}
+
         <div
           style={{
-            background: "#0d1323",
-            border: "1px solid #1b263d",
-            borderRadius: "16px",
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: 16,
+            marginBottom: 16,
+          }}
+        >
+          {/* TOP CONTACT REASONS */}
+
+          <div
+            style={{
+              background: "#fff",
+              border: "1px solid #e8e8e8",
+              borderRadius: 12,
+              padding: 20,
+            }}
+          >
+            <div
+              style={{
+                fontSize: 14,
+                fontWeight: 800,
+              }}
+            >
+              Top Contact Reasons
+            </div>
+
+            <div
+              style={{
+                color: "#999",
+                fontSize: 10,
+                marginTop: 4,
+                marginBottom: 18,
+              }}
+            >
+              Main reasons customers contact CX
+            </div>
+
+            {reasons.map((reason) => (
+              <div key={reason.name} style={{ marginBottom: 13 }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    fontSize: 10,
+                    marginBottom: 6,
+                  }}
+                >
+                  <span style={{ color: "#555" }}>
+                    {reason.name}
+                  </span>
+
+                  <span
+                    style={{
+                      color: "#777",
+                      fontWeight: 700,
+                    }}
+                  >
+                    {reason.count}
+                  </span>
+                </div>
+
+                <div
+                  style={{
+                    height: 6,
+                    background: "#f1f1f1",
+                    borderRadius: 999,
+                  }}
+                >
+                  <div
+                    style={{
+                      width: `${reason.value * 2.8}%`,
+                      maxWidth: "100%",
+                      height: "100%",
+                      background:
+                        reason.value === 31
+                          ? "#e21b23"
+                          : "#f0a3a7",
+                      borderRadius: 999,
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* CX HEALTH */}
+
+          <div
+            style={{
+              background: "#fff",
+              border: "1px solid #e8e8e8",
+              borderRadius: 12,
+              padding: 20,
+            }}
+          >
+            <div
+              style={{
+                fontSize: 14,
+                fontWeight: 800,
+              }}
+            >
+              CX Health
+            </div>
+
+            <div
+              style={{
+                color: "#999",
+                fontSize: 10,
+                marginTop: 4,
+                marginBottom: 19,
+              }}
+            >
+              Key customer experience indicators
+            </div>
+
+            {[
+              ["CSAT", "92.4%", "+3.1%", "#16a34a"],
+              ["Resolution Rate", "88.7%", "+4.8%", "#16a34a"],
+              ["Escalation Rate", "6.2%", "-1.4%", "#16a34a"],
+              ["Avg. Response", "18m", "-5m", "#16a34a"],
+            ].map((row) => (
+              <div
+                key={row[0]}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "12px 0",
+                  borderBottom: "1px solid #f0f0f0",
+                }}
+              >
+                <div>
+                  <div
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 600,
+                      color: "#555",
+                    }}
+                  >
+                    {row[0]}
+                  </div>
+
+                  <div
+                    style={{
+                      color: row[3],
+                      fontSize: 9,
+                      marginTop: 4,
+                      fontWeight: 700,
+                    }}
+                  >
+                    {row[2]} vs previous
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    fontSize: 20,
+                    fontWeight: 800,
+                    color: "#222",
+                  }}
+                >
+                  {row[1]}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* CASE TABLE */}
+
+        <div
+          style={{
+            background: "#fff",
+            border: "1px solid #e8e8e8",
+            borderRadius: 12,
             overflow: "hidden",
           }}
         >
           <div
             style={{
-              padding: "20px 22px",
+              padding: "18px 20px",
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
             }}
           >
             <div>
-              <div style={{ fontWeight: 750 }}>Recent CX Cases</div>
               <div
                 style={{
-                  color: "#64748b",
-                  fontSize: "12px",
-                  marginTop: "4px",
+                  fontSize: 14,
+                  fontWeight: 800,
+                }}
+              >
+                Recent CX Cases
+              </div>
+
+              <div
+                style={{
+                  color: "#999",
+                  fontSize: 10,
+                  marginTop: 4,
                 }}
               >
                 Latest customer experience activities
@@ -622,16 +1016,16 @@ export default function Home() {
 
             <button
               style={{
-                background: "#17223b",
-                border: "1px solid #253553",
-                color: "#93c5fd",
+                background: "#e21b23",
+                color: "#fff",
+                border: 0,
+                borderRadius: 7,
                 padding: "9px 13px",
-                borderRadius: "9px",
-                fontSize: "12px",
+                fontSize: 10,
                 fontWeight: 700,
               }}
             >
-              View all cases →
+              View All Cases →
             </button>
           </div>
 
@@ -640,25 +1034,46 @@ export default function Home() {
               style={{
                 width: "100%",
                 borderCollapse: "collapse",
-                fontSize: "12px",
+                fontSize: 10,
               }}
             >
               <thead>
-                <tr style={{ background: "#0a1020", color: "#64748b" }}>
-                  <th style={{ textAlign: "left", padding: "13px 22px" }}>
-                    CASE
+                <tr
+                  style={{
+                    background: "#fafafa",
+                    color: "#999",
+                    fontSize: 9,
+                  }}
+                >
+                  <th style={{ textAlign: "left", padding: 12 }}>
+                    CASE ID
                   </th>
-                  <th style={{ textAlign: "left", padding: "13px" }}>
+
+                  <th style={{ textAlign: "left", padding: 12 }}>
+                    STT
+                  </th>
+
+                  <th style={{ textAlign: "left", padding: 12 }}>
                     CUSTOMER
                   </th>
-                  <th style={{ textAlign: "left", padding: "13px" }}>
-                    ISSUE
+
+                  <th style={{ textAlign: "left", padding: 12 }}>
+                    CATEGORY
                   </th>
-                  <th style={{ textAlign: "left", padding: "13px" }}>HUB</th>
-                  <th style={{ textAlign: "left", padding: "13px" }}>
+
+                  <th style={{ textAlign: "left", padding: 12 }}>
+                    HUB
+                  </th>
+
+                  <th style={{ textAlign: "left", padding: 12 }}>
                     PRIORITY
                   </th>
-                  <th style={{ textAlign: "left", padding: "13px 22px" }}>
+
+                  <th style={{ textAlign: "left", padding: 12 }}>
+                    AGING
+                  </th>
+
+                  <th style={{ textAlign: "left", padding: 12 }}>
                     STATUS
                   </th>
                 </tr>
@@ -669,31 +1084,101 @@ export default function Home() {
                   <tr
                     key={item.id}
                     style={{
-                      borderTop: "1px solid #172138",
+                      borderTop: "1px solid #eeeeee",
                     }}
                   >
-                    <td style={{ padding: "16px 22px", fontWeight: 750 }}>
+                    <td
+                      style={{
+                        padding: 13,
+                        fontWeight: 800,
+                        color: "#d71920",
+                      }}
+                    >
                       {item.id}
                     </td>
-                    <td style={{ padding: "16px", color: "#cbd5e1" }}>
+
+                    <td
+                      style={{
+                        padding: 13,
+                        color: "#777",
+                      }}
+                    >
+                      {item.stt}
+                    </td>
+
+                    <td
+                      style={{
+                        padding: 13,
+                        fontWeight: 600,
+                      }}
+                    >
                       {item.customer}
                     </td>
-                    <td style={{ padding: "16px", color: "#94a3b8" }}>
-                      {item.issue}
+
+                    <td
+                      style={{
+                        padding: 13,
+                        color: "#666",
+                      }}
+                    >
+                      {item.category}
                     </td>
-                    <td style={{ padding: "16px", color: "#94a3b8" }}>
+
+                    <td
+                      style={{
+                        padding: 13,
+                        color: "#666",
+                      }}
+                    >
                       {item.hub}
                     </td>
-                    <td style={{ padding: "16px" }}>
-                      <PriorityBadge priority={item.priority} />
+
+                    <td style={{ padding: 13 }}>
+                      <Priority value={item.priority} />
                     </td>
-                    <td style={{ padding: "16px 22px" }}>
-                      <StatusBadge status={item.status} />
+
+                    <td
+                      style={{
+                        padding: 13,
+                        color:
+                          item.aging.startsWith("8")
+                            ? "#dc2626"
+                            : "#666",
+                        fontWeight:
+                          item.aging.startsWith("8")
+                            ? 700
+                            : 500,
+                      }}
+                    >
+                      {item.aging}
+                    </td>
+
+                    <td style={{ padding: 13 }}>
+                      <Status value={item.status} />
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+          </div>
+
+          <div
+            style={{
+              padding: "12px 20px",
+              borderTop: "1px solid #eeeeee",
+              color: "#999",
+              fontSize: 9,
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <span>
+              Showing 5 of 1,284 customer experience cases
+            </span>
+
+            <span style={{ color: "#d71920", fontWeight: 700 }}>
+              Updated just now
+            </span>
           </div>
         </div>
       </section>
