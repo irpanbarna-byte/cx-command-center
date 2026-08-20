@@ -3,10 +3,11 @@
 import { useState } from "react";
 
 export default function Home() {
+  const [collapsed, setCollapsed] = useState(false);
   const [active, setActive] = useState("Dashboard");
 
   const [open, setOpen] = useState({
-    "Layer 1": false,
+    "Layer 1": true,
     "Layer 2": false,
     B2C: false,
     Other: false,
@@ -19,337 +20,325 @@ export default function Home() {
     }));
   };
 
-  const menuGroups = [
-    {
-      name: "Layer 1",
-      icon: "◉",
-      items: ["Chat", "Call", "Sosmed", "Email"],
-    },
-    {
-      name: "Layer 2",
-      icon: "◎",
-      items: ["Layer 2 Area", "Layer 2 Dedicate"],
-    },
-    {
-      name: "B2C",
-      icon: "◌",
-      items: ["B2C Aggregator", "B2C Non Aggregator"],
-    },
-  ];
-
-  const operationalMenus = [
-    ["Interpack", "▣"],
-    ["Claim", "◇"],
-    ["Return", "↩"],
-    ["Inbound", "↓"],
-    ["KPI", "◆"],
-    ["Porcase", "▤"],
-  ];
+  const selectMenu = (name) => {
+    setActive(name);
+  };
 
   return (
-    <div className="app">
+    <div className={`cxApp ${collapsed ? "isCollapsed" : ""}`}>
 
-      {/* ==================================================
+      {/* =====================================================
           SIDEBAR
-      ================================================== */}
+      ===================================================== */}
 
-      <aside className="sidebar">
+      <aside className="cxSidebar">
 
         {/* BRAND */}
 
-        <div className="brand">
+        <div className="brandArea">
 
-          <div className="logoBox">
+          <div className="brandLogo">
             <img
-              src="https://www.marketeers.com/_next/image/?url=https%3A%2F%2Fimagedelivery.net%2F2MtOYVTKaiU0CCt-BLmtWw%2Fbb2fcb96-610f-45d1-74ed-285bbfdb6f00%2Fw%3D900&w=1920&q=75"
+              src="https://zonalogo.com/assets/logo-lion-parcel.webp"
               alt="Lion Parcel"
-              className="logo"
             />
           </div>
 
-          <div className="brandText">
+          {!collapsed && (
+            <div className="brandInfo">
 
-            <div className="brandName">
-              Lion Parcel
+              <div className="brandTitle">
+                Directorate CX
+              </div>
+
+              <div className="brandSub">
+                CUSTOMER EXPERIENCE
+              </div>
+
+              <div className="brandTiny">
+                Internal Command Center
+              </div>
+
             </div>
-
-            <div className="brandDepartment">
-              CUSTOMER EXPERIENCE
-            </div>
-
-            <div className="brandPlatform">
-              Command Center
-            </div>
-
-          </div>
+          )}
 
         </div>
 
-        <div className="divider" />
+
+        {/* COLLAPSE */}
+
+        <button
+          className="collapseBtn"
+          onClick={() => setCollapsed(!collapsed)}
+        >
+          {collapsed ? "›" : "‹"}
+        </button>
+
 
         {/* NAVIGATION */}
 
-        <div className="menuArea">
+        <nav className="navigation">
 
-          <div className="sectionLabel">
-            WORKSPACE
-          </div>
-
-          {/* DASHBOARD */}
-
-          <MenuButton
-            active={active === "Dashboard"}
-            icon="⌂"
-            label="Dashboard"
-            onClick={() => setActive("Dashboard")}
-          />
-
-          {/* GROUP MENUS */}
-
-          {menuGroups.map((group) => (
-            <div key={group.name}>
-
-              <button
-                className={`groupButton ${
-                  open[group.name]
-                    ? "groupOpen"
-                    : ""
-                }`}
-                onClick={() =>
-                  toggle(group.name)
-                }
-              >
-
-                <span className="menuIcon">
-                  {group.icon}
-                </span>
-
-                <span className="menuLabel">
-                  {group.name}
-                </span>
-
-                <span
-                  className={`arrow ${
-                    open[group.name]
-                      ? "arrowOpen"
-                      : ""
-                  }`}
-                >
-                  ›
-                </span>
-
-              </button>
-
-              {open[group.name] && (
-                <div className="submenu">
-
-                  {group.items.map((item) => (
-                    <button
-                      key={item}
-                      className={`submenuButton ${
-                        active === item
-                          ? "submenuActive"
-                          : ""
-                      }`}
-                      onClick={() =>
-                        setActive(item)
-                      }
-                    >
-
-                      <span className="submenuDot" />
-
-                      {item}
-
-                    </button>
-                  ))}
-
-                </div>
-              )}
-
+          {!collapsed && (
+            <div className="navCaption">
+              MAIN MENU
             </div>
-          ))}
-
-          {/* OPERATIONAL */}
-
-          <div className="sectionLabel operational">
-            OPERATIONAL
-          </div>
-
-          {operationalMenus.map(
-            ([name, icon]) => (
-              <MenuButton
-                key={name}
-                active={active === name}
-                icon={icon}
-                label={name}
-                onClick={() =>
-                  setActive(name)
-                }
-              />
-            )
           )}
 
-          {/* ============================================
-              OTHER - PALING BAWAH
-          ============================================ */}
+          <NavItem
+            icon="⌂"
+            label="Dashboard"
+            active={active === "Dashboard"}
+            collapsed={collapsed}
+            onClick={() => selectMenu("Dashboard")}
+          />
 
-          <div className="sectionLabel otherSection">
-            OTHER
-          </div>
 
-          <div>
+          {/* LAYER 1 */}
 
-            <button
-              className={`groupButton ${
-                open.Other
-                  ? "groupOpen"
-                  : ""
-              }`}
-              onClick={() =>
-                toggle("Other")
-              }
-            >
+          <NavGroup
+            icon="◉"
+            label="Layer 1"
+            open={open["Layer 1"]}
+            collapsed={collapsed}
+            onClick={() => toggle("Layer 1")}
+          />
 
-              <span className="menuIcon">
-                •••
-              </span>
+          {!collapsed && open["Layer 1"] && (
+            <SubMenu
+              items={[
+                "Chat",
+                "Call",
+                "Sosmed",
+                "Email",
+              ]}
+              active={active}
+              onSelect={selectMenu}
+            />
+          )}
 
-              <span className="menuLabel">
-                Other
-              </span>
 
-              <span
-                className={`arrow ${
-                  open.Other
-                    ? "arrowOpen"
-                    : ""
-                }`}
-              >
-                ›
-              </span>
+          {/* LAYER 2 */}
 
-            </button>
+          <NavGroup
+            icon="◎"
+            label="Layer 2"
+            open={open["Layer 2"]}
+            collapsed={collapsed}
+            onClick={() => toggle("Layer 2")}
+          />
 
-            {open.Other && (
-              <div className="submenu">
+          {!collapsed && open["Layer 2"] && (
+            <SubMenu
+              items={[
+                "Layer 2 Area",
+                "Layer 2 Dedicate",
+              ]}
+              active={active}
+              onSelect={selectMenu}
+            />
+          )}
 
-                {[
-                  "Other 1",
-                  "Other 2",
-                  "Other 3",
-                ].map((item) => (
-                  <button
-                    key={item}
-                    className={`submenuButton ${
-                      active === item
-                        ? "submenuActive"
-                        : ""
-                    }`}
-                    onClick={() =>
-                      setActive(item)
-                    }
-                  >
 
-                    <span className="submenuDot" />
+          {/* B2C */}
 
-                    {item}
+          <NavGroup
+            icon="◇"
+            label="B2C"
+            open={open.B2C}
+            collapsed={collapsed}
+            onClick={() => toggle("B2C")}
+          />
 
-                  </button>
-                ))}
+          {!collapsed && open.B2C && (
+            <SubMenu
+              items={[
+                "B2C Aggregator",
+                "B2C Non Aggregator",
+              ]}
+              active={active}
+              onSelect={selectMenu}
+            />
+          )}
 
+
+          {!collapsed && (
+            <div className="navCaption operationalCaption">
+              OPERATIONS
+            </div>
+          )}
+
+
+          <NavItem
+            icon="▣"
+            label="Interpack"
+            active={active === "Interpack"}
+            collapsed={collapsed}
+            onClick={() => selectMenu("Interpack")}
+          />
+
+          <NavItem
+            icon="◇"
+            label="Claim"
+            active={active === "Claim"}
+            collapsed={collapsed}
+            onClick={() => selectMenu("Claim")}
+          />
+
+          <NavItem
+            icon="↩"
+            label="Return"
+            active={active === "Return"}
+            collapsed={collapsed}
+            onClick={() => selectMenu("Return")}
+          />
+
+          <NavItem
+            icon="↓"
+            label="Inbound"
+            active={active === "Inbound"}
+            collapsed={collapsed}
+            onClick={() => selectMenu("Inbound")}
+          />
+
+          <NavItem
+            icon="◆"
+            label="KPI"
+            active={active === "KPI"}
+            collapsed={collapsed}
+            onClick={() => selectMenu("KPI")}
+          />
+
+          <NavItem
+            icon="◫"
+            label="Forecast"
+            active={active === "Forecast"}
+            collapsed={collapsed}
+            onClick={() => selectMenu("Forecast")}
+          />
+
+
+          {/* OTHER */}
+
+          {!collapsed && (
+            <div className="navCaption otherCaption">
+              OTHER
+            </div>
+          )}
+
+          <NavGroup
+            icon="•••"
+            label="Other"
+            open={open.Other}
+            collapsed={collapsed}
+            onClick={() => toggle("Other")}
+          />
+
+          {!collapsed && open.Other && (
+            <SubMenu
+              items={[
+                "Other 1",
+                "Other 2",
+                "Other 3",
+              ]}
+              active={active}
+              onSelect={selectMenu}
+            />
+          )}
+
+        </nav>
+
+
+        {/* SIDEBAR FOOTER */}
+
+        {!collapsed && (
+          <div className="sidebarFooter">
+
+            <div className="systemCard">
+
+              <div className="systemHeader">
+                <span>System Status</span>
+
+                <span className="online">
+                  <i />
+                  Online
+                </span>
               </div>
-            )}
 
-          </div>
-
-        </div>
-
-        {/* SYSTEM STATUS */}
-
-        <div className="statusWrapper">
-
-          <div className="statusCard">
-
-            <div className="statusTop">
-
-              <span>
-                System Status
-              </span>
-
-              <span className="online">
-                ● Online
-              </span>
-
-            </div>
-
-            <div className="statusTrack">
-              <div className="statusProgress" />
-            </div>
-
-          </div>
-
-        </div>
-
-      </aside>
-
-      {/* ==================================================
-          MAIN
-      ================================================== */}
-
-      <main className="main">
-
-        {/* HEADER */}
-
-        <header className="header">
-
-          <div>
-
-            <div className="breadcrumb">
-              CUSTOMER EXPERIENCE
-              <span>/</span>
-              DIRECTORAT PERFORMANCE
-            </div>
-
-            <div className="pageTitle">
-              Performance Dashboard
-            </div>
-
-          </div>
-
-          <div className="headerRight">
-
-            <div className="search">
-
-              <span>
-                ⌕
-              </span>
-
-              <input
-                placeholder="Search..."
-              />
+              <div className="systemLine">
+                <div />
+              </div>
 
               <small>
-                /
+                All services operational
               </small>
 
             </div>
 
-            <button className="headerButton">
+            <div className="copyright">
+              Lion Parcel • Directorate CX
+            </div>
+
+          </div>
+        )}
+
+      </aside>
+
+
+      {/* =====================================================
+          MAIN
+      ===================================================== */}
+
+      <main className="cxMain">
+
+
+        {/* HEADER */}
+
+        <header className="topHeader">
+
+          <div className="headerLeft">
+
+            <div className="breadcrumb">
+              <span>DIRECTORATE CX</span>
+              <b>/</b>
+              <strong>INTERNAL COMMAND CENTER</strong>
+            </div>
+
+          </div>
+
+
+          <div className="headerRight">
+
+            <div className="searchBox">
+
+              <span>⌕</span>
+
+              <input
+                placeholder="Search anything..."
+              />
+
+              <kbd>⌘ K</kbd>
+
+            </div>
+
+
+            <button className="iconBtn">
               ◫
             </button>
 
-            <button className="headerButton notification">
+            <button className="iconBtn notificationBtn">
               ♢
-              <span />
+              <i />
             </button>
 
-            <div className="user">
 
-              <div className="avatar">
+            <div className="profile">
+
+              <div className="profileAvatar">
                 CX
               </div>
 
-              <div>
+              <div className="profileText">
 
                 <strong>
                   CX Admin
@@ -361,125 +350,156 @@ export default function Home() {
 
               </div>
 
+              <span className="profileArrow">
+                ▾
+              </span>
+
             </div>
 
           </div>
 
         </header>
 
-        {/* CONTENT */}
 
-        <div className="content">
+        {/* =====================================================
+            CONTENT
+        ===================================================== */}
+
+        <div className="dashboardContent">
+
 
           {/* HERO */}
 
-          <section className="hero">
+          <section className="heroPanel">
 
-            <div className="heroContent">
+            <div className="heroGlow" />
 
-              <div className="heroLabel">
-                INTERNAL CX PLATFORM
+            <div className="heroText">
+
+              <div className="eyebrow">
+                <span />
+                DIRECTORATE CX
               </div>
 
               <h1>
-                Good morning, CX Team.
+                Customer Experience
+                <br />
+                <em>Command Center.</em>
               </h1>
 
               <p>
-                Centralized performance monitoring
-                workspace for Lion Parcel Customer
-                Experience.
+                Real-time visibility across CX operations,
+                performance and customer experience.
               </p>
 
             </div>
 
-            <div className="heroActions">
 
-              <button className="dateButton">
-                ◷ &nbsp; 01 Aug — 20 Aug
-              </button>
+            <div className="heroRight">
 
-              <button className="exportButton">
-                ↓ &nbsp; Export
+              <div className="heroDate">
+                <span>◷</span>
+                01 AUG — 20 AUG 2026
+              </div>
+
+              <button className="primaryBtn">
+                <span>↓</span>
+                Export Report
               </button>
 
             </div>
 
-            <div className="heroCircle" />
+
+            <div className="heroDecoration">
+
+              <div className="ring ringOne" />
+              <div className="ring ringTwo" />
+              <div className="ring ringThree" />
+
+            </div>
 
           </section>
+
 
           {/* KPI */}
 
           <section className="kpiGrid">
 
-            <KpiCard
-              icon="♥"
-              title="Customer Satisfaction"
-              value="92.4%"
+            <Metric
+              label="CUSTOMER SATISFACTION"
+              value="92.4"
+              suffix="%"
               change="+4.8%"
+              icon="♥"
+              positive
             />
 
-            <KpiCard
-              icon="◷"
-              title="SLA Achievement"
-              value="96.8%"
+            <Metric
+              label="SLA ACHIEVEMENT"
+              value="96.8"
+              suffix="%"
               change="+2.1%"
+              icon="◷"
+              positive
             />
 
-            <KpiCard
-              icon="!"
-              title="Open Complaints"
+            <Metric
+              label="OPEN COMPLAINTS"
               value="128"
               change="-12.6%"
+              icon="!"
+              positive
             />
 
-            <KpiCard
-              icon="◉"
-              title="Customer Voice"
+            <Metric
+              label="CUSTOMER VOICE"
               value="4,821"
               change="+8.4%"
+              icon="◉"
+              positive
             />
 
           </section>
 
-          {/* PERFORMANCE */}
 
-          <section className="twoColumns">
+          {/* MAIN GRID */}
 
-            <div className="card">
+          <section className="mainGrid">
 
-              <SmallLabel>
-                DIRECTORAT PERFORMANCE
-              </SmallLabel>
 
-              <h2>
-                Performance Overview
-              </h2>
+            {/* PERFORMANCE */}
 
-              <div className="chartHeader">
+            <div className="premiumCard performanceCard">
+
+              <CardHeading
+                eyebrow="PERFORMANCE"
+                title="CX Performance Overview"
+                action="View Details →"
+              />
+
+              <div className="performanceTop">
 
                 <div>
 
-                  <strong className="bigNumber">
+                  <div className="performanceValue">
                     94.8%
-                  </strong>
+                  </div>
 
-                  <div className="muted">
+                  <div className="performanceDescription">
                     Overall achievement
                   </div>
 
                 </div>
 
-                <div className="legend">
+                <div className="chartLegend">
 
                   <span>
-                    <i className="redDot" />
+                    <i className="actualDot" />
                     Actual
                   </span>
 
                   <span>
-                    <i className="grayDot" />
+                    <i className="targetDot" />
                     Target
                   </span>
 
@@ -487,113 +507,100 @@ export default function Home() {
 
               </div>
 
-              <div className="chart">
 
-                {[
-                  55,
-                  63,
-                  59,
-                  72,
-                  67,
-                  78,
-                  74,
-                  84,
-                  79,
-                  89,
-                  85,
-                  95,
-                ].map(
-                  (value, index) => (
+              <div className="chartArea">
+
+                <div className="gridLines">
+
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+
+                </div>
+
+
+                <div className="bars">
+
+                  {[
+                    54,
+                    62,
+                    58,
+                    68,
+                    64,
+                    74,
+                    70,
+                    82,
+                    77,
+                    88,
+                    84,
+                    96,
+                  ].map((height, index) => (
+
                     <div
-                      className="barWrapper"
+                      className="barContainer"
                       key={index}
                     >
 
                       <div
-                        className="bar"
+                        className="barValue"
                         style={{
-                          height:
-                            `${value}%`,
+                          height: `${height}%`,
                         }}
                       />
 
                     </div>
-                  )
-                )}
+
+                  ))}
+
+                </div>
 
               </div>
 
-              <div className="weeks">
 
-                <span>
-                  W1
-                </span>
+              <div className="chartLabels">
 
-                <span>
-                  W2
-                </span>
-
-                <span>
-                  W3
-                </span>
-
-                <span>
-                  W4
-                </span>
-
-                <span>
-                  W5
-                </span>
-
-                <span>
-                  W6
-                </span>
+                <span>W1</span>
+                <span>W2</span>
+                <span>W3</span>
+                <span>W4</span>
+                <span>W5</span>
+                <span>W6</span>
 
               </div>
 
             </div>
 
-            {/* ALERT */}
 
-            <div className="card">
+            {/* PRIORITY */}
 
-              <div className="alertHeader">
+            <div className="premiumCard alertCard">
 
-                <div>
+              <CardHeading
+                eyebrow="ATTENTION"
+                title="Priority Alerts"
+                badge="3 ACTIVE"
+              />
 
-                  <SmallLabel>
-                    REQUIRES ATTENTION
-                  </SmallLabel>
 
-                  <h2>
-                    Priority Alerts
-                  </h2>
-
-                </div>
-
-                <span className="activeBadge">
-                  3 ACTIVE
-                </span>
-
-              </div>
-
-              <Alert
-                title="Complaint spike detected"
-                text="Jabodetabek increased by 14% in the last 24 hours."
+              <AlertItem
                 danger
+                title="Complaint spike detected"
+                description="Jabodetabek increased by 14% in the last 24 hours."
               />
 
-              <Alert
+              <AlertItem
                 title="SLA approaching threshold"
-                text="12 shipments require immediate attention."
+                description="12 shipments require immediate attention."
               />
 
-              <Alert
+              <AlertItem
                 title="Negative sentiment increased"
-                text="Customer Voice sentiment dropped by 6%."
+                description="Customer Voice sentiment dropped by 6%."
               />
 
-              <button className="viewAll">
+
+              <button className="fullLink">
                 View all alerts →
               </button>
 
@@ -601,55 +608,52 @@ export default function Home() {
 
           </section>
 
-          {/* LOWER */}
 
-          <section className="threeColumns">
+          {/* LOWER GRID */}
+
+          <section className="lowerGrid">
+
 
             {/* CHANNEL */}
 
-            <div className="card">
+            <div className="premiumCard">
 
-              <SmallLabel>
-                CHANNEL PERFORMANCE
-              </SmallLabel>
+              <CardHeading
+                eyebrow="CHANNEL"
+                title="Customer Channels"
+              />
 
-              <h2>
-                Customer Channels
-              </h2>
-
-              <Progress
+              <Channel
                 name="Chat"
                 value="94%"
               />
 
-              <Progress
+              <Channel
                 name="Call"
                 value="91%"
               />
 
-              <Progress
+              <Channel
                 name="Sosmed"
                 value="88%"
               />
 
-              <Progress
+              <Channel
                 name="Email"
                 value="86%"
               />
 
             </div>
 
-            {/* LAYER */}
 
-            <div className="card">
+            {/* LAYERS */}
 
-              <SmallLabel>
-                OPERATIONAL LAYER
-              </SmallLabel>
+            <div className="premiumCard">
 
-              <h2>
-                Layer Performance
-              </h2>
+              <CardHeading
+                eyebrow="OPERATIONS"
+                title="Layer Performance"
+              />
 
               <Layer
                 name="Layer 1"
@@ -678,17 +682,16 @@ export default function Home() {
 
             </div>
 
+
             {/* QUICK ACCESS */}
 
-            <div className="card">
+            <div className="premiumCard">
 
-              <SmallLabel>
-                QUICK ACCESS
-              </SmallLabel>
+              <CardHeading
+                eyebrow="QUICK ACCESS"
+                title="CX Modules"
+              />
 
-              <h2>
-                Modules
-              </h2>
 
               <div className="moduleGrid">
 
@@ -697,27 +700,29 @@ export default function Home() {
                   ["◇", "Claim"],
                   ["↩", "Return"],
                   ["↓", "Inbound"],
-                ].map(
-                  ([icon, name]) => (
-                    <button
-                      key={name}
-                      className="module"
-                      onClick={() =>
-                        setActive(name)
-                      }
-                    >
+                ].map(([icon, name]) => (
 
-                      <span>
-                        {icon}
-                      </span>
+                  <button
+                    key={name}
+                    className="moduleCard"
+                    onClick={() => selectMenu(name)}
+                  >
 
-                      <strong>
-                        {name}
-                      </strong>
+                    <span>
+                      {icon}
+                    </span>
 
-                    </button>
-                  )
-                )}
+                    <strong>
+                      {name}
+                    </strong>
+
+                    <small>
+                      Open module
+                    </small>
+
+                  </button>
+
+                ))}
 
               </div>
 
@@ -725,17 +730,88 @@ export default function Home() {
 
           </section>
 
-          {/* FOOTER */}
 
-          <footer>
+          {/* BOTTOM */}
+
+          <section className="bottomGrid">
+
+            <div className="premiumCard activityCard">
+
+              <CardHeading
+                eyebrow="LIVE ACTIVITY"
+                title="Recent Activity"
+                action="View All →"
+              />
+
+              <Activity
+                icon="✓"
+                title="Daily CX report updated"
+                time="8 minutes ago"
+              />
+
+              <Activity
+                icon="↗"
+                title="SLA performance improved"
+                time="24 minutes ago"
+              />
+
+              <Activity
+                icon="!"
+                title="New priority complaint assigned"
+                time="41 minutes ago"
+              />
+
+            </div>
+
+
+            <div className="premiumCard scoreCard">
+
+              <div className="scoreCircle">
+
+                <div>
+
+                  <strong>
+                    94
+                  </strong>
+
+                  <span>
+                    CX Score
+                  </span>
+
+                </div>
+
+              </div>
+
+              <div className="scoreText">
+
+                <div className="eyebrow">
+                  OVERALL HEALTH
+                </div>
+
+                <h3>
+                  Excellent
+                </h3>
+
+                <p>
+                  CX performance is currently
+                  above the monthly target.
+                </p>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <footer className="mainFooter">
 
             <span>
               © 2026 Lion Parcel
             </span>
 
             <span>
-              Customer Experience
-              • Internal Use Only
+              Directorate CX • Internal Use Only
             </span>
 
           </footer>
@@ -744,15 +820,22 @@ export default function Home() {
 
       </main>
 
-      {/* ==================================================
-          GLOBAL CSS
-      ================================================== */}
+
+      {/* =====================================================
+          STYLE
+      ===================================================== */}
 
       <style jsx global>{`
+
+        @import url(
+          'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap'
+        );
+
 
         * {
           box-sizing: border-box;
         }
+
 
         html,
         body {
@@ -760,86 +843,109 @@ export default function Home() {
           padding: 0;
         }
 
+
         body {
-          background: #f4f5f6;
+          font-family:
+            "Plus Jakarta Sans",
+            sans-serif;
+
+          background: #f3f4f6;
+
+          color: #1e2024;
         }
+
 
         button,
         input {
           font-family: inherit;
         }
 
+
         button {
           outline: none;
         }
 
-        /* ================================================
+
+        /* =================================================
            APP
-        ================================================ */
+        ================================================= */
 
-        .app {
+        .cxApp {
+          --red: #e21b23;
+          --redDark: #c9151c;
+          --redSoft: #fff0f1;
+
           min-height: 100vh;
-
-          display: flex;
-
-          color: #24262a;
 
           background:
+            radial-gradient(
+              circle at 80% 0%,
+              rgba(226,27,35,.035),
+              transparent 28%
+            ),
             linear-gradient(
               135deg,
-              #f1f2f4 0%,
-              #ffffff 48%,
-              #f2f3f5 100%
+              #f1f2f4,
+              #ffffff 50%,
+              #f3f4f6
             );
 
-          font-family:
-            Inter,
-            ui-sans-serif,
-            system-ui,
-            -apple-system,
-            BlinkMacSystemFont,
-            "Segoe UI",
-            sans-serif;
+          display: flex;
         }
 
-        /* ================================================
+
+        /* =================================================
            SIDEBAR
-        ================================================ */
+        ================================================= */
 
-        .sidebar {
-          width: 268px;
-
-          min-height: 100vh;
+        .cxSidebar {
+          width: 275px;
 
           position: fixed;
 
-          left: 0;
           top: 0;
+          left: 0;
           bottom: 0;
 
-          z-index: 20;
-
-          display: flex;
-
-          flex-direction: column;
+          z-index: 50;
 
           background:
             linear-gradient(
               180deg,
               #ffffff 0%,
-              #fbfbfc 58%,
-              #f1f2f4 100%
+              #fafafa 65%,
+              #f2f3f5 100%
             );
 
           border-right:
-            1px solid #e5e6e8;
+            1px solid #e6e7e9;
+
+          display: flex;
+
+          flex-direction: column;
+
+          transition:
+            width .3s
+            cubic-bezier(.4,0,.2,1);
+
+          box-shadow:
+            8px 0 35px
+            rgba(20,20,20,.025);
         }
+
+
+        .isCollapsed .cxSidebar {
+          width: 78px;
+        }
+
 
         /* BRAND */
 
-        .brand {
+        .brandArea {
+          height: 91px;
+
           padding:
-            22px 20px;
+            20px 19px;
 
           display: flex;
 
@@ -848,130 +954,172 @@ export default function Home() {
           gap: 12px;
         }
 
-        .logoBox {
-          width: 42px;
-          height: 42px;
 
-          border-radius: 11px;
+        .brandLogo {
+          width: 44px;
+          height: 44px;
+
+          flex-shrink: 0;
+
+          border-radius: 12px;
+
+          overflow: hidden;
 
           background: #e21b23;
 
           display: flex;
 
           align-items: center;
+
           justify-content: center;
 
-          overflow: hidden;
-
           box-shadow:
-            0 6px 16px
-            rgba(226, 27, 35, .16);
-
-          flex-shrink: 0;
+            0 8px 20px
+            rgba(226,27,35,.18);
         }
 
-        .logo {
+
+        .brandLogo img {
           width: 100%;
           height: 100%;
 
           object-fit: contain;
 
-          padding: 4px;
+          padding: 3px;
         }
 
-        .brandName {
-          color: #202226;
 
-          font-size: 17px;
+        .brandInfo {
+          overflow: hidden;
 
-          font-weight: 900;
-
-          letter-spacing: -.65px;
-
-          line-height: 1;
+          white-space: nowrap;
         }
 
-        .brandDepartment {
-          margin-top: 6px;
 
-          color: #e21b23;
+        .brandTitle {
+          font-size: 16px;
+
+          font-weight: 800;
+
+          letter-spacing: -.5px;
+        }
+
+
+        .brandSub {
+          margin-top: 5px;
 
           font-size: 7.5px;
 
-          font-weight: 900;
+          font-weight: 800;
 
           letter-spacing: 1.25px;
+
+          color: var(--red);
         }
 
-        .brandPlatform {
+
+        .brandTiny {
           margin-top: 3px;
 
-          color: #8b8f95;
+          font-size: 8px;
 
-          font-size: 8.5px;
-
-          font-weight: 600;
+          color: #a1a4aa;
         }
 
-        .divider {
-          height: 1px;
 
-          background: #e8e9eb;
+        /* COLLAPSE */
 
-          margin:
-            0 20px;
+        .collapseBtn {
+          position: absolute;
+
+          right: -12px;
+          top: 97px;
+
+          width: 25px;
+          height: 25px;
+
+          border-radius: 50%;
+
+          border:
+            1px solid #dedfe2;
+
+          background: #fff;
+
+          color: var(--red);
+
+          cursor: pointer;
+
+          box-shadow:
+            0 5px 15px
+            rgba(0,0,0,.08);
+
+          transition: .2s;
         }
 
-        /* ================================================
-           MENU
-        ================================================ */
 
-        .menuArea {
+        .collapseBtn:hover {
+          background: var(--red);
+
+          color: #fff;
+
+          transform: scale(1.08);
+        }
+
+
+        /* NAV */
+
+        .navigation {
           flex: 1;
 
           overflow-y: auto;
 
           padding:
-            10px 13px;
+            11px 13px;
         }
 
-        .sectionLabel {
-          font-size: 8px;
 
-          font-weight: 900;
-
-          color: #a3a6ab;
-
-          letter-spacing: 1.35px;
-
+        .navCaption {
           padding:
-            10px 10px 8px;
+            9px 10px 7px;
+
+          color: #a4a7ad;
+
+          font-size: 7px;
+
+          font-weight: 800;
+
+          letter-spacing: 1.5px;
         }
 
-        .operational {
-          margin-top: 12px;
+
+        .operationalCaption {
+          margin-top: 13px;
         }
 
-        .otherSection {
-          margin-top: 20px;
 
-          padding-top: 18px;
+        .otherCaption {
+          margin-top: 18px;
+
+          padding-top: 17px;
 
           border-top:
-            1px solid #e7e8ea;
+            1px solid #e9eaec;
         }
 
-        .groupButton,
-        .menuButton {
+
+        .navItem,
+        .navGroup {
           width: 100%;
 
-          height: 41px;
+          height: 42px;
 
           border: 0;
 
-          border-radius: 9px;
+          border-radius: 10px;
 
           background: transparent;
+
+          color: #6d7178;
 
           display: flex;
 
@@ -980,106 +1128,122 @@ export default function Home() {
           padding:
             0 11px;
 
-          color: #686c73;
-
           cursor: pointer;
 
           transition:
-            all .18s ease;
-        }
+            .18s ease;
 
-        .groupButton:hover,
-        .menuButton:hover {
-          background: #f7f7f8;
-
-          color: #e21b23;
-        }
-
-        .groupOpen {
-          background: #f7f7f8;
-
-          color: #e21b23;
-        }
-
-        .menuButton {
           position: relative;
+
+          text-align: left;
         }
 
-        .menuActive {
+
+        .navItem:hover,
+        .navGroup:hover {
+          background: #f7f7f8;
+
+          color: var(--red);
+        }
+
+
+        .navItem.active {
           background:
-            rgba(226, 27, 35, .07);
+            linear-gradient(
+              90deg,
+              #fff0f1,
+              #fff7f7
+            );
 
-          color: #e21b23;
+          color: var(--red);
+
+          font-weight: 700;
         }
 
-        .menuActive::before {
+
+        .navItem.active::before {
           content: "";
 
           position: absolute;
 
           left: -13px;
 
-          top: 8px;
-
-          bottom: 8px;
+          top: 9px;
+          bottom: 9px;
 
           width: 3px;
 
+          background: var(--red);
+
           border-radius:
             0 4px 4px 0;
-
-          background: #e21b23;
         }
 
-        .menuIcon {
+
+        .navIcon {
           width: 27px;
 
           text-align: center;
 
           font-size: 12px;
 
-          color: #999da3;
+          color: #9da0a5;
+
+          flex-shrink: 0;
         }
 
-        .menuActive .menuIcon,
-        .groupOpen .menuIcon {
-          color: #e21b23;
+
+        .navItem.active .navIcon,
+        .navGroup.open .navIcon {
+          color: var(--red);
         }
 
-        .menuLabel {
-          font-size: 11px;
 
-          font-weight: 650;
+        .navLabel {
+          font-size: 10px;
+
+          font-weight: 600;
+
+          white-space: nowrap;
         }
 
-        .arrow {
+
+        .navArrow {
           margin-left: auto;
 
-          font-size: 19px;
+          color: #a6a9ae;
 
-          color: #a7aab0;
+          font-size: 17px;
 
-          transition:
-            transform .2s ease;
+          transition: .2s;
         }
 
-        .arrowOpen {
-          transform:
-            rotate(90deg);
 
-          color: #e21b23;
+        .navGroup.open {
+          color: var(--red);
+
+          background: #fafafa;
         }
 
-        .submenu {
-          margin-left: 24px;
 
-          padding-left: 7px;
+        .navGroup.open .navArrow {
+          transform: rotate(90deg);
+
+          color: var(--red);
+        }
+
+
+        .subMenu {
+          margin-left: 27px;
 
           border-left:
-            1px solid #e1e2e5;
+            1px solid #e4e5e7;
+
+          padding-left: 8px;
         }
 
-        .submenuButton {
+
+        .subItem {
           width: 100%;
 
           height: 35px;
@@ -1090,128 +1254,193 @@ export default function Home() {
 
           background: transparent;
 
+          color: #85888e;
+
+          text-align: left;
+
+          padding:
+            0 9px;
+
+          font-size: 9px;
+
+          cursor: pointer;
+
           display: flex;
 
           align-items: center;
 
-          padding-left: 10px;
-
-          color: #777b82;
-
-          font-size: 10px;
-
-          font-weight: 500;
-
-          cursor: pointer;
-
-          text-align: left;
+          gap: 8px;
         }
 
-        .submenuButton:hover {
-          color: #e21b23;
+
+        .subItem:hover {
+          color: var(--red);
 
           background: #fafafa;
         }
 
-        .submenuActive {
-          background:
-            rgba(226, 27, 35, .065);
 
-          color: #e21b23;
+        .subItem.active {
+          color: var(--red);
+
+          background: #fff2f3;
 
           font-weight: 700;
         }
 
-        .submenuDot {
-          width: 5px;
 
-          height: 5px;
+        .subDot {
+          width: 4px;
+          height: 4px;
 
           border-radius: 50%;
 
           background: #c7c9cd;
-
-          margin-right: 9px;
         }
 
-        .submenuActive .submenuDot {
-          background: #e21b23;
+
+        .subItem.active .subDot {
+          background: var(--red);
         }
 
-        /* ================================================
-           STATUS
-        ================================================ */
 
-        .statusWrapper {
-          padding: 13px;
+        /* SIDEBAR FOOTER */
+
+        .sidebarFooter {
+          padding:
+            12px 13px 16px;
 
           border-top:
-            1px solid #e8e9eb;
+            1px solid #e7e8ea;
         }
 
-        .statusCard {
+
+        .systemCard {
           padding: 11px;
 
-          border-radius: 10px;
-
-          background: #f7f7f8;
-
           border:
-            1px solid #e8e9eb;
+            1px solid #e5e6e8;
+
+          border-radius: 11px;
+
+          background:
+            rgba(255,255,255,.7);
         }
 
-        .statusTop {
+
+        .systemHeader {
           display: flex;
 
           justify-content:
             space-between;
 
-          font-size: 8px;
+          font-size: 7.5px;
 
           font-weight: 700;
         }
 
+
         .online {
-          color: #159447;
+          color: #16934a;
+
+          display: flex;
+
+          align-items: center;
+
+          gap: 4px;
         }
 
-        .statusTrack {
+
+        .online i {
+          width: 5px;
+          height: 5px;
+
+          background: #16a05a;
+
+          border-radius: 50%;
+        }
+
+
+        .systemLine {
           height: 4px;
 
+          background: #e9eaec;
+
+          border-radius: 10px;
+
           margin-top: 9px;
-
-          border-radius: 20px;
-
-          background: #e2e3e6;
 
           overflow: hidden;
         }
 
-        .statusProgress {
+
+        .systemLine div {
           width: 96%;
 
           height: 100%;
 
-          background: #e21b23;
+          background: var(--red);
         }
 
-        /* ================================================
-           MAIN
-        ================================================ */
 
-        .main {
-          margin-left: 268px;
+        .systemCard small {
+          display: block;
+
+          color: #aaaeb3;
+
+          font-size: 7px;
+
+          margin-top: 6px;
+        }
+
+
+        .copyright {
+          text-align: center;
+
+          color: #b0b2b6;
+
+          font-size: 7px;
+
+          margin-top: 11px;
+        }
+
+
+        /* =================================================
+           MAIN
+        ================================================= */
+
+        .cxMain {
+          width:
+            calc(100% - 275px);
+
+          margin-left: 275px;
+
+          transition:
+            margin-left .3s
+            cubic-bezier(.4,0,.2,1),
+            width .3s
+            cubic-bezier(.4,0,.2,1);
+        }
+
+
+        .isCollapsed .cxMain {
+          margin-left: 78px;
 
           width:
-            calc(100% - 268px);
-
-          min-height: 100vh;
+            calc(100% - 78px);
         }
+
 
         /* HEADER */
 
-        .header {
-          height: 76px;
+        .topHeader {
+          height: 67px;
+
+          position: sticky;
+
+          top: 0;
+
+          z-index: 20;
 
           padding:
             0 31px;
@@ -1224,65 +1453,54 @@ export default function Home() {
             space-between;
 
           background:
-            rgba(255,255,255,.9);
+            rgba(255,255,255,.88);
 
           backdrop-filter:
             blur(18px);
 
           border-bottom:
             1px solid #e7e8ea;
-
-          position: sticky;
-
-          top: 0;
-
-          z-index: 10;
         }
+
 
         .breadcrumb {
-          color: #a1a4a9;
+          font-size: 7.5px;
 
-          font-size: 8px;
+          letter-spacing: .9px;
 
-          font-weight: 800;
+          color: #a1a4aa;
 
-          letter-spacing: .6px;
+          font-weight: 700;
         }
 
-        .breadcrumb span {
+
+        .breadcrumb b {
           margin:
             0 8px;
 
-          color: #d0d2d5;
+          color: #d4d5d8;
         }
 
-        .pageTitle {
-          font-size: 17px;
 
-          font-weight: 850;
+        .breadcrumb strong {
+          color: #555960;
 
-          margin-top: 5px;
-
-          letter-spacing: -.45px;
+          font-weight: 800;
         }
+
 
         .headerRight {
           display: flex;
 
           align-items: center;
 
-          gap: 9px;
+          gap: 8px;
         }
 
-        .search {
-          width: 215px;
 
+        .searchBox {
+          width: 230px;
           height: 36px;
-
-          border:
-            1px solid #e1e2e5;
-
-          border-radius: 9px;
 
           display: flex;
 
@@ -1291,368 +1509,550 @@ export default function Home() {
           gap: 8px;
 
           padding:
-            0 11px;
+            0 10px;
 
-          background: #fff;
+          background: #fafafa;
+
+          border:
+            1px solid #e2e3e5;
+
+          border-radius: 9px;
         }
 
-        .search span {
-          color: #999ca2;
+
+        .searchBox span {
+          color: #96999f;
 
           font-size: 15px;
         }
 
-        .search input {
+
+        .searchBox input {
           flex: 1;
 
           border: 0;
 
           outline: 0;
 
-          background:
-            transparent;
+          background: transparent;
 
-          font-size: 10px;
+          font-size: 9px;
 
           color: #333;
         }
 
-        .search small {
-          color: #b4b6bb;
 
-          font-size: 9px;
+        .searchBox kbd {
+          font-size: 7px;
+
+          color: #a2a5aa;
+
+          padding:
+            3px 5px;
+
+          border:
+            1px solid #dddfe2;
+
+          border-radius: 4px;
+
+          background: #fff;
         }
 
-        .headerButton {
+
+        .iconBtn {
           width: 36px;
           height: 36px;
 
           border:
-            1px solid #e1e2e5;
+            1px solid #e2e3e5;
 
           border-radius: 9px;
 
           background: #fff;
 
-          color: #777b82;
+          color: #777b81;
 
           cursor: pointer;
-        }
 
-        .notification {
           position: relative;
         }
 
-        .notification span {
-          position: absolute;
 
-          right: 7px;
-          top: 7px;
+        .notificationBtn i {
+          position: absolute;
 
           width: 5px;
           height: 5px;
 
           border-radius: 50%;
 
-          background: #e21b23;
+          background: var(--red);
+
+          right: 7px;
+          top: 7px;
         }
 
-        .user {
+
+        .profile {
           display: flex;
 
           align-items: center;
 
-          gap: 9px;
+          gap: 8px;
 
-          margin-left: 3px;
+          padding-left: 4px;
         }
 
-        .avatar {
+
+        .profileAvatar {
           width: 35px;
           height: 35px;
 
           border-radius: 10px;
 
-          background: #e21b23;
+          background:
+            linear-gradient(
+              135deg,
+              #ed3a41,
+              #c9141b
+            );
 
           color: #fff;
 
           display: flex;
 
           align-items: center;
+
           justify-content: center;
 
           font-size: 9px;
 
-          font-weight: 900;
+          font-weight: 800;
+
+          box-shadow:
+            0 5px 13px
+            rgba(226,27,35,.18);
         }
 
-        .user strong {
+
+        .profileText strong {
           display: block;
 
-          font-size: 9px;
+          font-size: 8.5px;
         }
 
-        .user small {
+
+        .profileText small {
           display: block;
-
-          color: #9da0a5;
-
-          font-size: 8px;
 
           margin-top: 2px;
+
+          color: #a1a4a9;
+
+          font-size: 7px;
         }
 
-        /* ================================================
+
+        .profileArrow {
+          color: #a3a6ab;
+
+          font-size: 10px;
+
+          margin-left: 3px;
+        }
+
+
+        /* =================================================
            CONTENT
-        ================================================ */
+        ================================================= */
 
-        .content {
+        .dashboardContent {
           padding:
-            28px 31px 30px;
+            25px 31px 32px;
         }
+
 
         /* HERO */
 
-        .hero {
-          min-height: 150px;
-
-          padding:
-            26px 28px;
-
-          border-radius: 16px;
-
-          background:
-            linear-gradient(
-              110deg,
-              #ffffff 0%,
-              #ffffff 68%,
-              #fff5f5 100%
-            );
-
-          border:
-            1px solid #e3e4e7;
+        .heroPanel {
+          min-height: 190px;
 
           position: relative;
 
           overflow: hidden;
 
+          border-radius: 18px;
+
+          border:
+            1px solid #e4e5e7;
+
+          background:
+            linear-gradient(
+              115deg,
+              #ffffff 0%,
+              #ffffff 57%,
+              #fff5f6 100%
+            );
+
+          padding:
+            31px 32px;
+
+          display: flex;
+
+          justify-content:
+            space-between;
+
+          align-items: center;
+
+          box-shadow:
+            0 12px 40px
+            rgba(20,20,20,.035);
+        }
+
+
+        .heroGlow {
+          position: absolute;
+
+          width: 300px;
+          height: 300px;
+
+          right: 130px;
+          top: -170px;
+
+          border-radius: 50%;
+
+          background:
+            rgba(226,27,35,.045);
+
+          filter: blur(3px);
+        }
+
+
+        .heroText {
+          position: relative;
+
+          z-index: 2;
+        }
+
+
+        .eyebrow {
           display: flex;
 
           align-items: center;
 
-          justify-content:
-            space-between;
-        }
+          gap: 7px;
 
-        .heroContent {
-          position: relative;
+          color: var(--red);
 
-          z-index: 2;
-        }
+          font-size: 7.5px;
 
-        .heroLabel {
-          color: #e21b23;
-
-          font-size: 8px;
-
-          font-weight: 900;
+          font-weight: 800;
 
           letter-spacing: 1.5px;
         }
 
-        .hero h1 {
-          font-size: 25px;
 
-          margin:
-            9px 0 7px;
+        .eyebrow span {
+          width: 17px;
+          height: 2px;
 
-          letter-spacing: -.8px;
+          background: var(--red);
+
+          border-radius: 5px;
         }
 
-        .hero p {
-          color: #858990;
 
-          font-size: 10.5px;
+        .heroPanel h1 {
+          margin:
+            10px 0 7px;
 
+          font-size: 29px;
+
+          line-height: 1.18;
+
+          letter-spacing: -1.3px;
+        }
+
+
+        .heroPanel h1 em {
+          color: var(--red);
+
+          font-style: normal;
+        }
+
+
+        .heroPanel p {
           margin: 0;
 
-          max-width: 590px;
+          color: #8e9298;
+
+          font-size: 9.5px;
 
           line-height: 1.7;
         }
 
-        .heroActions {
+
+        .heroRight {
           position: relative;
 
-          z-index: 2;
+          z-index: 3;
 
           display: flex;
+
+          align-items: center;
 
           gap: 8px;
         }
 
-        .dateButton,
-        .exportButton {
+
+        .heroDate {
           height: 38px;
 
-          border-radius: 8px;
-
-          font-size: 9px;
-
-          cursor: pointer;
-        }
-
-        .dateButton {
           padding:
-            0 13px;
+            0 12px;
 
           border:
-            1px solid #e0e1e4;
+            1px solid #e2e3e6;
 
-          background: #fff;
+          border-radius: 9px;
 
-          color: #666a71;
+          display: flex;
+
+          align-items: center;
+
+          gap: 7px;
+
+          background: rgba(255,255,255,.8);
+
+          color: #777b82;
+
+          font-size: 7.5px;
+
+          font-weight: 700;
         }
 
-        .exportButton {
+
+        .heroDate span {
+          color: var(--red);
+
+          font-size: 12px;
+        }
+
+
+        .primaryBtn {
+          height: 38px;
+
           padding:
-            0 15px;
+            0 14px;
 
           border: 0;
 
-          background: #e21b23;
+          border-radius: 9px;
+
+          background:
+            linear-gradient(
+              135deg,
+              #ed343b,
+              #d71921
+            );
 
           color: #fff;
 
+          font-size: 8px;
+
           font-weight: 700;
 
+          cursor: pointer;
+
           box-shadow:
-            0 7px 16px
-            rgba(226,27,35,.17);
+            0 8px 20px
+            rgba(226,27,35,.2);
         }
 
-        .heroCircle {
+
+        .primaryBtn span {
+          margin-right: 5px;
+        }
+
+
+        .heroDecoration {
           position: absolute;
 
-          right: -80px;
+          right: -35px;
 
-          top: -100px;
+          bottom: -100px;
 
-          width: 300px;
-
-          height: 300px;
-
-          border-radius: 50%;
-
-          border:
-            55px solid
-            rgba(226,27,35,.035);
+          width: 330px;
+          height: 330px;
         }
 
-        /* ================================================
+
+        .ring {
+          position: absolute;
+
+          border:
+            1px solid
+            rgba(226,27,35,.12);
+
+          border-radius: 50%;
+        }
+
+
+        .ringOne {
+          width: 330px;
+          height: 330px;
+        }
+
+
+        .ringTwo {
+          width: 245px;
+          height: 245px;
+
+          left: 43px;
+          top: 43px;
+        }
+
+
+        .ringThree {
+          width: 160px;
+          height: 160px;
+
+          left: 85px;
+          top: 85px;
+        }
+
+
+        /* =================================================
            KPI
-        ================================================ */
+        ================================================= */
 
         .kpiGrid {
           display: grid;
 
           grid-template-columns:
-            repeat(4,1fr);
+            repeat(4, 1fr);
 
-          gap: 12px;
+          gap: 13px;
 
           margin-top: 14px;
         }
 
-        .kpiCard {
-          background: #fff;
+
+        .metricCard {
+          min-height: 145px;
+
+          padding: 18px;
+
+          background:
+            rgba(255,255,255,.88);
 
           border:
             1px solid #e4e5e8;
 
-          border-radius: 13px;
+          border-radius: 14px;
 
-          padding: 17px;
+          position: relative;
 
-          min-height: 138px;
+          overflow: hidden;
 
-          box-shadow:
-            0 4px 18px
-            rgba(25,30,35,.025);
+          transition:
+            transform .2s,
+            box-shadow .2s;
         }
 
-        .kpiTop {
+
+        .metricCard:hover {
+          transform:
+            translateY(-3px);
+
+          box-shadow:
+            0 14px 30px
+            rgba(20,20,20,.07);
+        }
+
+
+        .metricTop {
           display: flex;
 
           justify-content:
             space-between;
+
+          align-items: center;
         }
 
-        .kpiIcon {
-          width: 31px;
-          height: 31px;
 
-          border-radius: 8px;
+        .metricIcon {
+          width: 33px;
+          height: 33px;
+
+          border-radius: 9px;
 
           background: #fff1f2;
 
-          color: #e21b23;
+          color: var(--red);
 
           display: flex;
 
           align-items: center;
+
           justify-content: center;
 
           font-size: 12px;
         }
 
-        .change {
-          padding:
-            4px 7px;
 
-          border-radius: 5px;
-
-          background: #edf8f1;
-
-          color: #17884a;
-
-          font-size: 8px;
+        .metricChange {
+          font-size: 7px;
 
           font-weight: 800;
+
+          padding:
+            5px 7px;
+
+          border-radius: 6px;
+
+          background: #eff9f3;
+
+          color: #17894b;
         }
 
-        .kpiTitle {
-          margin-top: 14px;
 
-          color: #888c92;
+        .metricLabel {
+          margin-top: 17px;
 
-          font-size: 9px;
+          color: #9b9ea4;
+
+          font-size: 7px;
+
+          font-weight: 700;
+
+          letter-spacing: .55px;
         }
 
-        .kpiValue {
-          display: block;
 
-          font-size: 24px;
-
-          letter-spacing: -.8px;
-
-          margin-top: 4px;
-        }
-
-        .kpiMuted {
-          color: #b0b2b7;
-
-          font-size: 8px;
-
+        .metricValue {
           margin-top: 3px;
+
+          font-size: 25px;
+
+          font-weight: 800;
+
+          letter-spacing: -1px;
         }
 
-        /* ================================================
-           CARDS
-        ================================================ */
 
-        .twoColumns {
+        .metricValue small {
+          font-size: 14px;
+
+          color: #55595f;
+        }
+
+
+        /* =================================================
+           CARDS
+        ================================================= */
+
+        .mainGrid {
           display: grid;
 
           grid-template-columns:
@@ -1663,7 +2063,8 @@ export default function Home() {
           margin-top: 14px;
         }
 
-        .threeColumns {
+
+        .lowerGrid {
           display: grid;
 
           grid-template-columns:
@@ -1674,45 +2075,104 @@ export default function Home() {
           margin-top: 14px;
         }
 
-        .card {
-          background: #fff;
+
+        .bottomGrid {
+          display: grid;
+
+          grid-template-columns:
+            1.3fr .7fr;
+
+          gap: 14px;
+
+          margin-top: 14px;
+        }
+
+
+        .premiumCard {
+          background:
+            rgba(255,255,255,.92);
 
           border:
             1px solid #e4e5e8;
 
-          border-radius: 14px;
+          border-radius: 15px;
 
           padding: 20px;
 
           box-shadow:
-            0 4px 18px
-            rgba(25,30,35,.025);
+            0 6px 25px
+            rgba(20,20,20,.025);
         }
 
-        .card h2 {
-          margin:
-            5px 0 0;
 
-          font-size: 15px;
+        .cardHeading {
+          display: flex;
 
-          letter-spacing: -.2px;
+          justify-content:
+            space-between;
+
+          align-items: flex-start;
         }
 
-        .smallLabel {
-          color: #e21b23;
 
-          font-size: 8px;
+        .cardEyebrow {
+          color: var(--red);
 
-          font-weight: 900;
+          font-size: 7px;
+
+          font-weight: 800;
 
           letter-spacing: 1.2px;
         }
 
-        /* ================================================
-           CHART
-        ================================================ */
 
-        .chartHeader {
+        .cardTitle {
+          margin-top: 4px;
+
+          font-size: 14px;
+
+          font-weight: 800;
+
+          letter-spacing: -.3px;
+        }
+
+
+        .cardAction {
+          border: 0;
+
+          background: transparent;
+
+          color: var(--red);
+
+          font-size: 8px;
+
+          font-weight: 700;
+
+          cursor: pointer;
+        }
+
+
+        .cardBadge {
+          padding:
+            5px 7px;
+
+          border-radius: 5px;
+
+          background: #fff0f1;
+
+          color: var(--red);
+
+          font-size: 6.5px;
+
+          font-weight: 800;
+        }
+
+
+        /* =================================================
+           CHART
+        ================================================= */
+
+        .performanceTop {
           display: flex;
 
           align-items: flex-end;
@@ -1720,145 +2180,168 @@ export default function Home() {
           justify-content:
             space-between;
 
-          margin-top: 19px;
+          margin-top: 20px;
         }
 
-        .bigNumber {
-          font-size: 25px;
+
+        .performanceValue {
+          font-size: 27px;
+
+          font-weight: 800;
+
+          letter-spacing: -1.2px;
         }
 
-        .muted {
-          color: #9da0a5;
 
-          font-size: 9px;
-
+        .performanceDescription {
           margin-top: 3px;
+
+          color: #a0a3a8;
+
+          font-size: 7.5px;
         }
 
-        .legend {
+
+        .chartLegend {
           display: flex;
 
           gap: 13px;
 
-          color: #96999f;
+          color: #9a9da3;
 
-          font-size: 8px;
+          font-size: 7px;
         }
 
-        .legend span {
+
+        .chartLegend span {
           display: flex;
 
           align-items: center;
+
+          gap: 4px;
         }
 
-        .redDot,
-        .grayDot {
-          width: 7px;
-          height: 7px;
+
+        .actualDot,
+        .targetDot {
+          width: 6px;
+          height: 6px;
 
           border-radius: 50%;
-
-          display: inline-block;
-
-          margin-right: 5px;
         }
 
-        .redDot {
-          background: #e21b23;
+
+        .actualDot {
+          background: var(--red);
         }
 
-        .grayDot {
-          background: #d9dade;
+
+        .targetDot {
+          background: #d8dadd;
         }
 
-        .chart {
+
+        .chartArea {
           height: 185px;
 
-          margin-top: 16px;
+          position: relative;
 
-          display: flex;
-
-          align-items: flex-end;
-
-          gap: 11px;
+          margin-top: 15px;
 
           border-bottom:
-            1px solid #ececef;
-
-          padding:
-            0 10px;
+            1px solid #ececee;
         }
 
-        .barWrapper {
-          height: 100%;
 
+        .gridLines {
+          position: absolute;
+
+          left: 0;
+          right: 0;
+          top: 0;
+          bottom: 0;
+
+          display: flex;
+
+          flex-direction:
+            column;
+
+          justify-content:
+            space-between;
+        }
+
+
+        .gridLines span {
+          height: 1px;
+
+          background:
+            #f0f1f2;
+        }
+
+
+        .bars {
+          position: absolute;
+
+          left: 8px;
+          right: 8px;
+          bottom: 0;
+          top: 0;
+
+          display: flex;
+
+          align-items: flex-end;
+
+          gap: 10px;
+        }
+
+
+        .barContainer {
           flex: 1;
+
+          height: 100%;
 
           display: flex;
 
           align-items: flex-end;
         }
 
-        .bar {
+
+        .barValue {
           width: 100%;
 
           border-radius:
-            6px 6px 2px 2px;
+            7px 7px 2px 2px;
 
           background:
             linear-gradient(
               180deg,
-              #f04a50,
-              #df1b23
+              #f05b61,
+              #dc1d25
             );
+
+          box-shadow:
+            0 5px 12px
+            rgba(226,27,35,.1);
         }
 
-        .weeks {
+
+        .chartLabels {
           display: flex;
 
           justify-content:
             space-around;
 
-          margin-top: 7px;
+          color: #aaaeb4;
 
-          color: #aaaeb3;
+          font-size: 7px;
 
-          font-size: 8px;
+          padding-top: 7px;
         }
 
-        /* ================================================
-           ALERT
-        ================================================ */
 
-        .alertHeader {
-          display: flex;
+        /* ALERT */
 
-          justify-content:
-            space-between;
-        }
-
-        .activeBadge {
-          height: 22px;
-
-          padding:
-            0 7px;
-
-          display: flex;
-
-          align-items: center;
-
-          background: #fff0f0;
-
-          color: #e21b23;
-
-          border-radius: 6px;
-
-          font-size: 8px;
-
-          font-weight: 800;
-        }
-
-        .alert {
+        .alertItem {
           display: flex;
 
           gap: 9px;
@@ -1870,126 +2353,132 @@ export default function Home() {
             1px solid #f0f1f2;
         }
 
+
         .alertIcon {
-          width: 27px;
-          height: 27px;
+          width: 29px;
+          height: 29px;
+
+          flex-shrink: 0;
 
           border-radius: 8px;
 
           display: flex;
 
           align-items: center;
+
           justify-content: center;
 
-          background: #fff8e9;
+          background: #fff7e8;
 
-          color: #c48700;
+          color: #c28600;
 
           font-size: 10px;
 
           font-weight: 800;
-
-          flex-shrink: 0;
         }
 
-        .alertDanger {
-          background: #fff0f0;
 
-          color: #e21b23;
+        .alertIcon.danger {
+          background: #fff0f1;
+
+          color: var(--red);
         }
 
-        .alert strong {
+
+        .alertItem strong {
           display: block;
 
-          font-size: 9.5px;
+          font-size: 8.5px;
         }
 
-        .alert p {
+
+        .alertItem p {
           margin:
             4px 0 0;
 
-          color: #999ca2;
+          color: #9ca0a5;
 
-          font-size: 8.5px;
+          font-size: 7px;
 
-          line-height: 1.5;
+          line-height: 1.6;
         }
 
-        .viewAll {
-          width: 100%;
 
-          margin-top: 8px;
+        .fullLink {
+          margin-top: 12px;
 
           border: 0;
 
           background: transparent;
 
-          color: #e21b23;
+          color: var(--red);
 
-          text-align: left;
-
-          font-size: 9px;
+          font-size: 8px;
 
           font-weight: 700;
 
           cursor: pointer;
         }
 
-        /* ================================================
-           PROGRESS
-        ================================================ */
 
-        .progress {
-          margin-top: 17px;
+        /* CHANNEL */
+
+        .channel {
+          margin-top: 18px;
         }
 
-        .progressHeader {
+
+        .channelHead {
           display: flex;
 
           justify-content:
             space-between;
 
-          font-size: 9px;
+          font-size: 8px;
         }
 
-        .progressName {
+
+        .channelName {
           color: #777b82;
         }
 
-        .progressTrack {
+
+        .channelValue {
+          font-weight: 800;
+        }
+
+
+        .channelTrack {
           height: 5px;
 
-          background: #f0f1f3;
-
-          border-radius: 20px;
-
           margin-top: 7px;
+
+          background: #eff0f2;
+
+          border-radius: 10px;
 
           overflow: hidden;
         }
 
-        .progressFill {
+
+        .channelFill {
           height: 100%;
+
+          border-radius: 10px;
 
           background:
             linear-gradient(
               90deg,
               #e21b23,
-              #f05a5f
+              #f45c61
             );
-
-          border-radius: 20px;
         }
 
-        /* ================================================
-           LAYER
-        ================================================ */
 
-        .layer {
-          height: 34px;
+        /* LAYER */
 
-          border-bottom:
-            1px solid #f0f1f2;
+        .layerRow {
+          height: 35px;
 
           display: flex;
 
@@ -1998,31 +2487,35 @@ export default function Home() {
           justify-content:
             space-between;
 
-          font-size: 9px;
+          border-bottom:
+            1px solid #f0f1f2;
+
+          font-size: 8px;
         }
 
-        .layerName {
-          color: #777b82;
 
+        .layerName {
           display: flex;
 
           align-items: center;
 
           gap: 7px;
+
+          color: #7b7f85;
         }
+
 
         .layerDot {
           width: 5px;
           height: 5px;
 
-          border-radius: 50%;
+          background: var(--red);
 
-          background: #e21b23;
+          border-radius: 50%;
         }
 
-        /* ================================================
-           MODULE
-        ================================================ */
+
+        /* MODULE */
 
         .moduleGrid {
           display: grid;
@@ -2032,14 +2525,17 @@ export default function Home() {
 
           gap: 8px;
 
-          margin-top: 16px;
+          margin-top: 17px;
         }
 
-        .module {
-          height: 68px;
+
+        .moduleCard {
+          height: 70px;
+
+          padding: 10px;
 
           border:
-            1px solid #e7e8eb;
+            1px solid #e8e9eb;
 
           border-radius: 9px;
 
@@ -2047,133 +2543,309 @@ export default function Home() {
 
           text-align: left;
 
-          padding: 10px;
-
           cursor: pointer;
 
-          transition:
-            all .18s ease;
+          transition: .18s;
         }
 
-        .module:hover {
+
+        .moduleCard:hover {
           background: #fff;
 
-          border-color: #efb3b6;
+          border-color: #efb2b5;
 
           transform:
-            translateY(-1px);
+            translateY(-2px);
+
+          box-shadow:
+            0 7px 16px
+            rgba(0,0,0,.05);
         }
 
-        .module span {
-          color: #e21b23;
+
+        .moduleCard span {
+          color: var(--red);
 
           font-size: 13px;
         }
 
-        .module strong {
+
+        .moduleCard strong {
           display: block;
+
+          margin-top: 7px;
+
+          font-size: 8px;
+        }
+
+
+        .moduleCard small {
+          display: block;
+
+          margin-top: 3px;
+
+          color: #b0b3b7;
+
+          font-size: 6.5px;
+        }
+
+
+        /* ACTIVITY */
+
+        .activityItem {
+          display: flex;
+
+          align-items: center;
+
+          gap: 10px;
+
+          padding:
+            12px 0;
+
+          border-bottom:
+            1px solid #f0f1f2;
+        }
+
+
+        .activityIcon {
+          width: 28px;
+          height: 28px;
+
+          border-radius: 8px;
+
+          display: flex;
+
+          align-items: center;
+
+          justify-content: center;
+
+          background: #fff0f1;
+
+          color: var(--red);
 
           font-size: 9px;
 
-          margin-top: 7px;
+          font-weight: 800;
         }
 
-        /* ================================================
-           FOOTER
-        ================================================ */
 
-        footer {
+        .activityText strong {
+          display: block;
+
+          font-size: 8px;
+        }
+
+
+        .activityText small {
+          display: block;
+
+          color: #a4a7ac;
+
+          font-size: 7px;
+
+          margin-top: 3px;
+        }
+
+
+        /* SCORE */
+
+        .scoreCard {
+          display: flex;
+
+          align-items: center;
+
+          gap: 20px;
+
+          min-height: 150px;
+        }
+
+
+        .scoreCircle {
+          width: 105px;
+          height: 105px;
+
+          flex-shrink: 0;
+
+          border-radius: 50%;
+
+          background:
+            conic-gradient(
+              var(--red) 0deg 338deg,
+              #eeeeef 338deg 360deg
+            );
+
+          display: flex;
+
+          align-items: center;
+
+          justify-content: center;
+        }
+
+
+        .scoreCircle::before {
+          content: "";
+
+          position: absolute;
+        }
+
+
+        .scoreCircle > div {
+          width: 80px;
+          height: 80px;
+
+          border-radius: 50%;
+
+          background: #fff;
+
+          display: flex;
+
+          flex-direction: column;
+
+          align-items: center;
+
+          justify-content: center;
+        }
+
+
+        .scoreCircle strong {
+          font-size: 24px;
+
+          letter-spacing: -1px;
+        }
+
+
+        .scoreCircle span {
+          color: #a0a3a8;
+
+          font-size: 6px;
+
+          margin-top: 2px;
+        }
+
+
+        .scoreText h3 {
+          margin:
+            7px 0 4px;
+
+          font-size: 17px;
+        }
+
+
+        .scoreText p {
+          margin: 0;
+
+          color: #999da3;
+
+          font-size: 7.5px;
+
+          line-height: 1.6;
+
+          max-width: 190px;
+        }
+
+
+        /* FOOTER */
+
+        .mainFooter {
           display: flex;
 
           justify-content:
             space-between;
 
-          margin-top: 22px;
+          padding:
+            20px 2px 4px;
 
-          color: #a3a6ab;
+          color: #a7aaaf;
 
-          font-size: 8px;
+          font-size: 7px;
         }
 
-        /* ================================================
-           RESPONSIVE
-        ================================================ */
 
-        @media (max-width: 1100px) {
+        /* =================================================
+           RESPONSIVE
+        ================================================= */
+
+        @media (max-width: 1150px) {
 
           .kpiGrid {
             grid-template-columns:
-              repeat(2,1fr);
+              repeat(2, 1fr);
           }
 
-          .threeColumns {
+          .lowerGrid {
             grid-template-columns:
               1fr 1fr;
           }
 
         }
 
-        @media (max-width: 850px) {
 
-          .sidebar {
-            width: 220px;
-          }
+        @media (max-width: 900px) {
 
-          .main {
-            margin-left: 220px;
-
-            width:
-              calc(100% - 220px);
-          }
-
-          .headerRight .search {
+          .searchBox {
             display: none;
           }
 
-          .twoColumns,
-          .threeColumns {
+          .mainGrid,
+          .bottomGrid {
             grid-template-columns:
               1fr;
+          }
+
+          .heroPanel {
+            align-items: flex-start;
+
+            flex-direction: column;
+
+            gap: 20px;
           }
 
         }
 
-        @media (max-width: 650px) {
 
-          .sidebar {
+        @media (max-width: 700px) {
+
+          .cxSidebar {
             display: none;
           }
 
-          .main {
-            margin-left: 0;
-
+          .cxMain,
+          .isCollapsed .cxMain {
             width: 100%;
+
+            margin-left: 0;
           }
 
-          .header {
+          .dashboardContent {
             padding:
-              0 18px;
+              17px;
           }
 
-          .content {
-            padding: 18px;
+          .topHeader {
+            padding:
+              0 17px;
           }
 
-          .hero {
-            flex-direction: column;
-
-            align-items:
-              flex-start;
-
-            gap: 18px;
-          }
-
-          .kpiGrid {
+          .kpiGrid,
+          .lowerGrid {
             grid-template-columns:
               1fr;
           }
 
-          .user > div:last-child {
+          .heroPanel {
+            padding: 23px;
+          }
+
+          .heroPanel h1 {
+            font-size: 23px;
+          }
+
+          .heroRight {
+            flex-wrap: wrap;
+          }
+
+          .profileText,
+          .profileArrow {
             display: none;
           }
 
@@ -2186,72 +2858,157 @@ export default function Home() {
 }
 
 
-/* ========================================================
-   MENU BUTTON
-======================================================== */
+/* =========================================================
+   NAV ITEM
+========================================================= */
 
-function MenuButton({
-  active,
+function NavItem({
   icon,
   label,
+  active,
+  collapsed,
   onClick,
 }) {
   return (
     <button
-      className={`menuButton ${
-        active ? "menuActive" : ""
+      className={`navItem ${
+        active ? "active" : ""
       }`}
       onClick={onClick}
+      title={collapsed ? label : ""}
     >
 
-      <span className="menuIcon">
+      <span className="navIcon">
         {icon}
       </span>
 
-      <span className="menuLabel">
-        {label}
-      </span>
+      {!collapsed && (
+        <span className="navLabel">
+          {label}
+        </span>
+      )}
 
     </button>
   );
 }
 
 
-/* ========================================================
-   KPI CARD
-======================================================== */
+/* =========================================================
+   NAV GROUP
+========================================================= */
 
-function KpiCard({
+function NavGroup({
   icon,
-  title,
-  value,
-  change,
+  label,
+  open,
+  collapsed,
+  onClick,
 }) {
   return (
-    <div className="kpiCard">
+    <button
+      className={`navGroup ${
+        open ? "open" : ""
+      }`}
+      onClick={onClick}
+      title={collapsed ? label : ""}
+    >
 
-      <div className="kpiTop">
+      <span className="navIcon">
+        {icon}
+      </span>
 
-        <div className="kpiIcon">
+      {!collapsed && (
+        <>
+          <span className="navLabel">
+            {label}
+          </span>
+
+          <span className="navArrow">
+            ›
+          </span>
+        </>
+      )}
+
+    </button>
+  );
+}
+
+
+/* =========================================================
+   SUB MENU
+========================================================= */
+
+function SubMenu({
+  items,
+  active,
+  onSelect,
+}) {
+  return (
+    <div className="subMenu">
+
+      {items.map((item) => (
+
+        <button
+          key={item}
+          className={`subItem ${
+            active === item ? "active" : ""
+          }`}
+          onClick={() => onSelect(item)}
+        >
+
+          <i className="subDot" />
+
+          {item}
+
+        </button>
+
+      ))}
+
+    </div>
+  );
+}
+
+
+/* =========================================================
+   METRIC
+========================================================= */
+
+function Metric({
+  label,
+  value,
+  suffix,
+  change,
+  icon,
+}) {
+  return (
+    <div className="metricCard">
+
+      <div className="metricTop">
+
+        <div className="metricIcon">
           {icon}
         </div>
 
-        <span className="change">
+        <span className="metricChange">
           {change}
         </span>
 
       </div>
 
-      <div className="kpiTitle">
-        {title}
+      <div className="metricLabel">
+        {label}
       </div>
 
-      <strong className="kpiValue">
+      <div className="metricValue">
+
         {value}
-      </strong>
 
-      <div className="kpiMuted">
-        vs previous period
+        {suffix && (
+          <small>
+            {suffix}
+          </small>
+        )}
+
       </div>
 
     </div>
@@ -2259,38 +3016,63 @@ function KpiCard({
 }
 
 
-/* ========================================================
-   SMALL LABEL
-======================================================== */
+/* =========================================================
+   CARD HEADING
+========================================================= */
 
-function SmallLabel({
-  children,
+function CardHeading({
+  eyebrow,
+  title,
+  action,
+  badge,
 }) {
   return (
-    <div className="smallLabel">
-      {children}
+    <div className="cardHeading">
+
+      <div>
+
+        <div className="cardEyebrow">
+          {eyebrow}
+        </div>
+
+        <div className="cardTitle">
+          {title}
+        </div>
+
+      </div>
+
+      {action && (
+        <button className="cardAction">
+          {action}
+        </button>
+      )}
+
+      {badge && (
+        <span className="cardBadge">
+          {badge}
+        </span>
+      )}
+
     </div>
   );
 }
 
 
-/* ========================================================
+/* =========================================================
    ALERT
-======================================================== */
+========================================================= */
 
-function Alert({
+function AlertItem({
   title,
-  text,
-  danger = false,
+  description,
+  danger,
 }) {
   return (
-    <div className="alert">
+    <div className="alertItem">
 
       <div
         className={`alertIcon ${
-          danger
-            ? "alertDanger"
-            : ""
+          danger ? "danger" : ""
         }`}
       >
         !
@@ -2303,7 +3085,7 @@ function Alert({
         </strong>
 
         <p>
-          {text}
+          {description}
         </p>
 
       </div>
@@ -2313,33 +3095,33 @@ function Alert({
 }
 
 
-/* ========================================================
-   PROGRESS
-======================================================== */
+/* =========================================================
+   CHANNEL
+========================================================= */
 
-function Progress({
+function Channel({
   name,
   value,
 }) {
   return (
-    <div className="progress">
+    <div className="channel">
 
-      <div className="progressHeader">
+      <div className="channelHead">
 
-        <span className="progressName">
+        <span className="channelName">
           {name}
         </span>
 
-        <strong>
+        <strong className="channelValue">
           {value}
         </strong>
 
       </div>
 
-      <div className="progressTrack">
+      <div className="channelTrack">
 
         <div
-          className="progressFill"
+          className="channelFill"
           style={{
             width: value,
           }}
@@ -2352,16 +3134,16 @@ function Progress({
 }
 
 
-/* ========================================================
+/* =========================================================
    LAYER
-======================================================== */
+========================================================= */
 
 function Layer({
   name,
   value,
 }) {
   return (
-    <div className="layer">
+    <div className="layerRow">
 
       <span className="layerName">
 
@@ -2374,6 +3156,39 @@ function Layer({
       <strong>
         {value}
       </strong>
+
+    </div>
+  );
+}
+
+
+/* =========================================================
+   ACTIVITY
+========================================================= */
+
+function Activity({
+  icon,
+  title,
+  time,
+}) {
+  return (
+    <div className="activityItem">
+
+      <div className="activityIcon">
+        {icon}
+      </div>
+
+      <div className="activityText">
+
+        <strong>
+          {title}
+        </strong>
+
+        <small>
+          {time}
+        </small>
+
+      </div>
 
     </div>
   );
