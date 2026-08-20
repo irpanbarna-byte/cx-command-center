@@ -19,11 +19,7 @@ export default function Home() {
     }));
   };
 
-  const selectMenu = (name) => {
-    setActive(name);
-  };
-
-  const groups = [
+  const menuGroups = [
     {
       name: "Layer 1",
       icon: "◉",
@@ -52,293 +48,102 @@ export default function Home() {
     ["Return", "↩"],
     ["Inbound", "↓"],
     ["KPI", "◆"],
-    ["Porcase", "▤"],
+    ["Forecast", "▤"],
   ];
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background:
-          "linear-gradient(135deg,#f4f5f7 0%,#ffffff 45%,#f1f2f4 100%)",
-        color: "#22252a",
-        fontFamily:
-          "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif",
-        display: "flex",
-      }}
-    >
-      {/* ======================================================
+    <div className="app">
+      {/* =====================================================
           SIDEBAR
-      ====================================================== */}
+      ===================================================== */}
 
-      <aside
-        style={{
-          width: 270,
-          minHeight: "100vh",
-          background:
-            "linear-gradient(180deg,#ffffff 0%,#fafafa 60%,#f1f2f4 100%)",
-          borderRight: "1px solid #e7e8eb",
-          display: "flex",
-          flexDirection: "column",
-          position: "fixed",
-          left: 0,
-          top: 0,
-          bottom: 0,
-          zIndex: 20,
-        }}
-      >
-        {/* LOGO */}
+      <aside className="sidebar">
+        {/* LOGO + BRAND */}
 
-        <div
-          style={{
-            padding: "25px 23px 20px",
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-          }}
-        >
-          <div
-            style={{
-              width: 42,
-              height: 42,
-              borderRadius: 12,
-              background: "#e21b23",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              boxShadow: "0 8px 20px rgba(226,27,35,.20)",
-              overflow: "hidden",
-            }}
-          >
-            <span
-              style={{
-                color: "#fff",
-                fontSize: 12,
-                fontWeight: 900,
-                letterSpacing: -0.5,
-              }}
-            >
-              LP
-            </span>
+        <div className="brand">
+          <div className="logoBox">
+            <img
+              src="https://www.marketeers.com/_next/image/?url=https%3A%2F%2Fimagedelivery.net%2F2MtOYVTKaiU0CCt-BLmtWw%2Fbb2fcb96-610f-45d1-74ed-285bbfdb6f00%2Fw%3D900&w=1920&q=75"
+              alt="Lion Parcel"
+              className="logo"
+            />
           </div>
 
-          <div>
-            <div
-              style={{
-                fontSize: 18,
-                lineHeight: 1,
-                fontWeight: 900,
-                letterSpacing: -0.5,
-              }}
-            >
-              LION
-            </div>
+          <div className="brandText">
+            <div className="brandName">Lion Parcel</div>
 
-            <div
-              style={{
-                color: "#e21b23",
-                fontSize: 9,
-                fontWeight: 800,
-                letterSpacing: 3,
-                marginTop: 4,
-              }}
-            >
-              PARCEL
+            <div className="brandSub">
+              CUSTOMER EXPERIENCE
             </div>
           </div>
         </div>
 
-        <div
-          style={{
-            height: 1,
-            background: "#e8e9eb",
-            margin: "0 20px",
-          }}
-        />
+        <div className="divider" />
 
         {/* DEPARTMENT */}
 
-        <div
-          style={{
-            padding: "22px 23px 15px",
-          }}
-        >
-          <div
-            style={{
-              fontSize: 9,
-              color: "#e21b23",
-              fontWeight: 900,
-              letterSpacing: 1.4,
-              marginBottom: 7,
-            }}
-          >
+        <div className="department">
+          <div className="departmentLabel">
             CUSTOMER EXPERIENCE
           </div>
 
-          <div
-            style={{
-              fontSize: 13,
-              fontWeight: 750,
-              color: "#272a2f",
-            }}
-          >
-            Directorat Performance
+          <div className="departmentName">
+            Internal Command Center
           </div>
         </div>
 
         {/* MENU */}
 
-        <div
-          style={{
-            flex: 1,
-            overflowY: "auto",
-            padding: "3px 13px",
-          }}
-        >
-          <div
-            style={{
-              fontSize: 9,
-              fontWeight: 800,
-              color: "#a5a8ad",
-              letterSpacing: 1.3,
-              padding: "10px 11px",
-            }}
-          >
+        <div className="menuArea">
+          <div className="sectionLabel">
             WORKSPACE
           </div>
-
-          {/* DASHBOARD */}
 
           <MenuButton
             active={active === "Dashboard"}
             icon="⌂"
             label="Dashboard"
-            onClick={() => selectMenu("Dashboard")}
+            onClick={() => setActive("Dashboard")}
           />
 
-          {/* GROUPS */}
-
-          {groups.map((group) => (
+          {menuGroups.map((group) => (
             <div key={group.name}>
               <button
+                className={`groupButton ${
+                  open[group.name] ? "groupOpen" : ""
+                }`}
                 onClick={() => toggle(group.name)}
-                style={{
-                  width: "100%",
-                  height: 42,
-                  border: 0,
-                  background:
-                    open[group.name]
-                      ? "#f7f7f8"
-                      : "transparent",
-                  borderRadius: 10,
-                  display: "flex",
-                  alignItems: "center",
-                  padding: "0 11px",
-                  color:
-                    open[group.name]
-                      ? "#e21b23"
-                      : "#656970",
-                  cursor: "pointer",
-                  transition: "all .2s ease",
-                }}
               >
-                <span
-                  style={{
-                    width: 27,
-                    textAlign: "center",
-                    fontSize: 13,
-                  }}
-                >
+                <span className="menuIcon">
                   {group.icon}
                 </span>
 
-                <span
-                  style={{
-                    flex: 1,
-                    textAlign: "left",
-                    fontSize: 11.5,
-                    fontWeight:
-                      open[group.name]
-                        ? 700
-                        : 500,
-                  }}
-                >
+                <span className="menuLabel">
                   {group.name}
                 </span>
 
                 <span
-                  style={{
-                    fontSize: 19,
-                    transform: open[group.name]
-                      ? "rotate(90deg)"
-                      : "rotate(0deg)",
-                    transition:
-                      "transform .2s ease",
-                    color: open[group.name]
-                      ? "#e21b23"
-                      : "#a6a9ae",
-                  }}
+                  className={`arrow ${
+                    open[group.name] ? "arrowOpen" : ""
+                  }`}
                 >
                   ›
                 </span>
               </button>
 
-              {/* DROPDOWN */}
-
               {open[group.name] && (
-                <div
-                  style={{
-                    marginLeft: 24,
-                    borderLeft:
-                      "1px solid #e1e2e5",
-                    paddingLeft: 7,
-                    marginBottom: 3,
-                  }}
-                >
+                <div className="submenu">
                   {group.items.map((item) => (
                     <button
                       key={item}
-                      onClick={() =>
-                        selectMenu(item)
-                      }
-                      style={{
-                        width: "100%",
-                        height: 35,
-                        border: 0,
-                        borderRadius: 8,
-                        background:
-                          active === item
-                            ? "rgba(226,27,35,.07)"
-                            : "transparent",
-                        color:
-                          active === item
-                            ? "#e21b23"
-                            : "#777b82",
-                        display: "flex",
-                        alignItems: "center",
-                        paddingLeft: 10,
-                        cursor: "pointer",
-                        fontSize: 10.5,
-                        fontWeight:
-                          active === item
-                            ? 700
-                            : 500,
-                        textAlign: "left",
-                      }}
+                      className={`submenuButton ${
+                        active === item
+                          ? "submenuActive"
+                          : ""
+                      }`}
+                      onClick={() => setActive(item)}
                     >
-                      <span
-                        style={{
-                          width: 7,
-                          height: 7,
-                          borderRadius: "50%",
-                          background:
-                            active === item
-                              ? "#e21b23"
-                              : "#c7c9cd",
-                          marginRight: 9,
-                        }}
-                      />
-
+                      <span className="submenuDot" />
                       {item}
                     </button>
                   ))}
@@ -347,15 +152,7 @@ export default function Home() {
             </div>
           ))}
 
-          <div
-            style={{
-              fontSize: 9,
-              fontWeight: 800,
-              color: "#a5a8ad",
-              letterSpacing: 1.3,
-              padding: "18px 11px 8px",
-            }}
-          >
+          <div className="sectionLabel operational">
             OPERATIONAL
           </div>
 
@@ -365,256 +162,83 @@ export default function Home() {
               active={active === name}
               icon={icon}
               label={name}
-              onClick={() => selectMenu(name)}
+              onClick={() => setActive(name)}
             />
           ))}
         </div>
 
-        {/* FOOTER */}
+        {/* STATUS */}
 
-        <div
-          style={{
-            padding: 13,
-            borderTop: "1px solid #e8e9eb",
-          }}
-        >
-          <div
-            style={{
-              padding: 12,
-              borderRadius: 11,
-              background: "#f7f7f8",
-              border: "1px solid #e9eaec",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent:
-                  "space-between",
-                fontSize: 9,
-                fontWeight: 700,
-              }}
-            >
+        <div className="statusWrapper">
+          <div className="statusCard">
+            <div className="statusTop">
               <span>System Status</span>
 
-              <span
-                style={{
-                  color: "#159447",
-                }}
-              >
+              <span className="online">
                 ● Online
               </span>
             </div>
 
-            <div
-              style={{
-                height: 4,
-                background: "#e3e4e7",
-                borderRadius: 10,
-                marginTop: 9,
-                overflow: "hidden",
-              }}
-            >
-              <div
-                style={{
-                  width: "96%",
-                  height: "100%",
-                  background: "#e21b23",
-                }}
-              />
+            <div className="statusTrack">
+              <div className="statusProgress" />
             </div>
           </div>
         </div>
       </aside>
 
-      {/* ======================================================
+      {/* =====================================================
           MAIN
-      ====================================================== */}
+      ===================================================== */}
 
-      <main
-        style={{
-          marginLeft: 270,
-          width: "calc(100% - 270px)",
-          minHeight: "100vh",
-        }}
-      >
+      <main className="main">
         {/* HEADER */}
 
-        <header
-          style={{
-            height: 76,
-            padding: "0 31px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            background:
-              "rgba(255,255,255,.88)",
-            backdropFilter: "blur(18px)",
-            borderBottom:
-              "1px solid #e8e9eb",
-            position: "sticky",
-            top: 0,
-            zIndex: 10,
-          }}
-        >
+        <header className="header">
           <div>
-            <div
-              style={{
-                color: "#a1a4a9",
-                fontSize: 9,
-              }}
-            >
-              CX COMMAND CENTER
-              <span
-                style={{
-                  margin: "0 8px",
-                  color: "#d3d4d7",
-                }}
-              >
-                /
-              </span>
-              PERFORMANCE
+            <div className="breadcrumb">
+              INTERNAL WORKSPACE
+              <span>/</span>
+              DIRECTORAT PERFORMANCE
             </div>
 
-            <div
-              style={{
-                fontSize: 17,
-                fontWeight: 800,
-                marginTop: 5,
-              }}
-            >
-              {active}
+            <div className="pageTitle">
+              CX Internal Command Center
             </div>
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 9,
-            }}
-          >
-            {/* SEARCH */}
-
-            <div
-              style={{
-                width: 220,
-                height: 37,
-                border:
-                  "1px solid #e2e3e6",
-                borderRadius: 9,
-                display: "flex",
-                alignItems: "center",
-                padding: "0 11px",
-                gap: 8,
-                background: "#fff",
-              }}
-            >
-              <span
-                style={{
-                  color: "#999ca2",
-                }}
-              >
-                ⌕
-              </span>
+          <div className="headerRight">
+            <div className="search">
+              <span>⌕</span>
 
               <input
                 placeholder="Search..."
-                style={{
-                  border: 0,
-                  outline: 0,
-                  flex: 1,
-                  fontSize: 10,
-                  background:
-                    "transparent",
-                }}
               />
 
-              <span
-                style={{
-                  color: "#b4b6bb",
-                  fontSize: 9,
-                }}
-              >
-                /
-              </span>
+              <small>/</small>
             </div>
 
-            <button
-              style={iconButton}
-            >
+            <button className="headerButton">
               ◫
             </button>
 
-            <button
-              style={{
-                ...iconButton,
-                position: "relative",
-              }}
-            >
+            <button className="headerButton notification">
               ♢
-
-              <span
-                style={{
-                  position: "absolute",
-                  right: 7,
-                  top: 7,
-                  width: 5,
-                  height: 5,
-                  borderRadius: "50%",
-                  background: "#e21b23",
-                }}
-              />
+              <span />
             </button>
 
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 9,
-                marginLeft: 3,
-              }}
-            >
-              <div
-                style={{
-                  width: 35,
-                  height: 35,
-                  borderRadius: 10,
-                  background: "#e21b23",
-                  color: "#fff",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: 10,
-                  fontWeight: 900,
-                }}
-              >
+            <div className="user">
+              <div className="avatar">
                 CX
               </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <strong
-                  style={{
-                    fontSize: 9.5,
-                  }}
-                >
+              <div>
+                <strong>
                   CX Admin
                 </strong>
 
-                <span
-                  style={{
-                    color: "#9da0a5",
-                    fontSize: 8,
-                    marginTop: 2,
-                  }}
-                >
-                  Customer Experience
-                </span>
+                <small>
+                  Internal User
+                </small>
               </div>
             </div>
           </div>
@@ -622,133 +246,42 @@ export default function Home() {
 
         {/* CONTENT */}
 
-        <div
-          style={{
-            padding: "28px 31px 30px",
-          }}
-        >
+        <div className="content">
           {/* HERO */}
 
-          <section
-            style={{
-              padding: "26px 28px",
-              borderRadius: 17,
-              background:
-                "linear-gradient(110deg,#ffffff 0%,#ffffff 68%,#fff6f6 100%)",
-              border:
-                "1px solid #e5e6e9",
-              position: "relative",
-              overflow: "hidden",
-              display: "flex",
-              justifyContent:
-                "space-between",
-              alignItems: "center",
-            }}
-          >
-            <div>
-              <div
-                style={{
-                  color: "#e21b23",
-                  fontSize: 8,
-                  fontWeight: 900,
-                  letterSpacing: 1.5,
-                }}
-              >
-                CUSTOMER EXPERIENCE
+          <section className="hero">
+            <div className="heroContent">
+              <div className="heroLabel">
+                INTERNAL CX PLATFORM
               </div>
 
-              <h1
-                style={{
-                  fontSize: 25,
-                  margin: "9px 0 7px",
-                  letterSpacing: -0.8,
-                }}
-              >
+              <h1>
                 Good morning, CX Team.
               </h1>
 
-              <p
-                style={{
-                  color: "#858990",
-                  fontSize: 10.5,
-                  margin: 0,
-                  maxWidth: 590,
-                  lineHeight: 1.7,
-                }}
-              >
-                Monitor customer experience
-                performance across every
-                channel and operational layer
-                from one centralized workspace.
+              <p>
+                Centralized performance monitoring
+                workspace for Lion Parcel Customer
+                Experience.
               </p>
             </div>
 
-            <div
-              style={{
-                position: "relative",
-                zIndex: 2,
-                display: "flex",
-                gap: 8,
-              }}
-            >
-              <button
-                style={{
-                  height: 38,
-                  padding: "0 13px",
-                  border:
-                    "1px solid #e1e2e5",
-                  borderRadius: 8,
-                  background: "#fff",
-                  fontSize: 9,
-                  color: "#666a71",
-                }}
-              >
+            <div className="heroActions">
+              <button className="dateButton">
                 ◷ &nbsp; 01 Aug — 20 Aug
               </button>
 
-              <button
-                style={{
-                  height: 38,
-                  padding: "0 15px",
-                  border: 0,
-                  borderRadius: 8,
-                  background: "#e21b23",
-                  color: "#fff",
-                  fontSize: 9,
-                  fontWeight: 700,
-                  boxShadow:
-                    "0 8px 18px rgba(226,27,35,.18)",
-                }}
-              >
+              <button className="exportButton">
                 ↓ &nbsp; Export
               </button>
             </div>
 
-            <div
-              style={{
-                position: "absolute",
-                right: -80,
-                top: -100,
-                width: 300,
-                height: 300,
-                borderRadius: "50%",
-                border:
-                  "55px solid rgba(226,27,35,.035)",
-              }}
-            />
+            <div className="heroCircle" />
           </section>
 
           {/* KPI */}
 
-          <section
-            style={{
-              display: "grid",
-              gridTemplateColumns:
-                "repeat(4,1fr)",
-              gap: 12,
-              marginTop: 14,
-            }}
-          >
+          <section className="kpiGrid">
             <KpiCard
               icon="♥"
               title="Customer Satisfaction"
@@ -778,155 +311,72 @@ export default function Home() {
             />
           </section>
 
-          {/* CHART + ALERT */}
+          {/* PERFORMANCE */}
 
-          <section
-            style={{
-              display: "grid",
-              gridTemplateColumns:
-                "1.55fr 1fr",
-              gap: 14,
-              marginTop: 14,
-            }}
-          >
-            {/* PERFORMANCE */}
-
-            <div style={cardStyle}>
+          <section className="twoColumns">
+            <div className="card">
               <SmallLabel>
                 DIRECTORAT PERFORMANCE
               </SmallLabel>
 
-              <h2 style={cardTitle}>
+              <h2>
                 Performance Overview
               </h2>
 
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent:
-                    "space-between",
-                  alignItems: "end",
-                  marginTop: 19,
-                }}
-              >
+              <div className="chartHeader">
                 <div>
-                  <strong
-                    style={{
-                      fontSize: 25,
-                    }}
-                  >
+                  <strong className="bigNumber">
                     94.8%
                   </strong>
 
-                  <div
-                    style={{
-                      fontSize: 9,
-                      color: "#9da0a5",
-                      marginTop: 3,
-                    }}
-                  >
+                  <div className="muted">
                     Overall achievement
                   </div>
                 </div>
 
-                <div
-                  style={{
-                    display: "flex",
-                    gap: 13,
-                    fontSize: 8,
-                    color: "#96999f",
-                  }}
-                >
+                <div className="legend">
                   <span>
-                    <i
-                      style={{
-                        display: "inline-block",
-                        width: 7,
-                        height: 7,
-                        borderRadius:
-                          "50%",
-                        background:
-                          "#e21b23",
-                        marginRight: 5,
-                      }}
-                    />
+                    <i className="redDot" />
                     Actual
                   </span>
 
                   <span>
-                    <i
-                      style={{
-                        display: "inline-block",
-                        width: 7,
-                        height: 7,
-                        borderRadius:
-                          "50%",
-                        background:
-                          "#d9dade",
-                        marginRight: 5,
-                      }}
-                    />
+                    <i className="grayDot" />
                     Target
                   </span>
                 </div>
               </div>
 
-              {/* CHART */}
-
-              <div
-                style={{
-                  height: 185,
-                  marginTop: 16,
-                  display: "flex",
-                  alignItems: "end",
-                  gap: 11,
-                  borderBottom:
-                    "1px solid #ececef",
-                  padding:
-                    "0 10px",
-                }}
-              >
-                {[55, 63, 59, 72, 67, 78, 74, 84, 79, 89, 85, 95].map(
-                  (v, i) => (
+              <div className="chart">
+                {[
+                  55,
+                  63,
+                  59,
+                  72,
+                  67,
+                  78,
+                  74,
+                  84,
+                  79,
+                  89,
+                  85,
+                  95,
+                ].map((value, index) => (
+                  <div
+                    className="barWrapper"
+                    key={index}
+                  >
                     <div
-                      key={i}
+                      className="bar"
                       style={{
-                        flex: 1,
-                        height: "100%",
-                        display:
-                          "flex",
-                        alignItems:
-                          "end",
+                        height: `${value}%`,
                       }}
-                    >
-                      <div
-                        style={{
-                          width: "100%",
-                          height: `${v}%`,
-                          borderRadius:
-                            "6px 6px 2px 2px",
-                          background:
-                            "linear-gradient(180deg,#f04a50,#df1b23)",
-                          opacity:
-                            0.62 +
-                            i * 0.025,
-                        }}
-                      />
-                    </div>
-                  )
-                )}
+                    />
+                  </div>
+                ))}
               </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent:
-                    "space-around",
-                  marginTop: 7,
-                  color: "#aaaeb3",
-                  fontSize: 8,
-                }}
-              >
+              <div className="weeks">
                 <span>W1</span>
                 <span>W2</span>
                 <span>W3</span>
@@ -938,39 +388,19 @@ export default function Home() {
 
             {/* ALERT */}
 
-            <div style={cardStyle}>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent:
-                    "space-between",
-                }}
-              >
+            <div className="card">
+              <div className="alertHeader">
                 <div>
                   <SmallLabel>
                     REQUIRES ATTENTION
                   </SmallLabel>
 
-                  <h2 style={cardTitle}>
+                  <h2>
                     Priority Alerts
                   </h2>
                 </div>
 
-                <span
-                  style={{
-                    height: 22,
-                    padding: "0 7px",
-                    display: "flex",
-                    alignItems:
-                      "center",
-                    background:
-                      "#fff0f0",
-                    color: "#e21b23",
-                    borderRadius: 6,
-                    fontSize: 8,
-                    fontWeight: 800,
-                  }}
-                >
+                <span className="activeBadge">
                   3 ACTIVE
                 </span>
               </div>
@@ -991,41 +421,23 @@ export default function Home() {
                 text="Customer Voice sentiment dropped by 6%."
               />
 
-              <button
-                style={{
-                  width: "100%",
-                  marginTop: 8,
-                  border: 0,
-                  background:
-                    "transparent",
-                  color: "#e21b23",
-                  textAlign: "left",
-                  fontSize: 9,
-                  fontWeight: 700,
-                }}
-              >
+              <button className="viewAll">
                 View all alerts →
               </button>
             </div>
           </section>
 
-          {/* BOTTOM */}
+          {/* LOWER SECTION */}
 
-          <section
-            style={{
-              display: "grid",
-              gridTemplateColumns:
-                "1fr 1fr .85fr",
-              gap: 14,
-              marginTop: 14,
-            }}
-          >
-            <div style={cardStyle}>
+          <section className="threeColumns">
+            {/* CHANNEL */}
+
+            <div className="card">
               <SmallLabel>
                 CHANNEL PERFORMANCE
               </SmallLabel>
 
-              <h2 style={cardTitle}>
+              <h2>
                 Customer Channels
               </h2>
 
@@ -1050,12 +462,14 @@ export default function Home() {
               />
             </div>
 
-            <div style={cardStyle}>
+            {/* LAYER */}
+
+            <div className="card">
               <SmallLabel>
                 OPERATIONAL LAYER
               </SmallLabel>
 
-              <h2 style={cardTitle}>
+              <h2>
                 Layer Performance
               </h2>
 
@@ -1085,24 +499,18 @@ export default function Home() {
               />
             </div>
 
-            <div style={cardStyle}>
+            {/* QUICK ACCESS */}
+
+            <div className="card">
               <SmallLabel>
                 QUICK ACCESS
               </SmallLabel>
 
-              <h2 style={cardTitle}>
+              <h2>
                 Modules
               </h2>
 
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns:
-                    "1fr 1fr",
-                  gap: 8,
-                  marginTop: 16,
-                }}
-              >
+              <div className="moduleGrid">
                 {[
                   ["◆", "KPI"],
                   ["◇", "Claim"],
@@ -1111,37 +519,16 @@ export default function Home() {
                 ].map(([icon, name]) => (
                   <button
                     key={name}
+                    className="module"
                     onClick={() =>
-                      selectMenu(name)
+                      setActive(name)
                     }
-                    style={{
-                      height: 68,
-                      border:
-                        "1px solid #e7e8eb",
-                      borderRadius: 9,
-                      background:
-                        "#fafafa",
-                      textAlign: "left",
-                      padding: 10,
-                      cursor: "pointer",
-                    }}
                   >
-                    <div
-                      style={{
-                        color: "#e21b23",
-                        fontSize: 13,
-                      }}
-                    >
+                    <span>
                       {icon}
-                    </div>
+                    </span>
 
-                    <strong
-                      style={{
-                        display: "block",
-                        fontSize: 9,
-                        marginTop: 7,
-                      }}
-                    >
+                    <strong>
                       {name}
                     </strong>
                   </button>
@@ -1152,16 +539,7 @@ export default function Home() {
 
           {/* FOOTER */}
 
-          <div
-            style={{
-              display: "flex",
-              justifyContent:
-                "space-between",
-              marginTop: 22,
-              color: "#a3a6ab",
-              fontSize: 8,
-            }}
-          >
+          <footer>
             <span>
               © 2026 Lion Parcel
             </span>
@@ -1170,16 +548,1029 @@ export default function Home() {
               Customer Experience •
               Internal Use Only
             </span>
-          </div>
+          </footer>
         </div>
       </main>
+
+      {/* =====================================================
+          CSS
+      ===================================================== */}
+
+      <style jsx global>{`
+        * {
+          box-sizing: border-box;
+        }
+
+        html,
+        body {
+          margin: 0;
+          padding: 0;
+        }
+
+        body {
+          background: #f5f6f7;
+        }
+
+        button,
+        input {
+          font-family: inherit;
+        }
+
+        button {
+          outline: none;
+        }
+
+        .app {
+          min-height: 100vh;
+          display: flex;
+          color: #24262a;
+          background:
+            linear-gradient(
+              135deg,
+              #f3f4f6 0%,
+              #ffffff 48%,
+              #f1f2f4 100%
+            );
+          font-family:
+            Inter,
+            ui-sans-serif,
+            system-ui,
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            sans-serif;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+          width: 270px;
+          min-height: 100vh;
+          position: fixed;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          z-index: 20;
+          display: flex;
+          flex-direction: column;
+          background:
+            linear-gradient(
+              180deg,
+              #ffffff 0%,
+              #fafafa 65%,
+              #f1f2f4 100%
+            );
+          border-right:
+            1px solid #e6e7e9;
+        }
+
+        .brand {
+          padding: 24px 22px 20px;
+          display: flex;
+          align-items: center;
+          gap: 11px;
+        }
+
+        .logoBox {
+          width: 46px;
+          height: 46px;
+          border-radius: 13px;
+          background: #e21b23;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+          box-shadow:
+            0 8px 20px
+            rgba(226, 27, 35, 0.18);
+          flex-shrink: 0;
+        }
+
+        .logo {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          padding: 4px;
+        }
+
+        .brandName {
+          font-size: 18px;
+          line-height: 1;
+          font-weight: 900;
+          letter-spacing: -0.7px;
+          color: #202226;
+        }
+
+        .brandSub {
+          color: #e21b23;
+          font-size: 8px;
+          font-weight: 900;
+          letter-spacing: 1.3px;
+          margin-top: 6px;
+        }
+
+        .divider {
+          height: 1px;
+          background: #e8e9eb;
+          margin: 0 20px;
+        }
+
+        .department {
+          padding:
+            22px 22px 14px;
+        }
+
+        .departmentLabel {
+          color: #e21b23;
+          font-size: 8px;
+          font-weight: 900;
+          letter-spacing: 1.4px;
+          margin-bottom: 7px;
+        }
+
+        .departmentName {
+          font-size: 13px;
+          font-weight: 800;
+          color: #25272b;
+        }
+
+        .menuArea {
+          flex: 1;
+          overflow-y: auto;
+          padding: 2px 13px;
+        }
+
+        .sectionLabel {
+          font-size: 8px;
+          font-weight: 900;
+          color: #a3a6ab;
+          letter-spacing: 1.3px;
+          padding:
+            10px 10px 8px;
+        }
+
+        .operational {
+          padding-top: 18px;
+        }
+
+        .groupButton,
+        .menuButton {
+          width: 100%;
+          height: 42px;
+          border: 0;
+          border-radius: 10px;
+          background: transparent;
+          display: flex;
+          align-items: center;
+          padding: 0 11px;
+          color: #676b72;
+          cursor: pointer;
+          transition: all 0.18s ease;
+        }
+
+        .groupButton:hover,
+        .menuButton:hover {
+          background: #f7f7f8;
+          color: #e21b23;
+        }
+
+        .groupOpen {
+          background: #f7f7f8;
+          color: #e21b23;
+        }
+
+        .menuButton {
+          position: relative;
+        }
+
+        .menuActive {
+          background:
+            rgba(226, 27, 35, 0.075);
+          color: #e21b23;
+        }
+
+        .menuActive::before {
+          content: "";
+          position: absolute;
+          left: -13px;
+          top: 8px;
+          bottom: 8px;
+          width: 3px;
+          border-radius:
+            0 4px 4px 0;
+          background: #e21b23;
+        }
+
+        .menuIcon {
+          width: 27px;
+          text-align: center;
+          font-size: 13px;
+          color: #999da3;
+        }
+
+        .menuActive .menuIcon {
+          color: #e21b23;
+        }
+
+        .menuLabel {
+          font-size: 11.5px;
+          font-weight: 600;
+        }
+
+        .arrow {
+          margin-left: auto;
+          font-size: 19px;
+          color: #a7aab0;
+          transition:
+            transform 0.2s ease;
+        }
+
+        .arrowOpen {
+          transform:
+            rotate(90deg);
+          color: #e21b23;
+        }
+
+        .submenu {
+          margin-left: 24px;
+          padding-left: 7px;
+          border-left:
+            1px solid #e1e2e5;
+        }
+
+        .submenuButton {
+          width: 100%;
+          height: 35px;
+          border: 0;
+          border-radius: 8px;
+          background: transparent;
+          display: flex;
+          align-items: center;
+          padding-left: 10px;
+          color: #777b82;
+          font-size: 10.5px;
+          font-weight: 500;
+          cursor: pointer;
+          text-align: left;
+        }
+
+        .submenuButton:hover {
+          color: #e21b23;
+          background: #fafafa;
+        }
+
+        .submenuActive {
+          background:
+            rgba(226, 27, 35, 0.07);
+          color: #e21b23;
+          font-weight: 700;
+        }
+
+        .submenuDot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #c7c9cd;
+          margin-right: 9px;
+        }
+
+        .submenuActive
+          .submenuDot {
+          background: #e21b23;
+        }
+
+        .statusWrapper {
+          padding: 13px;
+          border-top:
+            1px solid #e8e9eb;
+        }
+
+        .statusCard {
+          padding: 12px;
+          border-radius: 11px;
+          background: #f7f7f8;
+          border:
+            1px solid #e9eaec;
+        }
+
+        .statusTop {
+          display: flex;
+          justify-content: space-between;
+          font-size: 9px;
+          font-weight: 700;
+        }
+
+        .online {
+          color: #159447;
+        }
+
+        .statusTrack {
+          height: 4px;
+          margin-top: 9px;
+          border-radius: 10px;
+          background: #e3e4e7;
+          overflow: hidden;
+        }
+
+        .statusProgress {
+          width: 96%;
+          height: 100%;
+          background: #e21b23;
+        }
+
+        /* MAIN */
+
+        .main {
+          margin-left: 270px;
+          width:
+            calc(100% - 270px);
+          min-height: 100vh;
+        }
+
+        .header {
+          height: 76px;
+          padding:
+            0 31px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          background:
+            rgba(255, 255, 255, 0.88);
+          backdrop-filter:
+            blur(18px);
+          border-bottom:
+            1px solid #e8e9eb;
+          position: sticky;
+          top: 0;
+          z-index: 10;
+        }
+
+        .breadcrumb {
+          color: #a1a4a9;
+          font-size: 8px;
+          font-weight: 800;
+          letter-spacing: 0.5px;
+        }
+
+        .breadcrumb span {
+          margin: 0 8px;
+          color: #d1d3d6;
+        }
+
+        .pageTitle {
+          font-size: 17px;
+          font-weight: 850;
+          margin-top: 5px;
+          letter-spacing: -0.4px;
+        }
+
+        .headerRight {
+          display: flex;
+          align-items: center;
+          gap: 9px;
+        }
+
+        .search {
+          width: 220px;
+          height: 37px;
+          border:
+            1px solid #e2e3e6;
+          border-radius: 9px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 0 11px;
+          background: #fff;
+        }
+
+        .search span {
+          color: #999ca2;
+          font-size: 15px;
+        }
+
+        .search input {
+          flex: 1;
+          border: 0;
+          outline: 0;
+          background: transparent;
+          font-size: 10px;
+          color: #333;
+        }
+
+        .search small {
+          color: #b4b6bb;
+          font-size: 9px;
+        }
+
+        .headerButton {
+          width: 37px;
+          height: 37px;
+          border:
+            1px solid #e2e3e6;
+          border-radius: 9px;
+          background: #fff;
+          color: #777b82;
+          cursor: pointer;
+        }
+
+        .notification {
+          position: relative;
+        }
+
+        .notification span {
+          position: absolute;
+          right: 7px;
+          top: 7px;
+          width: 5px;
+          height: 5px;
+          border-radius: 50%;
+          background: #e21b23;
+        }
+
+        .user {
+          display: flex;
+          align-items: center;
+          gap: 9px;
+          margin-left: 3px;
+        }
+
+        .avatar {
+          width: 35px;
+          height: 35px;
+          border-radius: 10px;
+          background: #e21b23;
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 10px;
+          font-weight: 900;
+        }
+
+        .user strong {
+          display: block;
+          font-size: 9.5px;
+        }
+
+        .user small {
+          display: block;
+          color: #9da0a5;
+          font-size: 8px;
+          margin-top: 2px;
+        }
+
+        /* CONTENT */
+
+        .content {
+          padding:
+            28px 31px 30px;
+        }
+
+        .hero {
+          min-height: 151px;
+          padding:
+            26px 28px;
+          border-radius: 17px;
+          background:
+            linear-gradient(
+              110deg,
+              #ffffff 0%,
+              #ffffff 65%,
+              #fff6f6 100%
+            );
+          border:
+            1px solid #e5e6e9;
+          position: relative;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .heroContent {
+          position: relative;
+          z-index: 2;
+        }
+
+        .heroLabel {
+          color: #e21b23;
+          font-size: 8px;
+          font-weight: 900;
+          letter-spacing: 1.5px;
+        }
+
+        .hero h1 {
+          font-size: 25px;
+          margin:
+            9px 0 7px;
+          letter-spacing: -0.8px;
+        }
+
+        .hero p {
+          color: #858990;
+          font-size: 10.5px;
+          margin: 0;
+          max-width: 590px;
+          line-height: 1.7;
+        }
+
+        .heroActions {
+          position: relative;
+          z-index: 2;
+          display: flex;
+          gap: 8px;
+        }
+
+        .dateButton,
+        .exportButton {
+          height: 38px;
+          border-radius: 8px;
+          font-size: 9px;
+          cursor: pointer;
+        }
+
+        .dateButton {
+          padding: 0 13px;
+          border:
+            1px solid #e1e2e5;
+          background: #fff;
+          color: #666a71;
+        }
+
+        .exportButton {
+          padding: 0 15px;
+          border: 0;
+          background: #e21b23;
+          color: #fff;
+          font-weight: 700;
+          box-shadow:
+            0 8px 18px
+            rgba(226, 27, 35, 0.18);
+        }
+
+        .heroCircle {
+          position: absolute;
+          right: -80px;
+          top: -100px;
+          width: 300px;
+          height: 300px;
+          border-radius: 50%;
+          border:
+            55px solid
+            rgba(226, 27, 35, 0.035);
+        }
+
+        /* KPI */
+
+        .kpiGrid {
+          display: grid;
+          grid-template-columns:
+            repeat(4, 1fr);
+          gap: 12px;
+          margin-top: 14px;
+        }
+
+        .kpiCard {
+          background: #fff;
+          border:
+            1px solid #e5e6e9;
+          border-radius: 13px;
+          padding: 17px;
+          min-height: 142px;
+          box-shadow:
+            0 4px 18px
+            rgba(25, 30, 35, 0.025);
+        }
+
+        .kpiTop {
+          display: flex;
+          justify-content: space-between;
+        }
+
+        .kpiIcon {
+          width: 31px;
+          height: 31px;
+          border-radius: 8px;
+          background: #fff1f2;
+          color: #e21b23;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 12px;
+        }
+
+        .change {
+          padding: 4px 7px;
+          border-radius: 5px;
+          background: #edf8f1;
+          color: #17884a;
+          font-size: 8px;
+          font-weight: 800;
+        }
+
+        .kpiTitle {
+          margin-top: 14px;
+          color: #888c92;
+          font-size: 9px;
+        }
+
+        .kpiValue {
+          display: block;
+          font-size: 24px;
+          letter-spacing: -0.8px;
+          margin-top: 4px;
+        }
+
+        .kpiMuted {
+          color: #b0b2b7;
+          font-size: 8px;
+          margin-top: 3px;
+        }
+
+        /* CARDS */
+
+        .twoColumns {
+          display: grid;
+          grid-template-columns:
+            1.55fr 1fr;
+          gap: 14px;
+          margin-top: 14px;
+        }
+
+        .threeColumns {
+          display: grid;
+          grid-template-columns:
+            1fr 1fr 0.85fr;
+          gap: 14px;
+          margin-top: 14px;
+        }
+
+        .card {
+          background: #fff;
+          border:
+            1px solid #e5e6e9;
+          border-radius: 14px;
+          padding: 20px;
+          box-shadow:
+            0 4px 18px
+            rgba(25, 30, 35, 0.025);
+        }
+
+        .card h2 {
+          margin:
+            5px 0 0;
+          font-size: 15px;
+          letter-spacing: -0.2px;
+        }
+
+        .smallLabel {
+          color: #e21b23;
+          font-size: 8px;
+          font-weight: 900;
+          letter-spacing: 1.2px;
+        }
+
+        /* CHART */
+
+        .chartHeader {
+          display: flex;
+          align-items: flex-end;
+          justify-content: space-between;
+          margin-top: 19px;
+        }
+
+        .bigNumber {
+          font-size: 25px;
+        }
+
+        .muted {
+          color: #9da0a5;
+          font-size: 9px;
+          margin-top: 3px;
+        }
+
+        .legend {
+          display: flex;
+          gap: 13px;
+          color: #96999f;
+          font-size: 8px;
+        }
+
+        .legend span {
+          display: flex;
+          align-items: center;
+        }
+
+        .redDot,
+        .grayDot {
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          display: inline-block;
+          margin-right: 5px;
+        }
+
+        .redDot {
+          background: #e21b23;
+        }
+
+        .grayDot {
+          background: #d9dade;
+        }
+
+        .chart {
+          height: 185px;
+          margin-top: 16px;
+          display: flex;
+          align-items: flex-end;
+          gap: 11px;
+          border-bottom:
+            1px solid #ececef;
+          padding: 0 10px;
+        }
+
+        .barWrapper {
+          height: 100%;
+          flex: 1;
+          display: flex;
+          align-items: flex-end;
+        }
+
+        .bar {
+          width: 100%;
+          border-radius:
+            6px 6px 2px 2px;
+          background:
+            linear-gradient(
+              180deg,
+              #f04a50,
+              #df1b23
+            );
+        }
+
+        .weeks {
+          display: flex;
+          justify-content: space-around;
+          margin-top: 7px;
+          color: #aaaeb3;
+          font-size: 8px;
+        }
+
+        /* ALERT */
+
+        .alertHeader {
+          display: flex;
+          justify-content: space-between;
+        }
+
+        .activeBadge {
+          height: 22px;
+          padding: 0 7px;
+          display: flex;
+          align-items: center;
+          background: #fff0f0;
+          color: #e21b23;
+          border-radius: 6px;
+          font-size: 8px;
+          font-weight: 800;
+        }
+
+        .alert {
+          display: flex;
+          gap: 9px;
+          padding: 14px 0;
+          border-bottom:
+            1px solid #f0f1f2;
+        }
+
+        .alertIcon {
+          width: 27px;
+          height: 27px;
+          border-radius: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #fff8e9;
+          color: #c48700;
+          font-size: 10px;
+          font-weight: 800;
+          flex-shrink: 0;
+        }
+
+        .alertDanger {
+          background: #fff0f0;
+          color: #e21b23;
+        }
+
+        .alert strong {
+          display: block;
+          font-size: 9.5px;
+        }
+
+        .alert p {
+          margin: 4px 0 0;
+          color: #999ca2;
+          font-size: 8.5px;
+          line-height: 1.5;
+        }
+
+        .viewAll {
+          width: 100%;
+          margin-top: 8px;
+          border: 0;
+          background: transparent;
+          color: #e21b23;
+          text-align: left;
+          font-size: 9px;
+          font-weight: 700;
+          cursor: pointer;
+        }
+
+        /* PROGRESS */
+
+        .progress {
+          margin-top: 17px;
+        }
+
+        .progressHeader {
+          display: flex;
+          justify-content: space-between;
+          font-size: 9px;
+        }
+
+        .progressName {
+          color: #777b82;
+        }
+
+        .progressTrack {
+          height: 5px;
+          background: #f0f1f3;
+          border-radius: 20px;
+          margin-top: 7px;
+          overflow: hidden;
+        }
+
+        .progressFill {
+          height: 100%;
+          background:
+            linear-gradient(
+              90deg,
+              #e21b23,
+              #f05a5f
+            );
+          border-radius: 20px;
+        }
+
+        /* LAYER */
+
+        .layer {
+          height: 34px;
+          border-bottom:
+            1px solid #f0f1f2;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          font-size: 9px;
+        }
+
+        .layerName {
+          color: #777b82;
+          display: flex;
+          align-items: center;
+          gap: 7px;
+        }
+
+        .layerDot {
+          width: 5px;
+          height: 5px;
+          border-radius: 50%;
+          background: #e21b23;
+        }
+
+        /* MODULE */
+
+        .moduleGrid {
+          display: grid;
+          grid-template-columns:
+            1fr 1fr;
+          gap: 8px;
+          margin-top: 16px;
+        }
+
+        .module {
+          height: 68px;
+          border:
+            1px solid #e7e8eb;
+          border-radius: 9px;
+          background: #fafafa;
+          text-align: left;
+          padding: 10px;
+          cursor: pointer;
+          transition:
+            all 0.18s ease;
+        }
+
+        .module:hover {
+          background: #fff;
+          border-color: #efb3b6;
+          transform:
+            translateY(-1px);
+        }
+
+        .module span {
+          color: #e21b23;
+          font-size: 13px;
+        }
+
+        .module strong {
+          display: block;
+          font-size: 9px;
+          margin-top: 7px;
+        }
+
+        /* FOOTER */
+
+        footer {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 22px;
+          color: #a3a6ab;
+          font-size: 8px;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 1100px) {
+          .kpiGrid {
+            grid-template-columns:
+              repeat(2, 1fr);
+          }
+
+          .threeColumns {
+            grid-template-columns: 1fr 1fr;
+          }
+        }
+
+        @media (max-width: 850px) {
+          .sidebar {
+            width: 220px;
+          }
+
+          .main {
+            margin-left: 220px;
+            width:
+              calc(100% - 220px);
+          }
+
+          .headerRight .search {
+            display: none;
+          }
+
+          .twoColumns,
+          .threeColumns {
+            grid-template-columns: 1fr;
+          }
+        }
+
+        @media (max-width: 650px) {
+          .sidebar {
+            display: none;
+          }
+
+          .main {
+            margin-left: 0;
+            width: 100%;
+          }
+
+          .header {
+            padding: 0 18px;
+          }
+
+          .content {
+            padding: 18px;
+          }
+
+          .hero {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 18px;
+          }
+
+          .kpiGrid {
+            grid-template-columns: 1fr;
+          }
+
+          .user > div:last-child {
+            display: none;
+          }
+        }
+      `}</style>
     </div>
   );
 }
 
-
 /* ==========================================================
-   COMPONENTS
+   MENU BUTTON
 ========================================================== */
 
 function MenuButton({
@@ -1190,69 +1581,25 @@ function MenuButton({
 }) {
   return (
     <button
+      className={`menuButton ${
+        active ? "menuActive" : ""
+      }`}
       onClick={onClick}
-      style={{
-        width: "100%",
-        height: 42,
-        border: 0,
-        borderRadius: 10,
-        background: active
-          ? "rgba(226,27,35,.075)"
-          : "transparent",
-        color: active
-          ? "#e21b23"
-          : "#676b72",
-        display: "flex",
-        alignItems: "center",
-        padding: "0 11px",
-        cursor: "pointer",
-        position: "relative",
-        transition:
-          "all .18s ease",
-      }}
     >
-      {active && (
-        <span
-          style={{
-            position: "absolute",
-            left: -13,
-            top: 8,
-            bottom: 8,
-            width: 3,
-            background: "#e21b23",
-            borderRadius:
-              "0 4px 4px 0",
-          }}
-        />
-      )}
-
-      <span
-        style={{
-          width: 27,
-          textAlign: "center",
-          fontSize: 14,
-          color: active
-            ? "#e21b23"
-            : "#999da3",
-        }}
-      >
+      <span className="menuIcon">
         {icon}
       </span>
 
-      <span
-        style={{
-          fontSize: 11.5,
-          fontWeight: active
-            ? 700
-            : 500,
-        }}
-      >
+      <span className="menuLabel">
         {label}
       </span>
     </button>
   );
 }
 
+/* ==========================================================
+   KPI
+========================================================== */
 
 function KpiCard({
   icon,
@@ -1261,163 +1608,71 @@ function KpiCard({
   change,
 }) {
   return (
-    <div
-      style={{
-        background: "#fff",
-        border:
-          "1px solid #e5e6e9",
-        borderRadius: 13,
-        padding: 17,
-        minHeight: 142,
-        boxShadow:
-          "0 4px 18px rgba(25,30,35,.025)",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          justifyContent:
-            "space-between",
-        }}
-      >
-        <div
-          style={{
-            width: 31,
-            height: 31,
-            borderRadius: 8,
-            background: "#fff1f2",
-            color: "#e21b23",
-            display: "flex",
-            alignItems: "center",
-            justifyContent:
-              "center",
-            fontSize: 12,
-          }}
-        >
+    <div className="kpiCard">
+      <div className="kpiTop">
+        <div className="kpiIcon">
           {icon}
         </div>
 
-        <span
-          style={{
-            padding: "4px 7px",
-            borderRadius: 5,
-            background: "#edf8f1",
-            color: "#17884a",
-            fontSize: 8,
-            fontWeight: 800,
-          }}
-        >
+        <span className="change">
           {change}
         </span>
       </div>
 
-      <div
-        style={{
-          marginTop: 14,
-          color: "#888c92",
-          fontSize: 9,
-        }}
-      >
+      <div className="kpiTitle">
         {title}
       </div>
 
-      <strong
-        style={{
-          display: "block",
-          fontSize: 24,
-          letterSpacing: -0.8,
-          marginTop: 4,
-        }}
-      >
+      <strong className="kpiValue">
         {value}
       </strong>
 
-      <div
-        style={{
-          color: "#b0b2b7",
-          fontSize: 8,
-          marginTop: 3,
-        }}
-      >
+      <div className="kpiMuted">
         vs previous period
       </div>
     </div>
   );
 }
 
+/* ==========================================================
+   SMALL LABEL
+========================================================== */
 
-function SmallLabel({ children }) {
+function SmallLabel({
+  children,
+}) {
   return (
-    <div
-      style={{
-        color: "#e21b23",
-        fontSize: 8,
-        fontWeight: 900,
-        letterSpacing: 1.2,
-      }}
-    >
+    <div className="smallLabel">
       {children}
     </div>
   );
 }
 
+/* ==========================================================
+   ALERT
+========================================================== */
 
 function Alert({
   title,
   text,
-  danger,
+  danger = false,
 }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        gap: 9,
-        padding: "14px 0",
-        borderBottom:
-          "1px solid #f0f1f2",
-      }}
-    >
+    <div className="alert">
       <div
-        style={{
-          width: 27,
-          height: 27,
-          borderRadius: 8,
-          background: danger
-            ? "#fff0f0"
-            : "#fff8e9",
-          color: danger
-            ? "#e21b23"
-            : "#c48700",
-          display: "flex",
-          alignItems: "center",
-          justifyContent:
-            "center",
-          fontWeight: 800,
-          fontSize: 10,
-          flexShrink: 0,
-        }}
+        className={`alertIcon ${
+          danger ? "alertDanger" : ""
+        }`}
       >
         !
       </div>
 
       <div>
-        <strong
-          style={{
-            display: "block",
-            fontSize: 9.5,
-          }}
-        >
+        <strong>
           {title}
         </strong>
 
-        <p
-          style={{
-            margin: "4px 0 0",
-            color: "#999ca2",
-            fontSize: 8.5,
-            lineHeight: 1.5,
-          }}
-        >
+        <p>
           {text}
         </p>
       </div>
@@ -1425,52 +1680,31 @@ function Alert({
   );
 }
 
+/* ==========================================================
+   PROGRESS
+========================================================== */
 
 function Progress({
   name,
   value,
 }) {
   return (
-    <div
-      style={{
-        marginTop: 17,
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          justifyContent:
-            "space-between",
-          fontSize: 9,
-        }}
-      >
-        <span
-          style={{
-            color: "#777b82",
-          }}
-        >
+    <div className="progress">
+      <div className="progressHeader">
+        <span className="progressName">
           {name}
         </span>
 
-        <strong>{value}</strong>
+        <strong>
+          {value}
+        </strong>
       </div>
 
-      <div
-        style={{
-          height: 5,
-          background: "#f0f1f3",
-          borderRadius: 20,
-          marginTop: 7,
-          overflow: "hidden",
-        }}
-      >
+      <div className="progressTrack">
         <div
+          className="progressFill"
           style={{
             width: value,
-            height: "100%",
-            background:
-              "linear-gradient(90deg,#e21b23,#f05a5f)",
-            borderRadius: 20,
           }}
         />
       </div>
@@ -1478,74 +1712,24 @@ function Progress({
   );
 }
 
+/* ==========================================================
+   LAYER
+========================================================== */
 
 function Layer({
   name,
   value,
 }) {
   return (
-    <div
-      style={{
-        height: 34,
-        borderBottom:
-          "1px solid #f0f1f2",
-        display: "flex",
-        alignItems: "center",
-        justifyContent:
-          "space-between",
-        fontSize: 9,
-      }}
-    >
-      <span
-        style={{
-          color: "#777b82",
-          display: "flex",
-          alignItems: "center",
-          gap: 7,
-        }}
-      >
-        <i
-          style={{
-            width: 5,
-            height: 5,
-            borderRadius: "50%",
-            background: "#e21b23",
-          }}
-        />
+    <div className="layer">
+      <span className="layerName">
+        <i className="layerDot" />
         {name}
       </span>
 
-      <strong>{value}</strong>
+      <strong>
+        {value}
+      </strong>
     </div>
   );
 }
-
-
-/* ==========================================================
-   STYLES
-========================================================== */
-
-const cardStyle = {
-  background: "#fff",
-  border: "1px solid #e5e6e9",
-  borderRadius: 14,
-  padding: 20,
-  boxShadow:
-    "0 4px 18px rgba(25,30,35,.025)",
-};
-
-const cardTitle = {
-  margin: "5px 0 0",
-  fontSize: 15,
-  letterSpacing: -0.2,
-};
-
-const iconButton = {
-  width: 37,
-  height: 37,
-  border: "1px solid #e2e3e6",
-  borderRadius: 9,
-  background: "#fff",
-  color: "#777b82",
-  cursor: "pointer",
-};
