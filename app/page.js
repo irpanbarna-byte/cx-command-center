@@ -27,19 +27,23 @@ export default function Home() {
   return (
     <div className={`cxApp ${collapsed ? "isCollapsed" : ""}`}>
 
-      {/* ================= SIDEBAR ================= */}
+      {/* =====================================================
+          SIDEBAR
+      ===================================================== */}
 
       <aside className="cxSidebar">
 
-        <div className="brandArea">
+        {/* BRAND */}
 
-          {/* CUSTOM CX BRAND ICON */}
+        <div className="brandArea">
 
           <div className="cxBrandMark">
             <div className="cxOrbit orbitA"></div>
             <div className="cxOrbit orbitB"></div>
 
-            <span className="cxLetter">CX</span>
+            <span className="cxLetter">
+              CX
+            </span>
 
             <span className="cxPoint"></span>
           </div>
@@ -48,10 +52,6 @@ export default function Home() {
             <div className="brandInfo">
 
               <div className="brandTitle">
-                Directorate CX
-              </div>
-
-              <div className="brandSub">
                 CUSTOMER EXPERIENCE
               </div>
 
@@ -65,12 +65,12 @@ export default function Home() {
         </div>
 
 
-        {/* COLLAPSE BUTTON */}
+        {/* COLLAPSE */}
 
         <button
           className="collapseBtn"
           onClick={() => setCollapsed(!collapsed)}
-          aria-label="Collapse sidebar"
+          aria-label="Toggle sidebar"
         >
           {collapsed ? "›" : "‹"}
         </button>
@@ -86,6 +86,8 @@ export default function Home() {
             </div>
           )}
 
+
+          {/* DASHBOARD */}
 
           <NavItem
             icon="⌂"
@@ -170,6 +172,8 @@ export default function Home() {
             </div>
           )}
 
+
+          {/* OPERATIONS */}
 
           <NavItem
             icon="▣"
@@ -291,7 +295,9 @@ export default function Home() {
       </aside>
 
 
-      {/* ================= MAIN ================= */}
+      {/* =====================================================
+          MAIN
+      ===================================================== */}
 
       <main className="cxMain">
 
@@ -383,7 +389,9 @@ export default function Home() {
         </header>
 
 
-        {/* ================= CONTENT ================= */}
+        {/* =====================================================
+            DASHBOARD CONTENT
+        ===================================================== */}
 
         <div className="dashboardContent">
 
@@ -405,14 +413,11 @@ export default function Home() {
               </div>
 
               <h1>
-
                 Customer Experience
                 <br />
-
                 <em>
                   Command Center.
                 </em>
-
               </h1>
 
               <p>
@@ -496,12 +501,10 @@ export default function Home() {
           </section>
 
 
-          {/* MAIN GRID */}
+          {/* PERFORMANCE + ALERT */}
 
           <section className="mainGrid">
 
-
-            {/* PERFORMANCE */}
 
             <div className="premiumCard performanceCard">
 
@@ -510,6 +513,7 @@ export default function Home() {
                 title="CX Performance Overview"
                 action="View Details →"
               />
+
 
               <div className="performanceTop">
 
@@ -524,6 +528,7 @@ export default function Home() {
                   </div>
 
                 </div>
+
 
                 <div className="chartLegend">
 
@@ -594,29 +599,12 @@ export default function Home() {
 
               <div className="chartLabels">
 
-                <span>
-                  W1
-                </span>
-
-                <span>
-                  W2
-                </span>
-
-                <span>
-                  W3
-                </span>
-
-                <span>
-                  W4
-                </span>
-
-                <span>
-                  W5
-                </span>
-
-                <span>
-                  W6
-                </span>
+                <span>W1</span>
+                <span>W2</span>
+                <span>W3</span>
+                <span>W4</span>
+                <span>W5</span>
+                <span>W6</span>
 
               </div>
 
@@ -660,7 +648,7 @@ export default function Home() {
           </section>
 
 
-          {/* LOWER GRID */}
+          {/* LOWER */}
 
           <section className="lowerGrid">
 
@@ -734,7 +722,7 @@ export default function Home() {
             </div>
 
 
-            {/* QUICK ACCESS */}
+            {/* MODULES */}
 
             <div className="premiumCard">
 
@@ -785,6 +773,7 @@ export default function Home() {
           {/* BOTTOM */}
 
           <section className="bottomGrid">
+
 
             <div className="premiumCard activityCard">
 
@@ -875,7 +864,9 @@ export default function Home() {
       </main>
 
 
-      {/* ================= CSS ================= */}
+      {/* =====================================================
+          GLOBAL CSS
+      ===================================================== */}
 
       <style jsx global>{`
 
@@ -913,7 +904,7 @@ export default function Home() {
         }
 
 
-        /* ================= APP ================= */
+        /* APP */
 
         .cxApp {
 
@@ -941,7 +932,7 @@ export default function Home() {
         }
 
 
-        /* ================= SIDEBAR ================= */
+        /* SIDEBAR */
 
         .cxSidebar {
 
@@ -985,7 +976,7 @@ export default function Home() {
         }
 
 
-        /* ================= CX BRAND ================= */
+        /* BRAND */
 
         .brandArea {
 
@@ -1118,44 +1109,39 @@ export default function Home() {
         }
 
 
+        /* ONLY 2 LINES */
+
         .brandTitle {
 
-          font-size: 16px;
+          font-size: 11px;
 
           font-weight: 800;
 
-          letter-spacing: -.5px;
+          letter-spacing: .35px;
 
-        }
+          color: #24272b;
 
-
-        .brandSub {
-
-          margin-top: 5px;
-
-          color: var(--red);
-
-          font-size: 7.5px;
-
-          font-weight: 800;
-
-          letter-spacing: 1.25px;
+          white-space: nowrap;
 
         }
 
 
         .brandTiny {
 
-          margin-top: 3px;
+          margin-top: 4px;
 
-          color: #a1a4aa;
+          color: #9b9ea4;
 
           font-size: 8px;
+
+          font-weight: 500;
+
+          white-space: nowrap;
 
         }
 
 
-        /* ================= COLLAPSE ================= */
+        /* COLLAPSE */
 
         .collapseBtn {
 
@@ -1199,7 +1185,7 @@ export default function Home() {
         }
 
 
-        /* ================= NAV ================= */
+        /* NAV */
 
         .navigation {
 
@@ -1391,7 +1377,7 @@ export default function Home() {
         }
 
 
-        /* ================= SUB MENU ================= */
+        /* SUB MENU */
 
         .subMenu {
 
@@ -1476,7 +1462,7 @@ export default function Home() {
         }
 
 
-        /* ================= FOOTER ================= */
+        /* SIDEBAR FOOTER */
 
         .sidebarFooter {
 
@@ -1594,7 +1580,7 @@ export default function Home() {
         }
 
 
-        /* ================= MAIN ================= */
+        /* MAIN */
 
         .cxMain {
 
@@ -1620,7 +1606,7 @@ export default function Home() {
         }
 
 
-        /* ================= HEADER ================= */
+        /* HEADER */
 
         .topHeader {
 
@@ -1881,7 +1867,7 @@ export default function Home() {
         }
 
 
-        /* ================= CONTENT ================= */
+        /* CONTENT */
 
         .dashboardContent {
 
@@ -1891,7 +1877,7 @@ export default function Home() {
         }
 
 
-        /* ================= HERO ================= */
+        /* HERO */
 
         .heroPanel {
 
@@ -2175,7 +2161,7 @@ export default function Home() {
         }
 
 
-        /* ================= KPI ================= */
+        /* KPI */
 
         .kpiGrid {
 
@@ -2317,7 +2303,7 @@ export default function Home() {
         }
 
 
-        /* ================= GRIDS ================= */
+        /* GRIDS */
 
         .mainGrid {
 
@@ -2453,7 +2439,7 @@ export default function Home() {
         }
 
 
-        /* ================= CHART ================= */
+        /* PERFORMANCE */
 
         .performanceTop {
 
@@ -2644,7 +2630,7 @@ export default function Home() {
         }
 
 
-        /* ================= ALERT ================= */
+        /* ALERT */
 
         .alertItem {
 
@@ -2738,7 +2724,7 @@ export default function Home() {
         }
 
 
-        /* ================= CHANNEL ================= */
+        /* CHANNEL */
 
         .channel {
 
@@ -2804,7 +2790,7 @@ export default function Home() {
         }
 
 
-        /* ================= LAYER ================= */
+        /* LAYER */
 
         .layerRow {
 
@@ -2850,7 +2836,7 @@ export default function Home() {
         }
 
 
-        /* ================= MODULE ================= */
+        /* MODULE */
 
         .moduleGrid {
 
@@ -2937,7 +2923,7 @@ export default function Home() {
         }
 
 
-        /* ================= ACTIVITY ================= */
+        /* ACTIVITY */
 
         .activityItem {
 
@@ -3002,7 +2988,7 @@ export default function Home() {
         }
 
 
-        /* ================= SCORE ================= */
+        /* SCORE */
 
         .scoreCard {
 
@@ -3106,7 +3092,7 @@ export default function Home() {
         }
 
 
-        /* ================= FOOTER ================= */
+        /* FOOTER */
 
         .mainFooter {
 
@@ -3125,7 +3111,7 @@ export default function Home() {
         }
 
 
-        /* ================= RESPONSIVE ================= */
+        /* RESPONSIVE */
 
         @media (max-width: 1150px) {
 
