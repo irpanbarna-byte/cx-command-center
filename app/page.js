@@ -2,175 +2,142 @@
 
 import { useState } from "react";
 
-const LION_LOGO =
+const logo =
   "https://www.marketeers.com/_next/image/?url=https%3A%2F%2Fimagedelivery.net%2F2MtOYVTKaiU0CCt-BLmtWw%2Fbb2fcb96-610f-45d1-74ed-285bbfdb6f00%2Fw%3D900&w=1920&q=75";
 
-const navigation = [
-  { label: "Overview", icon: "⌂" },
-  { label: "CX Performance", icon: "◈" },
-  { label: "Complaints", icon: "!" },
-  { label: "Customer Voice", icon: "◉" },
-  { label: "SLA Monitoring", icon: "◷" },
-  { label: "Reports", icon: "▤" },
+const menu = [
+  ["⌂", "Overview"],
+  ["◈", "CX Performance"],
+  ["!", "Complaints"],
+  ["◉", "Customer Voice"],
+  ["◷", "SLA Monitoring"],
+  ["▤", "Reports"],
 ];
 
 export default function Home() {
   const [active, setActive] = useState("Overview");
 
   return (
-    <div className="min-h-screen bg-[#f7f8fa] text-[#17181c]">
+    <main className="app">
 
-      {/* =====================================================
-          SIDEBAR
-      ===================================================== */}
+      {/* SIDEBAR */}
 
-      <aside className="fixed left-0 top-0 z-40 hidden h-screen w-[250px] border-r border-slate-200 bg-white lg:flex lg:flex-col">
+      <aside className="sidebar">
 
-        {/* Logo */}
-        <div className="flex h-[82px] items-center border-b border-slate-100 px-7">
+        <div className="brand">
           <img
-            src={LION_LOGO}
+            src={logo}
             alt="Lion Parcel"
-            className="h-10 w-auto object-contain"
           />
         </div>
 
-        {/* Navigation */}
-        <div className="flex-1 px-4 py-7">
-
-          <p className="mb-4 px-3 text-[10px] font-extrabold uppercase tracking-[0.2em] text-slate-400">
-            Workspace
-          </p>
-
-          <nav className="space-y-1">
-
-            {navigation.map((item) => {
-              const isActive = active === item.label;
-
-              return (
-                <button
-                  key={item.label}
-                  onClick={() => setActive(item.label)}
-                  className={`relative flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition-all ${
-                    isActive
-                      ? "bg-red-50 text-red-700"
-                      : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
-                  }`}
-                >
-
-                  {isActive && (
-                    <span className="absolute left-0 h-6 w-[3px] rounded-r-full bg-red-600" />
-                  )}
-
-                  <span
-                    className={`flex h-9 w-9 items-center justify-center rounded-lg text-sm font-black ${
-                      isActive
-                        ? "bg-red-600 text-white shadow-md shadow-red-200"
-                        : "bg-slate-100 text-slate-500"
-                    }`}
-                  >
-                    {item.icon}
-                  </span>
-
-                  <span className="text-[13px] font-bold">
-                    {item.label}
-                  </span>
-
-                </button>
-              );
-            })}
-
-          </nav>
+        <div className="workspace">
+          <span>WORKSPACE</span>
         </div>
 
-        {/* Sidebar bottom */}
-        <div className="p-4">
+        <nav className="navigation">
 
-          <div className="rounded-2xl bg-[#17181c] p-5 text-white">
+          {menu.map(([icon, label]) => (
+            <button
+              key={label}
+              className={`nav-item ${
+                active === label ? "active" : ""
+              }`}
+              onClick={() => setActive(label)}
+            >
+              <span className="nav-icon">
+                {icon}
+              </span>
 
-            <div className="mb-4 flex items-center justify-between">
-              <span className="text-xs font-bold">
+              <span>{label}</span>
+            </button>
+          ))}
+
+        </nav>
+
+        <div className="sidebar-bottom">
+
+          <div className="system-card">
+
+            <div className="system-head">
+
+              <strong>
                 System Status
+              </strong>
+
+              <span className="online">
+                ● Online
               </span>
 
-              <span className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-400">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                Operational
-              </span>
             </div>
 
-            <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
-              <div className="h-full w-[96%] rounded-full bg-emerald-400" />
+            <div className="system-bar">
+              <div />
             </div>
 
-            <p className="mt-3 text-[10px] leading-4 text-slate-400">
-              All CX monitoring services are running normally.
+            <p>
+              CX monitoring services are operating normally.
             </p>
 
           </div>
 
+          <div className="user-mini">
+
+            <div className="avatar">
+              IB
+            </div>
+
+            <div>
+
+              <strong>
+                CX Operations
+              </strong>
+
+              <span>
+                Administrator
+              </span>
+
+            </div>
+
+          </div>
+
         </div>
+
       </aside>
 
 
-      {/* =====================================================
-          MAIN AREA
-      ===================================================== */}
+      {/* MAIN */}
 
-      <div className="lg:pl-[250px]">
+      <section className="main">
 
-        {/* =====================================================
-            HEADER
-        ===================================================== */}
-
-        <header className="sticky top-0 z-30 flex h-[82px] items-center justify-between border-b border-slate-200 bg-white/90 px-5 backdrop-blur-xl lg:px-9">
+        <header className="header">
 
           <div>
 
-            <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-red-600">
-              Customer Experience
-            </p>
+            <div className="header-eyebrow">
+              CUSTOMER EXPERIENCE
+            </div>
 
-            <h1 className="mt-1 text-lg font-extrabold tracking-tight">
+            <h1>
               Command Center
             </h1>
 
           </div>
 
-          <div className="flex items-center gap-5">
+          <div className="header-right">
 
-            {/* Search */}
-            <button className="hidden h-10 items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 text-xs font-semibold text-slate-400 transition hover:border-red-200 hover:bg-white sm:flex">
+            <div className="search">
               <span>⌕</span>
               Search dashboard...
-              <span className="rounded bg-white px-1.5 py-0.5 text-[9px] text-slate-400">
-                /
-              </span>
-            </button>
+            </div>
 
-            {/* Notification */}
-            <button className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 hover:bg-slate-50">
+            <button className="notification">
               ◇
-              <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-red-600" />
+              <b />
             </button>
 
-            {/* User */}
-            <div className="flex items-center gap-3">
-
-              <div className="hidden text-right md:block">
-                <p className="text-xs font-extrabold">
-                  CX Operations
-                </p>
-
-                <p className="text-[10px] text-slate-400">
-                  Administrator
-                </p>
-              </div>
-
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-600 text-xs font-black text-white shadow-lg shadow-red-200">
-                IB
-              </div>
-
+            <div className="header-avatar">
+              IB
             </div>
 
           </div>
@@ -178,306 +145,250 @@ export default function Home() {
         </header>
 
 
-        {/* =====================================================
-            CONTENT
-        ===================================================== */}
+        <div className="content">
 
-        <main className="p-5 lg:p-9">
+          {/* WELCOME */}
 
-          {/* Welcome */}
-          <div className="mb-8 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+          <section className="welcome">
 
             <div>
 
-              <p className="text-xs font-semibold text-slate-400">
+              <div className="date">
                 Thursday, 20 August 2026
-              </p>
+              </div>
 
-              <h2 className="mt-2 text-3xl font-extrabold tracking-[-0.03em] text-slate-900">
+              <h2>
                 Good morning, CX Team.
               </h2>
 
-              <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">
-                Here's what's happening across your customer experience
-                operation today.
+              <p>
+                Monitor customer experience performance,
+                complaints and service quality from one place.
               </p>
 
             </div>
 
-            <div className="flex gap-2">
+            <div className="actions">
 
-              <button className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-600 shadow-sm hover:border-slate-300">
-                Last 30 Days
+              <button className="period">
+                Last 30 Days ▾
               </button>
 
-              <button className="rounded-xl bg-red-600 px-4 py-2.5 text-xs font-bold text-white shadow-lg shadow-red-200 hover:bg-red-700">
-                Export Report
+              <button className="export">
+                ↓ Export Report
               </button>
 
             </div>
 
-          </div>
+          </section>
 
 
-          {/* =====================================================
-              KPI
-          ===================================================== */}
+          {/* KPI */}
 
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <section className="kpis">
 
-            <Metric
+            <KPI
+              icon="♥"
               title="Customer Satisfaction"
               value="92.4%"
               change="+4.8%"
-              subtitle="vs previous period"
-              icon="♥"
-              accent="red"
+              description="vs previous period"
             />
 
-            <Metric
+            <KPI
+              icon="◷"
               title="SLA Achievement"
               value="96.8%"
               change="+2.1%"
-              subtitle="vs previous period"
-              icon="◷"
-              accent="blue"
+              description="vs previous period"
             />
 
-            <Metric
+            <KPI
+              icon="!"
               title="Open Complaints"
               value="128"
               change="-12.6%"
-              subtitle="vs previous period"
-              icon="!"
-              accent="orange"
-              inverse
+              description="vs previous period"
             />
 
-            <Metric
+            <KPI
+              icon="◉"
               title="Customer Voice"
               value="4,821"
               change="+8.4%"
-              subtitle="responses this month"
-              icon="◉"
-              accent="purple"
+              description="responses this month"
             />
 
-          </div>
+          </section>
 
 
-          {/* =====================================================
-              MAIN ANALYTICS
-          ===================================================== */}
+          {/* ANALYTICS */}
 
-          <div className="mt-5 grid gap-5 xl:grid-cols-[1fr_360px]">
+          <section className="analytics">
 
-            {/* Performance Chart */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
+            <div className="card performance">
 
-              <div className="flex items-start justify-between">
+              <CardHeading
+                eyebrow="PERFORMANCE"
+                title="Customer Experience Trend"
+              />
 
-                <div>
+              <div className="legend">
 
-                  <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-red-600">
-                    Performance
-                  </p>
+                <span>
+                  <i className="red-dot" />
+                  CX Score
+                </span>
 
-                  <h3 className="mt-1 text-lg font-extrabold">
-                    Customer Experience Trend
-                  </h3>
-
-                </div>
-
-                <div className="flex items-center gap-4 text-[10px] font-bold text-slate-400">
-
-                  <span className="flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-red-600" />
-                    CX Score
-                  </span>
-
-                  <span className="hidden sm:flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-slate-300" />
-                    Target
-                  </span>
-
-                </div>
+                <span>
+                  <i className="gray-dot" />
+                  Target
+                </span>
 
               </div>
 
+              <div className="chart">
 
-              {/* Chart */}
-              <div className="relative mt-8 h-[270px]">
-
-                {/* Grid */}
-                <div className="absolute inset-0 flex flex-col justify-between">
-
-                  {[100, 75, 50, 25, 0].map((value) => (
+                {[95, 75, 55, 35, 15].map(
+                  (value) => (
                     <div
                       key={value}
-                      className="flex items-center gap-3"
-                    >
-                      <span className="w-7 text-right text-[9px] font-semibold text-slate-300">
-                        {value}
-                      </span>
+                      className="chart-line"
+                      style={{
+                        bottom: `${value}%`,
+                      }}
+                    />
+                  )
+                )}
 
-                      <div className="h-px flex-1 bg-slate-100" />
-                    </div>
-                  ))}
+                <div className="bars">
 
-                </div>
-
-                {/* Bars */}
-                <div className="absolute bottom-0 left-10 right-0 top-0 flex items-end gap-2 sm:gap-4">
-
-                  {[
-                    58,
-                    65,
-                    62,
-                    70,
-                    68,
-                    76,
-                    73,
-                    82,
-                    79,
-                    89,
-                    86,
-                    94,
-                  ].map((height, index) => (
-                    <div
-                      key={index}
-                      className="group flex h-full flex-1 items-end"
-                    >
-
+                  {[58, 64, 61, 69, 66, 74, 72, 81, 79, 87, 85, 94].map(
+                    (height, index) => (
                       <div
-                        style={{ height: `${height}%` }}
-                        className="relative w-full rounded-t-lg bg-gradient-to-t from-red-700 to-red-400 transition-all duration-300 group-hover:from-red-800 group-hover:to-red-500"
+                        className="bar-wrap"
+                        key={index}
                       >
-
-                        <span className="absolute -top-6 left-1/2 hidden -translate-x-1/2 rounded bg-[#17181c] px-2 py-1 text-[9px] font-bold text-white group-hover:block">
-                          {height}
-                        </span>
-
+                        <div
+                          className="bar"
+                          style={{
+                            height: `${height}%`,
+                          }}
+                        />
                       </div>
-
-                    </div>
-                  ))}
+                    )
+                  )}
 
                 </div>
 
               </div>
 
-              {/* Chart labels */}
-              <div className="ml-10 mt-3 flex justify-between text-[9px] font-bold text-slate-300">
-
+              <div className="chart-labels">
                 <span>W1</span>
                 <span>W2</span>
                 <span>W3</span>
                 <span>W4</span>
                 <span>W5</span>
                 <span>W6</span>
-
               </div>
 
             </div>
 
 
-            {/* =====================================================
-                ALERT PANEL
-            ===================================================== */}
+            {/* ALERT */}
 
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
+            <div className="card alerts">
 
-              <div className="flex items-start justify-between">
+              <div className="alert-heading">
 
-                <div>
+                <CardHeading
+                  eyebrow="ATTENTION"
+                  title="Priority Alerts"
+                />
 
-                  <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-red-600">
-                    Attention
-                  </p>
-
-                  <h3 className="mt-1 text-lg font-extrabold">
-                    Priority Alerts
-                  </h3>
-
-                </div>
-
-                <span className="rounded-full bg-red-50 px-2.5 py-1 text-[9px] font-extrabold text-red-600">
+                <span className="alert-count">
                   3 ACTIVE
                 </span>
 
               </div>
 
+              <Alert
+                level="HIGH"
+                title="Complaint spike detected"
+                description="Jabodetabek +14% in the last 24 hours"
+              />
 
-              <div className="mt-6 space-y-3">
+              <Alert
+                level="MEDIUM"
+                title="SLA approaching threshold"
+                description="12 shipments require immediate attention"
+              />
 
-                <Priority
-                  level="HIGH"
-                  title="Complaint spike detected"
-                  description="Jabodetabek +14% in the last 24 hours"
-                />
+              <Alert
+                level="MEDIUM"
+                title="Negative sentiment increased"
+                description="Customer Voice sentiment +6%"
+              />
 
-                <Priority
-                  level="MEDIUM"
-                  title="SLA approaching threshold"
-                  description="12 shipments require immediate attention"
-                />
-
-                <Priority
-                  level="MEDIUM"
-                  title="Negative sentiment increased"
-                  description="Customer Voice sentiment +6%"
-                />
-
-              </div>
-
-
-              <button className="mt-5 w-full rounded-xl border border-slate-200 py-3 text-[11px] font-extrabold text-slate-600 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600">
+              <button className="view-alerts">
                 View All Alerts →
               </button>
 
             </div>
 
-          </div>
+          </section>
 
 
-          {/* =====================================================
-              BOTTOM SECTION
-          ===================================================== */}
+          {/* LOWER */}
 
-          <div className="mt-5 grid gap-5 xl:grid-cols-3">
+          <section className="lower">
 
-            {/* Complaint */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
+            <div className="card lower-card">
 
-              <SectionTitle
-                eyebrow="Complaints"
+              <CardHeading
+                eyebrow="COMPLAINTS"
                 title="Complaint Overview"
               />
 
-              <div className="mt-7 flex items-center gap-7">
+              <div className="complaint">
 
-                <div className="relative flex h-32 w-32 shrink-0 items-center justify-center rounded-full border-[14px] border-red-100">
+                <div className="donut">
 
-                  <div className="absolute inset-[-14px] rounded-full border-[14px] border-red-600 border-b-transparent border-l-transparent rotate-[-35deg]" />
+                  <div className="donut-center">
 
-                  <div className="text-center">
-                    <p className="text-2xl font-black">
+                    <strong>
                       128
-                    </p>
+                    </strong>
 
-                    <p className="text-[9px] font-bold text-slate-400">
+                    <span>
                       OPEN
-                    </p>
+                    </span>
+
                   </div>
 
                 </div>
 
-                <div className="space-y-3">
+                <div className="complaint-list">
 
-                  <Legend label="Delivery" value="48" />
-                  <Legend label="Service" value="37" />
-                  <Legend label="System" value="25" />
-                  <Legend label="Other" value="18" />
+                  <Legend
+                    label="Delivery"
+                    value="48"
+                  />
+
+                  <Legend
+                    label="Service"
+                    value="37"
+                  />
+
+                  <Legend
+                    label="System"
+                    value="25"
+                  />
+
+                  <Legend
+                    label="Other"
+                    value="18"
+                  />
 
                 </div>
 
@@ -486,80 +397,78 @@ export default function Home() {
             </div>
 
 
-            {/* Customer Sentiment */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
+            <div className="card lower-card">
 
-              <SectionTitle
-                eyebrow="Customer Voice"
+              <CardHeading
+                eyebrow="CUSTOMER VOICE"
                 title="Sentiment Analysis"
               />
 
-              <div className="mt-7">
+              <div className="sentiments">
 
                 <Sentiment
                   label="Positive"
                   value="72%"
                   width="72%"
-                  type="positive"
+                  color="green"
                 />
 
                 <Sentiment
                   label="Neutral"
                   value="19%"
                   width="19%"
-                  type="neutral"
+                  color="gray"
                 />
 
                 <Sentiment
                   label="Negative"
                   value="9%"
                   width="9%"
-                  type="negative"
+                  color="red"
                 />
 
               </div>
 
-              <div className="mt-6 rounded-xl bg-slate-50 p-4">
+              <div className="response">
 
-                <p className="text-[10px] font-bold text-slate-400">
+                <span>
                   Total responses
-                </p>
+                </span>
 
-                <p className="mt-1 text-xl font-black">
+                <strong>
                   4,821
-                </p>
+                </strong>
 
               </div>
 
             </div>
 
 
-            {/* Quick Actions */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
+            <div className="card lower-card">
 
-              <SectionTitle
-                eyebrow="Workspace"
+              <CardHeading
+                eyebrow="WORKSPACE"
                 title="Quick Actions"
               />
 
-              <div className="mt-5 grid grid-cols-2 gap-3">
+              <div className="quick-grid">
 
-                <Action
+                <Quick
                   icon="◈"
                   title="CX Performance"
                 />
 
-                <Action
+                <Quick
                   icon="!"
                   title="Complaints"
                 />
 
-                <Action
+                <Quick
                   icon="◉"
                   title="Customer Voice"
                 />
 
-                <Action
+                <Quick
                   icon="▤"
                   title="Reports"
                 />
@@ -568,11 +477,10 @@ export default function Home() {
 
             </div>
 
-          </div>
+          </section>
 
 
-          {/* Footer */}
-          <footer className="mt-9 flex flex-col justify-between gap-2 border-t border-slate-200 pt-5 text-[10px] font-semibold text-slate-400 sm:flex-row">
+          <footer>
 
             <span>
               © 2026 Lion Parcel • Customer Experience
@@ -584,104 +492,113 @@ export default function Home() {
 
           </footer>
 
-        </main>
+        </div>
 
-      </div>
+      </section>
 
-    </div>
+    </main>
   );
 }
 
 
-/* =====================================================
-   COMPONENTS
-===================================================== */
+/* ============================= */
+/* COMPONENTS */
+/* ============================= */
 
-function Metric({
+function KPI({
+  icon,
   title,
   value,
   change,
-  subtitle,
-  icon,
-  accent,
-  inverse,
+  description,
 }) {
-  const accentClasses = {
-    red: "bg-red-50 text-red-600",
-    blue: "bg-blue-50 text-blue-600",
-    orange: "bg-orange-50 text-orange-600",
-    purple: "bg-purple-50 text-purple-600",
-  };
-
   return (
-    <div className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-xl">
+    <div className="kpi">
 
-      <div className="flex items-start justify-between">
+      <div className="kpi-top">
 
-        <div
-          className={`flex h-10 w-10 items-center justify-center rounded-xl text-sm font-black ${accentClasses[accent]}`}
-        >
+        <div className="kpi-icon">
           {icon}
         </div>
 
-        <span
-          className={`rounded-full px-2 py-1 text-[9px] font-extrabold ${
-            inverse
-              ? "bg-emerald-50 text-emerald-600"
-              : "bg-emerald-50 text-emerald-600"
-          }`}
-        >
+        <span className="positive">
           {change}
         </span>
 
       </div>
 
-      <p className="mt-5 text-xs font-bold text-slate-400">
+      <div className="kpi-title">
         {title}
-      </p>
+      </div>
 
-      <p className="mt-1 text-3xl font-black tracking-[-0.03em]">
+      <div className="kpi-value">
         {value}
-      </p>
+      </div>
 
-      <p className="mt-2 text-[10px] font-semibold text-slate-400">
-        {subtitle}
-      </p>
+      <div className="kpi-description">
+        {description}
+      </div>
 
     </div>
   );
 }
 
 
-function Priority({ level, title, description }) {
-  const high = level === "HIGH";
-
+function CardHeading({
+  eyebrow,
+  title,
+}) {
   return (
-    <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
+    <div className="card-heading">
 
-      <div className="flex items-center justify-between">
+      <div className="eyebrow">
+        {eyebrow}
+      </div>
+
+      <h3>
+        {title}
+      </h3>
+
+    </div>
+  );
+}
+
+
+function Alert({
+  level,
+  title,
+  description,
+}) {
+  return (
+    <div className="alert">
+
+      <div className="alert-top">
 
         <span
-          className={`text-[8px] font-black tracking-wider ${
-            high ? "text-red-600" : "text-orange-500"
-          }`}
+          className={
+            level === "HIGH"
+              ? "high"
+              : "medium"
+          }
         >
           {level}
         </span>
 
-        <span
-          className={`h-1.5 w-1.5 rounded-full ${
-            high ? "bg-red-600" : "bg-orange-400"
-          }`}
+        <i
+          className={
+            level === "HIGH"
+              ? "high-dot"
+              : "medium-dot"
+          }
         />
 
       </div>
 
-      <p className="mt-2 text-xs font-extrabold text-slate-700">
+      <strong>
         {title}
-      </p>
+      </strong>
 
-      <p className="mt-1 text-[10px] leading-4 text-slate-400">
+      <p>
         {description}
       </p>
 
@@ -690,38 +607,21 @@ function Priority({ level, title, description }) {
 }
 
 
-function SectionTitle({ eyebrow, title }) {
+function Legend({
+  label,
+  value,
+}) {
   return (
-    <div>
-      <p className="text-[9px] font-extrabold uppercase tracking-[0.18em] text-red-600">
-        {eyebrow}
-      </p>
+    <div className="legend-row">
 
-      <h3 className="mt-1 text-lg font-extrabold">
-        {title}
-      </h3>
-    </div>
-  );
-}
-
-
-function Legend({ label, value }) {
-  return (
-    <div className="flex items-center justify-between gap-8">
-
-      <div className="flex items-center gap-2">
-
-        <span className="h-2 w-2 rounded-full bg-red-500" />
-
-        <span className="text-[10px] font-bold text-slate-500">
-          {label}
-        </span>
-
-      </div>
-
-      <span className="text-xs font-black">
-        {value}
+      <span>
+        <i />
+        {label}
       </span>
+
+      <strong>
+        {value}
+      </strong>
 
     </div>
   );
@@ -732,34 +632,30 @@ function Sentiment({
   label,
   value,
   width,
-  type,
+  color,
 }) {
-  const colors = {
-    positive: "bg-emerald-500",
-    neutral: "bg-slate-400",
-    negative: "bg-red-500",
-  };
-
   return (
-    <div className="mb-5">
+    <div className="sentiment">
 
-      <div className="mb-2 flex justify-between">
+      <div className="sentiment-top">
 
-        <span className="text-[10px] font-bold text-slate-500">
+        <span>
           {label}
         </span>
 
-        <span className="text-[10px] font-black">
+        <strong>
           {value}
-        </span>
+        </strong>
 
       </div>
 
-      <div className="h-2 overflow-hidden rounded-full bg-slate-100">
+      <div className="progress">
 
         <div
-          style={{ width }}
-          className={`h-full rounded-full ${colors[type]}`}
+          className={`progress-value ${color}`}
+          style={{
+            width,
+          }}
         />
 
       </div>
@@ -769,17 +665,20 @@ function Sentiment({
 }
 
 
-function Action({ icon, title }) {
+function Quick({
+  icon,
+  title,
+}) {
   return (
-    <button className="group rounded-xl border border-slate-100 bg-slate-50 p-4 text-left transition hover:border-red-100 hover:bg-red-50">
+    <button className="quick">
 
-      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-xs font-black text-red-600 shadow-sm group-hover:bg-red-600 group-hover:text-white">
+      <span>
         {icon}
-      </div>
+      </span>
 
-      <p className="mt-3 text-[10px] font-extrabold leading-4 text-slate-600 group-hover:text-red-700">
+      <strong>
         {title}
-      </p>
+      </strong>
 
     </button>
   );
